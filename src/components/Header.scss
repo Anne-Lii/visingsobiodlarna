@@ -9,26 +9,50 @@ header {
     justify-content: center;
 }
 
-nav ul {
+nav {
+    width: 90%;
+    display: flex;
+    align-items: center;
+}
+
+.logo {
+    flex-shrink: 0;
+
+    img {
+        height: 120px;
+    }
+}
+
+.nav-list {
     list-style: none;
     display: flex;
-    gap: 5rem;
+    align-items: center;
     margin: 0;
     padding: 0;
-  
-    li a {
-      text-decoration: none;
-      color: black;
-      font-weight: bold;
-      font-size: 24px;
-  
-      &.active {
-        border-bottom: 2px solid rgb(231, 173, 46);
-      }
-  
-      &:hover {
-        border-bottom: 2px solid rgb(231, 173, 46);
-      }
+    flex: 1;
+}
+
+.menu-link {
+    margin: 0 2rem;
+
+    a {
+        text-decoration: none;
+        color: black;
+        font-weight: bold;
+        font-size: 24px;
+
+        &.active {
+           
+            border-bottom: 2px solid rgb(231, 173, 46);
+        }
+
+        &:hover {
+            color: rgb(231, 173, 46);
+            border-bottom: 2px solid rgb(231, 173, 46);
+        }
     }
-  }
-  
+}
+
+.login-link {
+    margin-left: auto;
+}

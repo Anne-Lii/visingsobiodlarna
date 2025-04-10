@@ -3,7 +3,7 @@
 header {
     height: 160px;
     width: 100%;
-    background-color: $color-header;
+    background-color: $color-background;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -44,12 +44,12 @@ nav {
 
         &.active {
 
-            border-bottom: 2px solid rgb(231, 173, 46);
+            border-bottom: 2px solid $color-honey;
         }
 
         &:hover {
-            color: rgb(231, 173, 46);
-            border-bottom: 2px solid rgb(231, 173, 46);
+            color: $color-honey;
+            border-bottom: 2px solid $color-honey;
         }
     }
 }
@@ -96,7 +96,7 @@ nav {
     .nav-list {
         display: none;
         flex-direction: column;
-        background-color: $color-header;
+        background-color: $color-background;
         position: fixed;
         top: 0;
         right: 0;
@@ -107,11 +107,12 @@ nav {
         padding-top: 200px;
         gap: 2rem;  
         box-sizing: border-box;
-        z-index: 2;
+        z-index: 20;
     }
   
     .nav-list.open {
       display: flex;
+      z-index: 20;
     }
   
     .menu-link {

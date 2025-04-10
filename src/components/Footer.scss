@@ -1,5 +1,8 @@
+@import '../styles/variables';
+
 footer {
     width: 100%;
     height: 150px;
-    background-color: antiquewhite;
+    background-color: $color-background;
+    text-align: center;
 }

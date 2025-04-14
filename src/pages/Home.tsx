@@ -3,7 +3,7 @@
 const Home = () => {
   return (
     <div>
-      <h2>Välkommen till Visingsö Biodlarna!</h2>
+      <h1>Välkommen till Visingsöbiodlarna!</h1>
     </div>
   )
 }

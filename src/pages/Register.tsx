@@ -10,6 +10,8 @@ interface RegisterFormData {
 
 const Register = () => {
 
+    //states
+    const [error, setError] = useState<string | null>(null);
     const [formData, setFormData] = useState<RegisterFormData>({
         firstName: '',
         lastName: '',
@@ -25,6 +27,32 @@ const Register = () => {
             ...prevState,
             [name]: value
         }));
+    };
+
+    //Submit
+    const handleSubmit = async (e: React.FormEvent) => {
+        e.preventDefault();
+
+        try {
+            //Skickar registreringsdata till backend
+            const response = await fetch('URL', { 
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(formData),
+            });
+
+            if (!response.ok) {
+                throw new Error('Registrering misslyckades');
+            }
+
+            //Hantera framgångsrik registrering här (t.ex. visa en bekräftelse eller omdirigera)
+           
+        } catch (err) {
+            setError('Ett fel inträffade. Försök igen senare.');
+            console.error(err);
+        }
     };
 
     return (

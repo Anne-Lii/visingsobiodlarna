@@ -5,6 +5,7 @@ import Login from './pages/Login';
 import News from './pages/News';
 import Register from './pages/Register';
 import New_password from './pages/New_password';
+import Mypage from './pages/Mypage';
 
 
 
@@ -16,6 +17,7 @@ function App() {
           <Route index element={<Home />} />
           <Route path="news" element={<News />} />
           <Route path="login" element={<Login />} />
+          <Route path="mypage" element={<Mypage />} />
           <Route path="register" element={<Register />} />
           <Route path="new_password" element={<New_password />} />
         </Route>

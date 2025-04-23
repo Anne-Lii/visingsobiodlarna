@@ -2,6 +2,7 @@ import { NavLink, useNavigate } from "react-router-dom"
 import '../pages/Login.scss'
 import { useState } from "react"
 import api from "../services/apiService";
+import { useUser } from "../context/UserContext";
 
 
 const Login = () => {
@@ -10,6 +11,8 @@ const Login = () => {
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
   const [error, setError] = useState<string | null>(null);
+
+  const { login } = useUser();
   
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -19,6 +22,7 @@ const Login = () => {
 
       const response = await api.post("/auth/login", {email, password});
       console.log("Inloggad:", response.data.message);
+      login();//sätter inloggningsstatus till inloggad
       navigate("/mypage");//skickas till skyddad vy mina sidor
     } catch (err: any) {
       console.error(err);

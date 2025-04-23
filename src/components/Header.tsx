@@ -1,13 +1,23 @@
 import { useState } from 'react';
-import { NavLink } from 'react-router-dom';
+import { NavLink, useNavigate } from 'react-router-dom';
 import './Header.scss';
 import logo from '../assets/logo.png';
+import { useUser } from '../context/UserContext';
+import api from '../services/apiService';
 
 const Header = () => {
 
     const [menuOpen, setMenuOpen] = useState(false);
+    const { isLoggedIn, logout } = useUser();
+    const navigate = useNavigate();
 
     const closeMenu = () => setMenuOpen(false);
+
+    const handleLogout = async () => {
+        await api.post("/auth/logout", {}, { withCredentials: true });
+        logout();
+        navigate("/");
+    };
 
     return (
         <header>
@@ -22,21 +32,44 @@ const Header = () => {
                 {menuOpen && <div className="overlay" onClick={closeMenu}></div>}
 
                 <ul className={`nav-list ${menuOpen ? 'open' : ''}`}>
+
                     <li className="menu-link">
-                        <NavLink to="/" onClick={closeMenu} className={({ isActive }) => isActive ? 'active' : ''}>
-                            Startsida
+                        <NavLink to="/" onClick={closeMenu} className={({ isActive }) => isActive ? 'active' : ''}> 
+                        Startsida 
                         </NavLink>
                     </li>
+
                     <li className="menu-link">
-                        <NavLink to="/news" onClick={closeMenu} className={({ isActive }) => isActive ? 'active' : ''}>
-                            Nyheter
+                        <NavLink to="/news" onClick={closeMenu} className={({ isActive }) => isActive ? 'active' : ''}> 
+                        Nyheter 
                         </NavLink>
                     </li>
-                    <li className="menu-link login-link">
-                        <NavLink to="/login" onClick={closeMenu} className={({ isActive }) => isActive ? 'active' : ''}>
+
+                    {/* Meny om användaren är inloggad */}
+                    {isLoggedIn && (
+                        <>
+                            <li className="menu-link">
+                                <NavLink to="/mypage" onClick={closeMenu} className={({ isActive }) => isActive ? 'active' : ''}>
+                                Mina sidor</NavLink>
+                            </li>
+                            <li className="menu-link login-link">
+                                <NavLink to="/login" onClick={handleLogout} className={({ isActive }) => isActive ? 'active' : ''}>
+                                Logga ut
+                                </NavLink>
+
+                            </li>
+                        </>
+                    )}
+
+                    {/* Meny om användaren INTE är inloggad */}
+                    {!isLoggedIn && (
+                        <li className="menu-link login-link">
+                            <NavLink to="/login" onClick={closeMenu} className={({ isActive }) => isActive ? 'active' : ''}>
                             Logga in
-                        </NavLink>
-                    </li>
+                            </NavLink>
+                        </li>
+                    )}
+
                 </ul>
             </nav>
         </header>

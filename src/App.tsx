@@ -6,6 +6,7 @@ import News from './pages/News';
 import Register from './pages/Register';
 import New_password from './pages/New_password';
 import Mypage from './pages/Mypage';
+import ProtectedRoute from './components/ProtectedRoute';
 
 
 
@@ -14,12 +15,17 @@ function App() {
     <Router>
       <Routes>
         <Route path="/" element={<Layout />}>
+
+          {/* Publika routes */}
           <Route index element={<Home />} />
           <Route path="news" element={<News />} />
           <Route path="login" element={<Login />} />
-          <Route path="mypage" element={<Mypage />} />
           <Route path="register" element={<Register />} />
           <Route path="new_password" element={<New_password />} />
+
+          {/* Skyddade routes */}
+          <Route path="mypage" element={<ProtectedRoute><Mypage /></ProtectedRoute>} />
+
         </Route>
       </Routes>
     </Router>

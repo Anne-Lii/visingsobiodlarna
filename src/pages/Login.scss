@@ -1,5 +1,4 @@
-@import '../styles//variables';
-
+@use '../styles/variables' as *;
 .login-container {
     max-width: 500px;
     margin: auto;

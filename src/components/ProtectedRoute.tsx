@@ -4,11 +4,16 @@ import { JSX } from "react";
 
 
 const ProtectedRoute = ({ children }: { children: JSX.Element }) => {
-    const { isLoggedIn } = useUser();
+    const { isLoggedIn, isLoading } = useUser();
+
+    if (isLoading) {
+        return <div>Laddar...</div>; 
+      }
 
     if (!isLoggedIn) {
         return <Navigate to="/login" replace />;
     }
+    console.log("🔐 ProtectedRoute", { isLoading, isLoggedIn });//debugg!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
     return children;
 };

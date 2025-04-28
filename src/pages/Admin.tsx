@@ -39,6 +39,19 @@ const Admin = () => {
         }
     };
 
+    //Ta bort användare
+    const deleteUser = async (userId: string) => {
+        try {
+            //Skicka DELETE-begäran för att ta bort användaren
+            await api.delete(`/admin/delete/${userId}`);
+            //Uppdatera användarlistan efter borttagning
+            fetchPendingUsers();
+        } catch (error) {
+            setError("Kunde inte ta bort användaren.");
+            console.error("Error deleting user: ", error);
+        }
+    };
+
     return (
         <div>
             <h1>Administrera användare</h1>
@@ -53,6 +66,8 @@ const Admin = () => {
                             {user.fullName || "Namn saknas"} ({user.email || "E-post saknas"})
                             {/* Knapp för att godkänna användaren */}
                             <button onClick={() => approveUser(user.id)}>Godkänn</button>
+                            {/* Knapp för att ta bort användaren */}
+                            <button onClick={() => deleteUser(user.id)}>Ta bort</button>
                         </li>
                     ))}
                 </ul>

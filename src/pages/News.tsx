@@ -1,7 +1,7 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
 import '../pages/News.scss'
-import { useNavigate } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 import { useUser } from "../context/UserContext";
 
 interface NewsItem {
@@ -82,6 +82,14 @@ const News = () => {
   return (
     <div className="news_container">
       <h1>Nyheter</h1>
+
+      {role ==="admin" && (
+        <div className="add-news-btn">
+          <NavLink to="/create_news" className="create-news-link">
+            +Lägg till nyhet
+          </NavLink>
+        </div>
+      )}
 
       {error && <p style={{ color: "red" }}>{error}</p>}
 

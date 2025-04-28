@@ -3,6 +3,8 @@ import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { useUser } from "../context/UserContext";
 
+import '../pages/CreateNews.scss'
+
 
 const CreateNews = () => {
 
@@ -46,7 +48,7 @@ const CreateNews = () => {
     };
 
     return (
-        <div>
+        <div className="create-news-container">
             <h1>Skapa ny nyhet</h1>
             <form onSubmit={handleSubmit}>
                 <div>

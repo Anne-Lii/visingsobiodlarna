@@ -1,10 +1,13 @@
-import { Outlet } from 'react-router-dom';
+import { Outlet, useLocation } from 'react-router-dom';
 import Header from './Header';
 import Footer from './Footer';
 import Aside from './Aside';
 import './Layout.scss';
 
 const Layout = () => {
+
+    const location = useLocation();
+    
     return (
         <div className="layout">
             <Header />
@@ -12,7 +15,7 @@ const Layout = () => {
                 <main className="main-content">
                     <Outlet />
                 </main>
-                <Aside />
+                <Aside key={location.pathname} />
             </div>
             <Footer />
         </div>

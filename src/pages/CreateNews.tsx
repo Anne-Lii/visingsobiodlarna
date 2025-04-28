@@ -1,6 +1,7 @@
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
+import { useUser } from "../context/UserContext";
 
 
 const CreateNews = () => {
@@ -10,6 +11,21 @@ const CreateNews = () => {
     const [content, setContent] = useState("");
 
     const navigate = useNavigate();
+
+    const { role, isLoading } = useUser();
+    if (isLoading) {
+        return <div>Laddar...</div>;
+      }
+      
+      if (role !== "admin") {
+        return (
+            <div style={{ textAlign: "center", marginTop: "2rem" }}>
+              <h2>Åtkomst nekad</h2>
+              <p>Du har inte rätt behörighet för att skapa nyheter.</p>
+              <button onClick={() => navigate("/")}>Till startsidan</button>
+            </div>
+          );
+    }
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();

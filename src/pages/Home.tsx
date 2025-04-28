@@ -10,7 +10,7 @@ const Home = () => {
       <div className="info-text">
         <p>
           Visingsöbiodlarna är en ideell förening som samlar öns biodlare för att främja kunskapsutbyte, gemenskap och hållbar biodling. 
-          På Visingsö bedrivs biodling i en unik miljö med närhet till natur och pollinerrika landskap. Vi är för tillfället 17 aktiva biodlare på ön.
+          På Visingsö bedrivs biodling i en unik miljö med närhet till natur och pollinerrika landskap. Vi är för tillfället 17 aktiva biodlare på ön som delar på ca 92 kupor.
         </p>
         <p>
           Föreningen ansvarar även för en godkänd parningsstation för Ligusticaföreningen, vilket ger möjlighet till kontrollerad parning av drottningar i en skyddad zon. 

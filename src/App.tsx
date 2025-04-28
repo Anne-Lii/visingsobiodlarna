@@ -9,6 +9,7 @@ import Mypage from './pages/Mypage';
 import ProtectedRoute from './components/ProtectedRoute';
 import CreateNews from './pages/CreateNews';
 import Admin from './pages/Admin';
+import NewsDetail from './pages/NewsDetail';
 
 
 
@@ -24,6 +25,7 @@ function App() {
           <Route path="login" element={<Login />} />
           <Route path="register" element={<Register />} />
           <Route path="new_password" element={<NewPassword />} />
+          <Route path="news/:id" element={<NewsDetail />} />
 
           {/* Skyddade routes */}
           <Route path="mypage" element={<ProtectedRoute><Mypage /></ProtectedRoute>} />

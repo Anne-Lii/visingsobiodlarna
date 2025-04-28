@@ -81,42 +81,43 @@ const Register = () => {
             }
         } catch (err: any) {
             if (err.response && err.response.data) {
-                let backendError: string[] = [];
+                console.error("FELSVAR FRÅN BACKEND:", err.response.data); // 👈 Logga allt
+        
                 const data = err.response.data;
-
-                if (data.errors && typeof data.errors === 'object') {
+                let backendErrors: string[] = [];
+        
+                if (Array.isArray(data)) {
+                    // Om backend svarar med en lista
+                    backendErrors = data.map((e: any) => e.Description ?? e.description ?? "Ett fel inträffade.");
+                } else if (typeof data === "object" && data.errors) {
+                    // Om backend skickar { errors: { fält: [felmeddelande] } }
                     for (const key in data.errors) {
-                        backendError.push(...data.errors[key]);
+                        backendErrors.push(...data.errors[key]);
                     }
-                } else if (Array.isArray(data)) {
-                    backendError = data.map((e: any) => e.description);
-                } else if (data.$values) {
-                    backendError = data.$values.map((e: any) => e.description);
                 } else if (typeof data === "string") {
-                    backendError = [data];
+                    backendErrors = [data];
                 } else if (data.title) {
-                    backendError = [data.title];
-                } else {
-                    backendError = ["Ett fel inträffade."];
+                    backendErrors = [data.title];
                 }
-
-                //Översätter felmeddelande till svenska
-                const translatedErrors = backendError.map((msg) => {
-                    if (
-                        typeof msg === "string" &&
-                        msg.toLowerCase().includes("username") &&
-                        msg.toLowerCase().includes("taken")
-                    ) {
+        
+                // Översätt eventuella felmeddelanden
+                const translatedErrors = backendErrors.map((msg) => {
+                    if (msg.toLowerCase().includes("username") && msg.toLowerCase().includes("taken")) {
                         return "E-postadressen är redan registrerad.";
                     }
                     return msg;
                 });
-
-                setError(translatedErrors);
+        
+                if (translatedErrors.length > 0) {
+                    setError(translatedErrors);
+                } else {
+                    setError("Ett oväntat fel inträffade.");
+                }
+        
             } else {
                 setError("Ett oväntat fel inträffade.");
             }
-
+        
             console.error('Registreringsfel:', err);
         } finally {
             setIsSubmitting(false);
@@ -169,13 +170,10 @@ const Register = () => {
                     <div className="error-message">
                         {typeof error === 'string' ? (
                             <p>{error}</p>
-                        ) : Array.isArray(error) ? (
-                            (error as Array<{ description: string } | string>).map((err, index) =>
-                                typeof err === "string" ? (
-                                    <p key={index}>{err}</p>
-                                ) : (
-                                    <p key={index}>{err.description}</p>
-                                ))
+                        ) : Array.isArray(error) && error.length > 0 ? (
+                            error.map((err, index) => (
+                                <p key={index}>{err}</p>
+                            ))
                         ) : (
                             <p>Ett oväntat fel inträffade.</p>
                         )}

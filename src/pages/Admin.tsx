@@ -26,6 +26,19 @@ const Admin = () => {
         }
     };
 
+    //Godkänna användare
+    const approveUser = async (userId: string) => {
+        try {
+            //Skicka PUT-begäran för att godkänna användaren
+            await api.put(`/admin/approve/${userId}`);
+            //Uppdatera användarlistan efter godkännande
+            fetchPendingUsers();
+        } catch (error) {
+            setError("Kunde inte godkänna användaren.");
+            console.error("Error approving user: ", error);
+        }
+    };
+
     return (
         <div>
             <h1>Administrera användare</h1>
@@ -38,6 +51,8 @@ const Admin = () => {
                     {pendingUsers.map(user => (
                         <li key={user.id}>
                             {user.fullName || "Namn saknas"} ({user.email || "E-post saknas"})
+                            {/* Knapp för att godkänna användaren */}
+                            <button onClick={() => approveUser(user.id)}>Godkänn</button>
                         </li>
                     ))}
                 </ul>

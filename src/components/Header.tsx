@@ -8,7 +8,7 @@ import api from '../services/apiService';
 const Header = () => {
 
     const [menuOpen, setMenuOpen] = useState(false);
-    const { isLoggedIn, logout } = useUser();
+    const { isLoggedIn, logout, role } = useUser();
     const navigate = useNavigate();
 
     const closeMenu = () => setMenuOpen(false);
@@ -34,14 +34,14 @@ const Header = () => {
                 <ul className={`nav-list ${menuOpen ? 'open' : ''}`}>
 
                     <li className="menu-link">
-                        <NavLink to="/" onClick={closeMenu} className={({ isActive }) => isActive ? 'active' : ''}> 
-                        Startsida 
+                        <NavLink to="/" onClick={closeMenu} className={({ isActive }) => isActive ? 'active' : ''}>
+                            Startsida
                         </NavLink>
                     </li>
 
                     <li className="menu-link">
-                        <NavLink to="/news" onClick={closeMenu} className={({ isActive }) => isActive ? 'active' : ''}> 
-                        Nyheter 
+                        <NavLink to="/news" onClick={closeMenu} className={({ isActive }) => isActive ? 'active' : ''}>
+                            Nyheter
                         </NavLink>
                     </li>
 
@@ -50,11 +50,19 @@ const Header = () => {
                         <>
                             <li className="menu-link">
                                 <NavLink to="/mypage" onClick={closeMenu} className={({ isActive }) => isActive ? 'active' : ''}>
-                                Mina sidor</NavLink>
+                                    Mina sidor</NavLink>
                             </li>
+                            {/* Visa Admin-länk om rollen är admin */}
+                            {role === 'admin' && (
+                                <li className="menu-link">
+                                    <NavLink to="/admin" onClick={closeMenu} className={({ isActive }) => isActive ? 'active' : ''}>
+                                        Admin
+                                    </NavLink>
+                                </li>
+                            )}
                             <li className="menu-link login-link">
                                 <NavLink to="/login" onClick={handleLogout} className={({ isActive }) => isActive ? 'active' : ''}>
-                                Logga ut
+                                    Logga ut
                                 </NavLink>
 
                             </li>
@@ -65,7 +73,7 @@ const Header = () => {
                     {!isLoggedIn && (
                         <li className="menu-link login-link">
                             <NavLink to="/login" onClick={closeMenu} className={({ isActive }) => isActive ? 'active' : ''}>
-                            Logga in
+                                Logga in
                             </NavLink>
                         </li>
                     )}

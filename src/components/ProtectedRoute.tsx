@@ -3,8 +3,13 @@ import { useUser } from "../context/UserContext";
 import { JSX } from "react";
 
 
-const ProtectedRoute = ({ children }: { children: JSX.Element }) => {
-    const { isLoggedIn, isLoading } = useUser();
+interface ProtectedRouteProps {
+    children: JSX.Element;
+    requiredRole?: string;
+}
+
+const ProtectedRoute = ({ children, requiredRole }: ProtectedRouteProps) => {
+    const { isLoggedIn, isLoading, role } = useUser();
 
     if (isLoading) {
         return <div>Laddar...</div>; 
@@ -13,7 +18,9 @@ const ProtectedRoute = ({ children }: { children: JSX.Element }) => {
     if (!isLoggedIn) {
         return <Navigate to="/login" replace />;
     }
-    console.log("🔐 ProtectedRoute", { isLoading, isLoggedIn });//debugg!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    if (requiredRole && role !== requiredRole) {
+        return <Navigate to="/" replace />; //skickas till start om användaren ej är admin
+      }
 
     return children;
 };

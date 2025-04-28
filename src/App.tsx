@@ -8,6 +8,7 @@ import NewPassword from './pages/New_password';
 import Mypage from './pages/Mypage';
 import ProtectedRoute from './components/ProtectedRoute';
 import CreateNews from './pages/CreateNews';
+import Admin from './pages/Admin';
 
 
 
@@ -27,6 +28,7 @@ function App() {
           {/* Skyddade routes */}
           <Route path="mypage" element={<ProtectedRoute><Mypage /></ProtectedRoute>} />
           <Route path="create_news" element={<ProtectedRoute><CreateNews /></ProtectedRoute>} />
+          <Route path="admin" element={<ProtectedRoute requiredRole="admin"><Admin /></ProtectedRoute>} />
 
         </Route>
       </Routes>

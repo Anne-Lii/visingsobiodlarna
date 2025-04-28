@@ -8,9 +8,11 @@ type UserContextType = {
     login: () => void;
     logout: () => void;
     role: string | null;
+    validate: () => Promise<void>;
 };
 
 const UserContext = createContext<UserContextType | undefined>(undefined);
+
 export const UserProvider = ({ children }: { children: ReactNode }) => {
 
     //states
@@ -19,33 +21,33 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
     const [role, setRole] = useState<string | null>(null);
 
     const login = () => setIsLoggedIn(true);
-    const logout = () => setIsLoggedIn(false);
+    const logout = () => {
+        setIsLoggedIn(false);
+        setRole(null); //töm rollen vid utloggning 
+    };
+
+    const validate = async () => {
+        try {
+            const response = await api.get("/auth/validate", { withCredentials: true });
+            setIsLoggedIn(true);
+            setRole(response.data.role);
+        } catch {
+            setIsLoggedIn(false);
+            setRole(null);
+        } finally {
+            setIsLoading(false);
+        }
+    };
 
     useEffect(() => {
-        const checkLogin = async () => {
-
-
-            try {
-                const response = await api.get("/auth/validate"); //pingar backend
-                setIsLoggedIn(true); //JWT är giltig
-                setRole(response.data.role);//Hämtar rollen från API-svaret
-            } catch {
-                setIsLoggedIn(false); //Ingen giltig cookie
-                setRole(null);
-            } finally {
-                setIsLoading(false);
-            }
-        };
-
-        checkLogin();
+        validate(); // Kör validate första gången
     }, []);
 
     return (
-        <UserContext.Provider value={{ isLoggedIn, isLoading, login, logout,role }}>
+        <UserContext.Provider value={{ isLoggedIn, isLoading, login, logout, role, validate }}>
             {children}
         </UserContext.Provider>
     );
-
 };
 
 export const useUser = () => {

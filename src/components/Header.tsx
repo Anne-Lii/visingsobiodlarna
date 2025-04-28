@@ -52,7 +52,7 @@ const Header = () => {
                                 <NavLink to="/mypage" onClick={closeMenu} className={({ isActive }) => isActive ? 'active' : ''}>
                                     Mina sidor</NavLink>
                             </li>
-                            {/* Visa Admin-länk om rollen är admin */}
+
                             {role === 'admin' && (
                                 <li className="menu-link">
                                     <NavLink to="/admin" onClick={closeMenu} className={({ isActive }) => isActive ? 'active' : ''}>
@@ -60,6 +60,7 @@ const Header = () => {
                                     </NavLink>
                                 </li>
                             )}
+
                             <li className="menu-link login-link">
                                 <NavLink to="/login" onClick={handleLogout} className={({ isActive }) => isActive ? 'active' : ''}>
                                     Logga ut

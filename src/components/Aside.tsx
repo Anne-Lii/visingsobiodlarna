@@ -3,6 +3,7 @@ import api from "../services/apiService";
 import { NavLink } from "react-router-dom";
 import Calendar from "react-calendar";
 import 'react-calendar/dist/Calendar.css';
+import '../components/Aside.scss'
 
 interface NewsItem {
   Id: number;
@@ -11,8 +12,10 @@ interface NewsItem {
   PublishDate: string;
 }
 
+
 const Aside = () => {
 
+  //Hämta nyheter
   const [latestNews, setLatestNews] = useState<NewsItem[]>([]);
 
   useEffect(() => {
@@ -21,7 +24,7 @@ const Aside = () => {
         const response = await api.get<NewsItem[]>("/news");
         const sortedNews = response.data
           .sort((a, b) => new Date(b.PublishDate).getTime() - new Date(a.PublishDate).getTime())
-          .slice(0, 3); // Bara tre senaste
+          .slice(0, 3); //Bara de tre senaste
         setLatestNews(sortedNews);
       } catch (error) {
         console.error("Kunde inte hämta nyheter", error);
@@ -31,13 +34,62 @@ const Aside = () => {
     fetchNews();
   }, []);
 
+  //Hämta kalenderevents
+  const [calendarEvents, setCalendarEvents] = useState<any[]>([]);
+
+  useEffect(() => {
+    const fetchCalendarEvents = async () => {
+      try {
+        const response = await api.get("/calendar");
+  
+        // 🟢 Mappa om PascalCase -> camelCase
+        const transformed = response.data.map((event: any) => ({
+          id: event.Id,
+          title: event.Title,
+          content: event.Content,
+          startDate: event.StartDate,
+          endDate: event.EndDate
+        }));
+  
+        setCalendarEvents(transformed);
+      } catch (error) {
+        console.error("Kunde inte hämta kalenderhändelser", error);
+      }
+    };
+  
+    fetchCalendarEvents();
+  }, []);
+
+  //funktion som kontrollerar om ett datum har en händelse
+  const tileContent = ({ date, view }: { date: Date; view: string }) => {
+    if (view === 'month') {
+
+      //Kollar om det finns något event på detta datum
+      const hasEvent = calendarEvents.some(event => {
+        const eventDate = new Date(event.startDate);
+        return (
+          eventDate.getFullYear() === date.getFullYear() &&
+          eventDate.getMonth() === date.getMonth() &&
+          eventDate.getDate() === date.getDate()
+        );
+      });
+  
+      if (hasEvent) {
+        return <div className="event-dot"></div>; //En liten prick under siffran
+      }
+    }
+    return null;
+  };
+  
+
+
   return (
     <aside className="aside">
       <h2>Svärmtelefon!</h2>
       <p>070-589 48 75</p>
 
       <h3>Kalender</h3>
-      <Calendar />
+      <Calendar  tileContent={tileContent} />
 
       <h3>Senaste nyheterna</h3>
       <ul>

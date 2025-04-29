@@ -71,15 +71,18 @@ const Admin = () => {
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         try {
+
+            const startDateTime = new Date(`${newEvent.startDate}T${newEvent.startTime}`); //Kombinerar datum och tid
+
             await api.post("/calendar", {
                 title: newEvent.title,
                 content: newEvent.content,
-                startDate: newEvent.startDate,
-                endDate: newEvent.endDate || null // Tillåta null om inget slutdatum anges
+                startDate: startDateTime.toISOString(),
+                endDate: newEvent.endDate || null //Tillåta null om inget slutdatum anges
             });
             alert("Händelsen skapades!");
             setShowAddEventForm(false);
-            // Rensa formuläret
+            //Rensar formuläret
             setNewEvent({
                 title: "",
                 content: "",

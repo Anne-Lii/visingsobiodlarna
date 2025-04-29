@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import api from "../services/apiService";
 import '../pages/Admin.scss'
+import { useLocation, useNavigate } from "react-router-dom";
 
 
 interface PendingUser {
@@ -13,6 +14,8 @@ const Admin = () => {
     //states
     const [pendingUsers, setPendingUsers] = useState<PendingUser[]>([]);
     const [showAddEventForm, setShowAddEventForm] = useState(false);
+    const [startHour, setStartHour] = useState("");
+    const [startMinute, setStartMinute] = useState("");
     const [newEvent, setNewEvent] = useState({
         title: "",
         content: "",
@@ -21,6 +24,15 @@ const Admin = () => {
         endDate: ""
     });
     const [error, setError] = useState<string | null>(null);
+    const navigate = useNavigate();
+
+    const location = useLocation();
+
+    useEffect(() => {
+        if (location.state?.openAddEvent) {
+            setShowAddEventForm(true);
+        }
+    }, [location.state]);
 
     useEffect(() => {
         fetchPendingUsers();
@@ -72,12 +84,12 @@ const Admin = () => {
         e.preventDefault();
         try {
 
-            const startDateTime = new Date(`${newEvent.startDate}T${newEvent.startTime}`); //Kombinerar datum och tid
+            const startDateTime = `${newEvent.startDate}T${startHour}:${startMinute}`;
 
             await api.post("/calendar", {
                 title: newEvent.title,
                 content: newEvent.content,
-                startDate: startDateTime.toISOString(),
+                startDate: startDateTime,
                 endDate: newEvent.endDate || null //Tillåta null om inget slutdatum anges
             });
             alert("Händelsen skapades!");
@@ -90,69 +102,105 @@ const Admin = () => {
                 startTime: "",
                 endDate: ""
             });
+            navigate("/calendar");//navigerar till översikten av kalenderhändelser
         } catch (error) {
             console.error("Kunde inte lägga till kalenderhändelse", error);
         }
     }
 
+    const generateHourOptions = () => {
+        return Array.from({ length: 24 }, (_, i) => {
+            const hh = i.toString().padStart(2, '0');
+            return <option key={hh} value={hh}>{hh}</option>;
+        });
+    };
+
+    const generateMinuteOptions = () => {
+        return Array.from({ length: 12 }, (_, i) => {
+            const mm = (i * 5).toString().padStart(2, '0');
+            return <option key={mm} value={mm}>{mm}</option>;
+        });
+    };
+
     return (
         <div className="admin-container">
-            <h1>Administrera användare</h1>
+            <h1>Admin</h1>
             {error && <p style={{ color: "red" }}>{error}</p>}
-
-            {pendingUsers.length === 0 ? (
-                <p>Inga användare väntar på godkännande.</p>
-            ) : (
-                <ul>
-                    {pendingUsers.map(user => (
-                        <li key={user.id}>
-                            {user.fullName || "Namn saknas"} ({user.email || "E-post saknas"})
-                            {/* Knapp för att godkänna användaren */}
-                            <button onClick={() => approveUser(user.id)}>Godkänn</button>
-                            {/* Knapp för att ta bort användaren */}
-                            <button onClick={() => deleteUser(user.id)}>Ta bort</button>
-                        </li>
-                    ))}
-                </ul>
-            )}
 
             <button onClick={() => addEvent()}>+ Lägg till kalenderhändelse</button>
 
+            <div className="pendingUser-container">
+                <h2>Registreringar som väntar på godkännande:</h2>
+                {pendingUsers.length === 0 ? (
+                    <p>Inga användare väntar på godkännande.</p>
+                ) : (
+                    <ul>
+                        {pendingUsers.map(user => (
+                            <li key={user.id}>
+                                {user.fullName || "Namn saknas"} ({user.email || "E-post saknas"})
+
+                                {/* Knapp för att godkänna användaren */}
+                                <button className="approveUser_btn" onClick={() => approveUser(user.id)}>Godkänn</button>
+
+                                {/* Knapp för att ta bort användaren */}
+                                <button className="deleteUser_btn" onClick={() => deleteUser(user.id)}>Ta bort</button>
+                            </li>
+                        ))}
+                    </ul>
+                )}
+            </div>
+
+
+
             {showAddEventForm && (
-                <div className="add-event-form">
-                    <h2>Ny kalenderhändelse</h2>
-                    <form onSubmit={handleSubmit}>
-                        <input
-                            type="text"
-                            placeholder="Titel"
-                            value={newEvent.title}
-                            onChange={(e) => setNewEvent({ ...newEvent, title: e.target.value })}
-                            required
-                        />
-                        <textarea
-                            placeholder="Beskrivning"
-                            value={newEvent.content}
-                            onChange={(e) => setNewEvent({ ...newEvent, content: e.target.value })}
-                        />
-                        <input
-                            type="date"
-                            value={newEvent.startDate}
-                            onChange={(e) => setNewEvent({ ...newEvent, startDate: e.target.value })}
-                            required
-                        />
-                        <input
-                            type="time"
-                            value={newEvent.startTime}
-                            onChange={(e) => setNewEvent({ ...newEvent, startTime: e.target.value })}
-                        />
-                        <input
-                            type="date"
-                            value={newEvent.endDate}
-                            onChange={(e) => setNewEvent({ ...newEvent, endDate: e.target.value })}
-                        />
-                        <button type="submit">Spara händelse</button>
-                        <button type="button" onClick={() => setShowAddEventForm(false)}>Avbryt</button>
-                    </form>
+                <div className="modal-overlay">
+                    <div className="add-event-form">
+                        <h2>Ny kalenderhändelse</h2>
+                        <form onSubmit={handleSubmit}>
+                            <label htmlFor="title" id="title">Titel:</label>
+                            <input
+                                type="text"
+                                placeholder="Titel"
+                                value={newEvent.title}
+                                onChange={(e) => setNewEvent({ ...newEvent, title: e.target.value })}
+                                required
+                            />
+                            <label htmlFor="content" id="content">Beskrivning:</label>
+                            <textarea
+                                placeholder="Beskrivning"
+                                value={newEvent.content}
+                                onChange={(e) => setNewEvent({ ...newEvent, content: e.target.value })}
+                            />
+                            <label htmlFor="time" id="time">Startdatum:</label>
+                            <input
+                                type="date"
+                                value={newEvent.startDate}
+                                onChange={(e) => setNewEvent({ ...newEvent, startDate: e.target.value })}
+                                required
+                            />
+                            <label htmlFor="time" id="time">Tid:</label>
+                            <div style={{ display: 'flex', gap: '4px', alignItems: 'center' }}>
+
+                                <select value={startHour} onChange={(e) => setStartHour(e.target.value)} required>
+                                    <option value="">HH</option>
+                                    {generateHourOptions()}
+                                </select>
+                                :
+                                <select value={startMinute} onChange={(e) => setStartMinute(e.target.value)} required>
+                                    <option value="">MM</option>
+                                    {generateMinuteOptions()}
+                                </select>
+                            </div>
+                            <label htmlFor="endtime" id="endtime">Slutdatum:</label>
+                            <input
+                                type="date"
+                                value={newEvent.endDate}
+                                onChange={(e) => setNewEvent({ ...newEvent, endDate: e.target.value })}
+                            />
+                            <button type="submit">Spara händelse</button>
+                            <button type="button" onClick={() => setShowAddEventForm(false)}>Avbryt</button>
+                        </form>
+                    </div>
                 </div>
             )}
 

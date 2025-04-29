@@ -31,7 +31,6 @@ function App() {
           <Route path="calendar/:date" element={<EventsToday />} />
           <Route path="calendar" element={<CalendarEvents />} />
           
-
           {/* Skyddade routes */}
           <Route path="mypage" element={<ProtectedRoute><Mypage /></ProtectedRoute>} />
           <Route path="create_news" element={<ProtectedRoute><CreateNews /></ProtectedRoute>} />

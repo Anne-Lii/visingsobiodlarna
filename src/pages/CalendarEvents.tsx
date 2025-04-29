@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import api from "../services/apiService";
+import { Navigate, useNavigate } from "react-router-dom";
 
 interface CalendarEvent {
   id: number;
@@ -11,6 +12,7 @@ const CalendarEvents = () => {
 
   //states
   const [events, setEvents] = useState<CalendarEvent[]>([]);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchEvents = async () => {
@@ -44,6 +46,7 @@ const CalendarEvents = () => {
   return (
     <div className="calendar-events">
       <h1>Kommande kalenderhändelser</h1>
+      <button onClick={() => navigate("/admin", { state: { openAddEvent: true } })}>+ Lägg till ny kalenderhändelse</button>
       <ul>
         {events.map(event => (
           <li key={event.id}>

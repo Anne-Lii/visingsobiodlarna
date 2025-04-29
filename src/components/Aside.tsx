@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
 import api from "../services/apiService";
 import { NavLink } from "react-router-dom";
+import Calendar from "react-calendar";
+import 'react-calendar/dist/Calendar.css';
 
 interface NewsItem {
   Id: number;
@@ -33,6 +35,9 @@ const Aside = () => {
     <aside className="aside">
       <h2>Svärmtelefon!</h2>
       <p>070-589 48 75</p>
+
+      <h3>Kalender</h3>
+      <Calendar />
 
       <h3>Senaste nyheterna</h3>
       <ul>

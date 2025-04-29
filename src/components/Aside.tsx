@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import api from "../services/apiService";
-import { NavLink, useNavigate } from "react-router-dom";
+import { NavLink, useNavigate, useLocation } from "react-router-dom";
 import Calendar from "react-calendar";
 import 'react-calendar/dist/Calendar.css';
 import '../components/Aside.scss'
@@ -15,9 +15,11 @@ interface NewsItem {
 
 const Aside = () => {
 
-  //Hämtar nyheter
+  //states
   const [latestNews, setLatestNews] = useState<NewsItem[]>([]);
+  const [calendarEvents, setCalendarEvents] = useState<any[]>([]);
 
+  //Hämtar nyheter
   useEffect(() => {
     const fetchNews = async () => {
       try {
@@ -34,9 +36,8 @@ const Aside = () => {
     fetchNews();
   }, []);
 
-  //Hämtar kalenderevents
-  const [calendarEvents, setCalendarEvents] = useState<any[]>([]);
 
+  //Hämtar kalenderevents
   useEffect(() => {
     const fetchCalendarEvents = async () => {
       try {
@@ -83,11 +84,20 @@ const Aside = () => {
 
   //gör datumet klickbart för att visa aktuella händelser den dagen
   const navigate = useNavigate();
+  const location = useLocation();
 
   const handleDateClick = (date: Date) => {
-    const isoDate = date.toLocaleDateString("sv-SE").replaceAll(".", "-"); //ex 2025-04-30
+    setSelectedDate(date); // Sätt vald datum först!
+    const isoDate = date.toLocaleDateString("sv-SE").replaceAll(".", "-");
     navigate(`/calendar/${isoDate}`);
   };
+
+  //Plockar ut datumet om man är på en kalender-dagsvy
+  const match = location.pathname.match(/^\/calendar\/(\d{4}-\d{2}-\d{2})$/);
+  const initialDate = match ? new Date(match[1]) : new Date();
+  
+  const [selectedDate, setSelectedDate] = useState<Date>(initialDate);
+ 
 
 
 
@@ -97,7 +107,7 @@ const Aside = () => {
       <p>070-589 48 75</p>
 
       <h3>Kalender</h3>
-      <Calendar tileContent={tileContent} onClickDay={handleDateClick}/>
+      <Calendar onClickDay={handleDateClick} tileContent={tileContent} value={selectedDate} />
 
       <h3>Senaste nyheterna</h3>
       <ul>

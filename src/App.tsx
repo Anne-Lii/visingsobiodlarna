@@ -10,6 +10,7 @@ import ProtectedRoute from './components/ProtectedRoute';
 import CreateNews from './pages/CreateNews';
 import Admin from './pages/Admin';
 import NewsDetail from './pages/NewsDetail';
+import EventsToday from "./pages/EventsToday";
 
 
 
@@ -26,6 +27,8 @@ function App() {
           <Route path="register" element={<Register />} />
           <Route path="new_password" element={<NewPassword />} />
           <Route path="news/:id" element={<NewsDetail />} />
+          <Route path="calendar/:date" element={<EventsToday />} />
+          
 
           {/* Skyddade routes */}
           <Route path="mypage" element={<ProtectedRoute><Mypage /></ProtectedRoute>} />

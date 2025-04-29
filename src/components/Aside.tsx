@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import api from "../services/apiService";
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 import Calendar from "react-calendar";
 import 'react-calendar/dist/Calendar.css';
 import '../components/Aside.scss'
@@ -15,7 +15,7 @@ interface NewsItem {
 
 const Aside = () => {
 
-  //Hämta nyheter
+  //Hämtar nyheter
   const [latestNews, setLatestNews] = useState<NewsItem[]>([]);
 
   useEffect(() => {
@@ -34,15 +34,15 @@ const Aside = () => {
     fetchNews();
   }, []);
 
-  //Hämta kalenderevents
+  //Hämtar kalenderevents
   const [calendarEvents, setCalendarEvents] = useState<any[]>([]);
 
   useEffect(() => {
     const fetchCalendarEvents = async () => {
       try {
         const response = await api.get("/calendar");
-  
-        // 🟢 Mappa om PascalCase -> camelCase
+
+        //PascalCase -> camelCase
         const transformed = response.data.map((event: any) => ({
           id: event.Id,
           title: event.Title,
@@ -50,13 +50,13 @@ const Aside = () => {
           startDate: event.StartDate,
           endDate: event.EndDate
         }));
-  
+
         setCalendarEvents(transformed);
       } catch (error) {
         console.error("Kunde inte hämta kalenderhändelser", error);
       }
     };
-  
+
     fetchCalendarEvents();
   }, []);
 
@@ -73,14 +73,22 @@ const Aside = () => {
           eventDate.getDate() === date.getDate()
         );
       });
-  
+
       if (hasEvent) {
         return <div className="event-dot"></div>; //En liten prick under siffran
       }
     }
     return null;
   };
-  
+
+  //gör datumet klickbart för att visa aktuella händelser den dagen
+  const navigate = useNavigate();
+
+  const handleDateClick = (date: Date) => {
+    const isoDate = date.toLocaleDateString("sv-SE").replaceAll(".", "-"); //ex 2025-04-30
+    navigate(`/calendar/${isoDate}`);
+  };
+
 
 
   return (
@@ -89,7 +97,7 @@ const Aside = () => {
       <p>070-589 48 75</p>
 
       <h3>Kalender</h3>
-      <Calendar  tileContent={tileContent} />
+      <Calendar tileContent={tileContent} onClickDay={handleDateClick}/>
 
       <h3>Senaste nyheterna</h3>
       <ul>

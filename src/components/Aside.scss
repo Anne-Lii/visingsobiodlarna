@@ -4,4 +4,15 @@
     background-color: rgb(5, 5, 5);
     border-radius: 50%;
     margin: 2px auto 0;
-  }
+}
+
+.react-calendar__tile--now {
+    position: relative;
+    z-index: 1;
+    border: 1px solid #000000 !important;
+    border-radius: 50%;
+    font-weight: bold;
+    background: none !important;
+    box-sizing: border-box;
+    color: black;
+}

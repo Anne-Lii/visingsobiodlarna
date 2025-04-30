@@ -13,8 +13,6 @@ import NewsDetail from './pages/NewsDetail';
 import EventsToday from "./pages/EventsToday";
 import CalendarEvents from './pages/CalendarEvents';
 
-
-
 function App() {
   return (
     <Router>
@@ -23,18 +21,18 @@ function App() {
 
           {/* Publika routes */}
           <Route index element={<Home />} />
-          <Route path="news" element={<News />} />
-          <Route path="login" element={<Login />} />
-          <Route path="register" element={<Register />} />
-          <Route path="new_password" element={<NewPassword />} />
-          <Route path="news/:id" element={<NewsDetail />} />
-          <Route path="calendar/:date" element={<EventsToday />} />
-          <Route path="calendar" element={<CalendarEvents />} />
+          <Route path="news"            element={<News />} />
+          <Route path="login"           element={<Login />} />
+          <Route path="register"        element={<Register />} />
+          <Route path="new_password"    element={<NewPassword />} />
+          <Route path="news/:id"        element={<NewsDetail />} />
+          <Route path="calendar/:date"  element={<EventsToday />} />
+          <Route path="calendar"        element={<CalendarEvents />} />
           
           {/* Skyddade routes */}
-          <Route path="mypage" element={<ProtectedRoute><Mypage /></ProtectedRoute>} />
-          <Route path="create_news" element={<ProtectedRoute><CreateNews /></ProtectedRoute>} />
-          <Route path="admin" element={<ProtectedRoute requiredRole="admin"><Admin /></ProtectedRoute>} />
+          <Route path="mypage"          element={<ProtectedRoute><Mypage /></ProtectedRoute>} />
+          <Route path="create_news"     element={<ProtectedRoute requiredRole="admin"><CreateNews /></ProtectedRoute>} />
+          <Route path="admin"           element={<ProtectedRoute requiredRole="admin"><Admin /></ProtectedRoute>} />
 
         </Route>
       </Routes>

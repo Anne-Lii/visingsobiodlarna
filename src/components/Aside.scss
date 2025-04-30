@@ -1,16 +1,21 @@
-.event-dot {
-    width: 8px;
-    height: 8px;
-    background-color: rgb(5, 5, 5);
-    border-radius: 50%;
-    margin: 2px auto 0;
+.event-day {
+    background-color: #e1f8d8 !important;
+    font-weight: bolder;
+    border-radius: 3px;
+}
+
+.event-underline {
+    width: 50%;
+    height: 2px;
+    background-color: #000;
+    margin: auto;
+    display: block;
 }
 
 .react-calendar__tile--now {
     position: relative;
     z-index: 1;
     border: 1px solid #000000 !important;
-    border-radius: 50%;
     font-weight: bold;
     background: none !important;
     box-sizing: border-box;

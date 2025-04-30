@@ -61,7 +61,7 @@ const Aside = () => {
     fetchCalendarEvents();
   }, []);
 
-  //funktion som kontrollerar om ett datum har en händelse
+  //funktion som kontrollerar om ett datum har en händelse och lägger till understrucken markering
   const tileContent = ({ date, view }: { date: Date; view: string }) => {
     if (view === 'month') {
 
@@ -76,7 +76,26 @@ const Aside = () => {
       });
 
       if (hasEvent) {
-        return <div className="event-dot"></div>; //En liten prick under siffran
+        return <div className="event-underline"></div>;
+      }
+    }
+    return null;
+  };
+
+  //funktion som kontrollerar om ett datum har en händelse och lägger till bakgrundsfärg
+  const tileClassName = ({ date, view }: { date: Date; view: string }) => {
+    if (view === 'month') {
+      const hasEvent = calendarEvents.some(event => {
+        const eventDate = new Date(event.startDate);
+        return (
+          eventDate.getFullYear() === date.getFullYear() &&
+          eventDate.getMonth() === date.getMonth() &&
+          eventDate.getDate() === date.getDate()
+        );
+      });
+
+      if (hasEvent) {
+        return 'event-day';//lägger till klass till dag med event
       }
     }
     return null;
@@ -95,9 +114,9 @@ const Aside = () => {
   //Plockar ut datumet om man är på en kalender-dagsvy
   const match = location.pathname.match(/^\/calendar\/(\d{4}-\d{2}-\d{2})$/);
   const initialDate = match ? new Date(match[1]) : new Date();
-  
+
   const [selectedDate, setSelectedDate] = useState<Date>(initialDate);
- 
+
 
 
 
@@ -107,8 +126,10 @@ const Aside = () => {
       <p>070-589 48 75</p>
 
       <h3>Kalender</h3>
-      <Calendar onClickDay={handleDateClick} tileContent={tileContent} value={selectedDate} />
-
+      <Calendar onClickDay={handleDateClick} tileContent={tileContent} value={selectedDate} tileClassName={tileClassName} />
+      <NavLink to="/calendar" className="calendar-link">
+        Visa alla kalenderhändelser
+      </NavLink>
       <h3>Senaste nyheterna</h3>
       <ul>
         {latestNews.map(news => (

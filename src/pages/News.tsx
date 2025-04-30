@@ -1,7 +1,7 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
 import '../pages/News.scss'
-import { NavLink, useNavigate } from "react-router-dom";
+import { NavLink } from "react-router-dom";
 import { useUser } from "../context/UserContext";
 
 interface NewsItem {
@@ -21,7 +21,7 @@ const News = () => {
   const [editedContent, setEditedContent] = useState("");
 
   const { role } = useUser();
-  const navigate = useNavigate();
+
 
   useEffect(() => {
     const fetchNews = async () => {

@@ -1,35 +1,111 @@
+@use '../styles/variables' as *;
+
 .news_container {
-  
+  max-width: 700px;
+  margin: 0 auto;
+  padding: 2rem 1rem;
+
+  h1 {
+    font-size: 2rem;
+    margin-bottom: 1.5rem;
+    text-align: center;
+  }
+
+  .add-news-btn {
+    text-align: center;
+    margin-bottom: 2rem;
+
+    .create-news-link {
+      display: inline-block;
+      padding: 0.5rem 1.3rem;
+      background-color: $color-honey;
+      color: #000;
+      border-radius: 4px;
+      text-decoration: none;
+      font-size: 0.95rem;
+      transition: background 0.2s ease-in-out;
+
+      &:hover {
+        background-color: #1b4332;
+        color: #fff;
+      }
+    }
+  }
+
   ul {
     list-style: none;
     padding: 0;
-  }
-  
-  li {
-    text-align: center;
-    background-color: #f9f9f9;
 
-    margin-bottom: 3rem;
-    padding: 1rem;
-    border-radius: 5px;
-    box-shadow: 5px 5px 4px rgb(241, 180, 89);
-  
-    strong {
-      font-size: 1.2rem;
-    }
-  
-    small {
-      color: #7f8c8d;
-      font-size: 0.9rem;
-    }
-  
-    p {
-      margin-top: 0.5rem;
-      font-size: 1rem;
-      color: #34495e;
-      line-height: 1.5;
+    li {
+      background: #f9f9f9;
+      border: 1px solid #ddd;
+      border-radius: 6px;
+      padding: 1rem;
+      margin-bottom: 1rem;
+      position: relative;
+
+      small {
+        color: #555;
+        font-size: 0.85rem;
+      }
+
+      strong {
+        display: block;
+        font-size: 1.1rem;
+        margin: 0.5rem 0;
+        font-weight: 600;
+      }
+
+      p {
+        margin: 0.5rem 0 0;
+        white-space: pre-wrap;
+      }
+
+      [contenteditable="true"] {
+        outline: 1px dashed #aaa;
+        background-color: #fffce8;
+        padding: 2px;
+        border-radius: 3px;
+      }
+
+      .admin-buttons-news {
+        margin-top: 0.75rem;
+
+        button {
+          padding: 0.5rem 1.3rem;
+          margin: 0.25rem;
+          border: none;
+          border-radius: 4px;
+          cursor: pointer;
+          font-size: 0.9rem;
+          transition: background 0.2s ease-in-out;
+
+          background-color: #e0e0e0;
+          color: #333;
+
+          &:hover {
+            background-color: #ccc;
+          }
+
+          &:first-of-type {
+            background-color: #74c69d;
+            color: #000;
+
+            &:hover {
+              background-color: #52b788;
+            }
+          }
+
+          &:nth-of-type(2) {
+            background-color: #f28482;
+            color: #000;
+
+            &:hover {
+              background-color: #e63946;
+            }
+          }
+        }
+      }
     }
   }
-  
-
 }

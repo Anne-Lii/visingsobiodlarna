@@ -34,6 +34,14 @@ const Aside = () => {
     };
 
     fetchNews();
+
+    const handleNewsUpdated = () => {
+      fetchNews();
+    };  
+    window.addEventListener("newsUpdated", handleNewsUpdated);  
+    return () => {
+      window.removeEventListener("newsUpdated", handleNewsUpdated);
+    };
   }, []);
 
 

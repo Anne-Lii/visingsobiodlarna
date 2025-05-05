@@ -49,6 +49,7 @@ const News = () => {
         { withCredentials: true }
       );
       setNewsList(prevList => prevList.filter(news => news.Id !== id));
+      window.dispatchEvent(new Event("newsUpdated"));//updaterar senaste nyheter i aside komponenten
     } catch (error) {
       console.error("Kunde inte ta bort nyheten", error);
       alert("Kunde inte ta bort nyheten.");
@@ -59,24 +60,35 @@ const News = () => {
 
   const handleSave = async (id: number) => {
     try {
+      const existingNews = newsList.find(news => news.Id === id);
+      if (!existingNews) return;
+  
       await axios.put(
         `${process.env.REACT_APP_API_BASE_URL}/news/${id}`,
         {
           id: id,
           title: editedTitle,
-          content: editedContent
+          content: editedContent,
+          publishDate: existingNews.PublishDate
         },
         { withCredentials: true }
       );
-      setNewsList(prevList => prevList.map(news =>
-        news.Id === id ? { ...news, Title: editedTitle, Content: editedContent } : news
-      ));
-      setEditingId(null); // Avsluta redigeringsläget
+  
+      setNewsList(prevList =>
+        prevList.map(news =>
+          news.Id === id
+            ? { ...news, Title: editedTitle, Content: editedContent, PublishDate: existingNews.PublishDate }
+            : news
+        )
+      );
+      setEditingId(null);
+      window.dispatchEvent(new Event("newsUpdated"));
     } catch (error) {
       console.error("Kunde inte spara ändringar", error);
       alert("Kunde inte spara ändringar.");
     }
   };
+  
 
 
   return (

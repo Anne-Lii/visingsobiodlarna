@@ -40,6 +40,7 @@ const CreateNews = () => {
               { withCredentials: true } //skickar med JWT-cookie
             );
             navigate("/news"); //tillbaka till nyhetslistan
+            window.dispatchEvent(new Event("newsUpdated"));//uppdaterar senaste nyheter i aside komponenten
           } catch (error) {
             console.error("Kunde inte publicera nyheten", error);
             

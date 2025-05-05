@@ -18,6 +18,7 @@ const CalendarEvents = () => {
   const [editingId, setEditingId] = useState<number | null>(null);
   const [editedTitle, setEditedTitle] = useState("");
   const [editedContent, setEditedContent] = useState("");
+  const [editedStartTime, setEditedStartTime] = useState("");
   const navigate = useNavigate();
   const { role, isLoggedIn } = useUser();
 
@@ -48,22 +49,32 @@ const CalendarEvents = () => {
 
   //spara redigerat event
   const handleSave = async (id: number) => {
+    const eventToUpdate = events.find(e => e.id === id);
+    if (!eventToUpdate) return;
+  
+    const datePart = eventToUpdate.startDate.split("T")[0];
+    const newStart = editedStartTime ? `${datePart}T${editedStartTime}` : eventToUpdate.startDate;
+  
     try {
       await api.put(`/calendar/${id}`, {
         id: id,
         title: editedTitle,
-        content: editedContent
+        content: editedContent,
+        startDate: newStart
       });
-
-      setEvents(prev => prev.map(e =>
-        e.id === id ? { ...e, title: editedTitle, content: editedContent } : e
-      ));
+  
+      setEvents(prev =>
+        prev.map(e =>
+          e.id === id ? { ...e, title: editedTitle, content: editedContent, startDate: newStart } : e
+        )
+      );
       setEditingId(null);
     } catch (error) {
       console.error("Kunde inte spara ändringar", error);
       alert("Kunde inte spara ändringar.");
     }
   };
+  
 
   //Funktion att ta bort event
   const handleDelete = async (id: number) => {
@@ -89,7 +100,23 @@ const CalendarEvents = () => {
       <ul>
         {events.map(event => (
           <li key={event.id}>
-            <small>{event.startDate.split("T")[0]}</small><br />
+            <small>
+              {new Date(event.startDate).toLocaleDateString("sv-SE")} kl.{" "}
+              {new Date(event.startDate).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}
+            </small>
+
+            {editingId === event.id && (
+  <div className="time-input">
+    <label>
+      Starttid:{" "}
+      <input
+        type="time"
+        value={editedStartTime}
+        onChange={(e) => setEditedStartTime(e.target.value)}
+      />
+    </label>
+  </div>
+)}
 
             <strong
               contentEditable={editingId === event.id}
@@ -121,6 +148,7 @@ const CalendarEvents = () => {
                         setEditingId(event.id);
                         setEditedTitle(event.title);
                         setEditedContent(event.content);
+                        setEditedStartTime(event.startDate?.split("T")[1]?.slice(0, 5) || "");
                       }}
                     >
                       Redigera

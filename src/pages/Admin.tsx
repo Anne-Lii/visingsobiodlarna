@@ -23,6 +23,11 @@ const Admin = () => {
         startTime: "",
         endDate: ""
     });
+    const [showAddNewsForm, setShowAddNewsForm] = useState(false);
+    const [newNews, setNewNews] = useState({
+        title: "",
+        content: ""
+    });
     const [error, setError] = useState<string | null>(null);
     const navigate = useNavigate();
 
@@ -122,11 +127,27 @@ const Admin = () => {
         });
     };
 
+    const handleNewsSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+        e.preventDefault();
+        try {
+          await api.post("/news", {
+            title: newNews.title,
+            content: newNews.content
+          });
+          alert("Nyheten publicerades!");
+          setShowAddNewsForm(false);
+          setNewNews({ title: "", content: "" });
+          window.dispatchEvent(new Event("newsUpdated"));
+        } catch (error) {
+          console.error("Kunde inte publicera nyheten", error);
+        }
+      };
+
     return (
         <div className="admin-container">
             <h1>Admin</h1>
             {error && <p style={{ color: "red" }}>{error}</p>}
-
+            <button onClick={() => setShowAddNewsForm(true)}>+ Lägg till nyhet</button><br></br>
             <button onClick={() => addEvent()}>+ Lägg till kalenderhändelse</button>
 
             <div className="pendingUser-container">
@@ -199,6 +220,31 @@ const Admin = () => {
                             />
                             <button type="submit">Spara händelse</button>
                             <button type="button" onClick={() => setShowAddEventForm(false)}>Avbryt</button>
+                        </form>
+                    </div>
+                </div>
+            )}
+
+            {showAddNewsForm && (
+                <div className="modal-overlay">
+                    <div className="add-news-form">
+                        <h2>Ny nyhet</h2>
+                        <form onSubmit={handleNewsSubmit}>
+                            <label>Titel:</label>
+                            <input
+                                type="text"
+                                value={newNews.title}
+                                onChange={(e) => setNewNews({ ...newNews, title: e.target.value })}
+                                required
+                            />
+                            <label>Innehåll:</label>
+                            <textarea
+                                value={newNews.content}
+                                onChange={(e) => setNewNews({ ...newNews, content: e.target.value })}
+                                required
+                            />
+                            <button type="submit">Publicera nyhet</button>
+                            <button type="button" onClick={() => setShowAddNewsForm(false)}>Avbryt</button>
                         </form>
                     </div>
                 </div>

@@ -53,6 +53,20 @@ const Mypage = () => {
     }
   };
 
+  //radera en bigård
+  const handleDeleteApiary = async (id: number) => {
+    if (!window.confirm("Är du säker på att du vill ta bort denna bigård?")) return;
+  
+    try {
+      await api.delete(`/apiary/${id}`);
+      setApiaries(apiaries.filter((a) => a.id !== id));
+      setSuccessMessage("Bigården har raderats.");
+      setTimeout(() => setSuccessMessage(null), 3000);
+    } catch (error) {
+      console.error("Kunde inte radera bigård", error);
+    }
+  };
+
   return (
     <div>
       <h1>Mina sidor</h1>
@@ -70,15 +84,14 @@ const Mypage = () => {
             <li key={apiary.id}>
               <strong>{apiary.name}</strong><br />
               Plats: {apiary.location}
+              <button onClick={() => handleDeleteApiary(apiary.id)}>Ta bort</button>
             </li>
           ))}
         </ul>
       )}
       </div>
       
-            
-  
-
+      {/* Modal för att lägga till ny bigård */}
       {showModal && (
         <div className="modal-overlay">
           <div className="modal">

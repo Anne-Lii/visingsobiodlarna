@@ -97,7 +97,7 @@ const News = () => {
 
       {role ==="admin" && (
         <div className="add-news-btn">
-          <NavLink to="/create_news" className="create-news-link">
+          <NavLink to="/create_news" className="add_btn">
             +Lägg till nyhet
           </NavLink>
         </div>

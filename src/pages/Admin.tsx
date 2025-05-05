@@ -147,8 +147,8 @@ const Admin = () => {
         <div className="admin-container">
             <h1>Admin</h1>
             {error && <p style={{ color: "red" }}>{error}</p>}
-            <button onClick={() => setShowAddNewsForm(true)}>+ Lägg till nyhet</button><br></br>
-            <button onClick={() => addEvent()}>+ Lägg till kalenderhändelse</button>
+            <button className="add_btn" onClick={() => setShowAddNewsForm(true)}>+ Lägg till nyhet</button><br></br>
+            <button className="add_btn" onClick={() => addEvent()}>+ Lägg till kalenderhändelse</button>
 
             <div className="pendingUser-container">
                 <h2>Registreringar som väntar på godkännande:</h2>

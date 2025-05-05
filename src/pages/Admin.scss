@@ -10,21 +10,6 @@
     margin-bottom: 2rem;
   }
 
-  button {
-    margin-bottom: 1rem;
-    padding: 0.5rem 1rem;
-    font-size: 1rem;
-    background-color: $color-honey;
-    color: #000000;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-
-    &:hover {
-      background-color: #1b4332;
-    }
-  }
-
   .pendingUser-container {
     background: #f9f9f9;
     padding: 1.5rem;
@@ -50,14 +35,16 @@
         justify-content: space-between;
         align-items: center;
 
-        button {
-          margin-left: 0.5rem;
-          padding: 0.4rem 0.8rem;
+        button {          
+          padding: 0.4rem 1.2rem;
           font-size: 0.9rem;
+          border: none;
+          border-radius: 5px;
         }
 
         .approveUser_btn {
           background-color: $color-green-approve;
+          font-size: 1.0rem;
 
           &:hover {
             background-color: $color-green-approve-hover;
@@ -66,9 +53,10 @@
 
         .deleteUser_btn {
           background-color: $color-red-delete;
+          font-size: 1.0rem;
 
           &:hover {
-            background-color: #9d0208;
+            background-color: $color-red-delete-hover;
           }
         }
       }

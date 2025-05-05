@@ -7,6 +7,7 @@ interface Apiary {
   id: number;
   name: string;
   location: string;
+  hiveCount: number;
 }
 
 const Mypage = () => {
@@ -16,6 +17,8 @@ const Mypage = () => {
   const [loading, setLoading] = useState(true);
   const [showModal, setShowModal] = useState(false);
   const [newApiary, setNewApiary] = useState({ name: "", location: "" });
+  const [editingId, setEditingId] = useState<number | null>(null);
+  const [editedApiary, setEditedApiary] = useState<Apiary>({ id: 0, name: "", location: "", hiveCount: 0 });
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
 
   useEffect(() => {
@@ -53,10 +56,27 @@ const Mypage = () => {
     }
   };
 
+  //uppdatera en bigård
+  const handleUpdateApiary = async () => {
+    try {
+      await api.put(`/apiary/${editedApiary.id}`, {
+        name: editedApiary.name,
+        location: editedApiary.location,
+      });
+      setEditingId(null);
+      const response = await api.get("/apiary/my");
+      setApiaries(response.data);
+      setSuccessMessage("Bigården har uppdaterats.");
+      setTimeout(() => setSuccessMessage(null), 3000);
+    } catch (error) {
+      console.error("Kunde inte uppdatera bigård", error);
+    }
+  };
+
   //radera en bigård
   const handleDeleteApiary = async (id: number) => {
     if (!window.confirm("Är du säker på att du vill ta bort denna bigård?")) return;
-  
+
     try {
       await api.delete(`/apiary/${id}`);
       setApiaries(apiaries.filter((a) => a.id !== id));
@@ -68,29 +88,55 @@ const Mypage = () => {
   };
 
   return (
-    <div>
+    <div className="mypage-container">
       <h1>Mina sidor</h1>
       {successMessage && <p className="success-message">{successMessage}</p>}
-      <button onClick={() => setShowModal(true)}>+ Lägg till bigård</button>
+      <button className="add_btn" >+ Rapportera kvalster</button>
+      <button className="add_btn" onClick={() => setShowModal(true)}>+ Lägg till bigård</button>
+      
       <div className="my_apiaries">
         <h2>Mina bigårdar</h2>
         {loading ? (
-        <p>Laddar bigårdar...</p>
-      ) : apiaries.length === 0 ? (
-        <p>Du har inga registrerade bigårdar ännu.</p>
-      ) : (
-        <ul>
-          {apiaries.map((apiary) => (
-            <li key={apiary.id}>
-              <strong>{apiary.name}</strong><br />
-              Plats: {apiary.location}
-              <button onClick={() => handleDeleteApiary(apiary.id)}>Ta bort</button>
-            </li>
-          ))}
-        </ul>
-      )}
+          <p>Laddar bigårdar...</p>
+        ) : apiaries.length === 0 ? (
+          <p>Du har inga registrerade bigårdar ännu.</p>
+        ) : (
+          <ul>
+            {apiaries.map((apiary) => (
+              <li key={apiary.id}>
+                {editingId === apiary.id ? (
+                  <>
+                    <input
+                      value={editedApiary.name}
+                      onChange={(e) => setEditedApiary({ ...editedApiary, name: e.target.value })}
+                    /><br />
+                    <input
+                      value={editedApiary.location}
+                      onChange={(e) => setEditedApiary({ ...editedApiary, location: e.target.value })}
+                    /><br />
+                    <button onClick={handleUpdateApiary}>Spara</button>
+                    <button onClick={() => setEditingId(null)}>Avbryt</button>
+                  </>
+                ) : (
+                  <>
+                    <strong>{apiary.name}</strong><br />
+                    Plats: {apiary.location}<br />
+                    <p>Antal kupor: {apiary.hiveCount}</p>
+                    <div className="apiary-buttons">
+                      <button onClick={() => {
+                        setEditingId(apiary.id);
+                        setEditedApiary(apiary);
+                      }}>Redigera</button>
+                      <button onClick={() => handleDeleteApiary(apiary.id)}>Ta bort</button>
+                    </div>
+                  </>
+                )}
+              </li>
+            ))}
+          </ul>
+        )}
       </div>
-      
+
       {/* Modal för att lägga till ny bigård */}
       {showModal && (
         <div className="modal-overlay">

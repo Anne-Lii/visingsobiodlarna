@@ -12,3 +12,23 @@ $color-red-delete-hover: #f56461; //Delete-knappar
 
 $color-white: #ffffff; //vit
 $color-black: #000000; //svart
+
+//Knappar för att lägga till
+.add_btn {
+    display: block;
+    width: 95%;
+    max-width: 1200px;
+    margin: 5px auto;
+    padding: 0.7rem 1.5rem;
+    border-radius: 5px;
+    border: none;
+    background-color: $color-honey;
+    color: $color-black;
+    font-size: 1.2rem;
+    text-align: center;
+    cursor: pointer;
+  
+    &:hover {
+      background-color: $color-honey-hover;
+    }
+  }

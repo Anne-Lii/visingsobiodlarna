@@ -12,6 +12,7 @@ import Admin from './pages/Admin';
 import NewsDetail from './pages/NewsDetail';
 import EventsToday from "./pages/EventsToday";
 import CalendarEvents from './pages/CalendarEvents';
+import ApiaryDetails from './pages/ApiaryDetails';
 
 function App() {
   return (
@@ -33,6 +34,7 @@ function App() {
           <Route path="mypage"          element={<ProtectedRoute><Mypage /></ProtectedRoute>} />
           <Route path="create_news"     element={<ProtectedRoute requiredRole="admin"><CreateNews /></ProtectedRoute>} />
           <Route path="admin"           element={<ProtectedRoute requiredRole="admin"><Admin /></ProtectedRoute>} />
+          <Route path="apiary/:id"      element={<ProtectedRoute><ApiaryDetails /></ProtectedRoute>} />
 
         </Route>
       </Routes>

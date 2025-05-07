@@ -17,8 +17,6 @@ const Mypage = () => {
   const [loading, setLoading] = useState(true);
   const [showModal, setShowModal] = useState(false);
   const [newApiary, setNewApiary] = useState({ name: "", location: "" });
-  const [editingId, setEditingId] = useState<number | null>(null);
-  const [editedApiary, setEditedApiary] = useState<Apiary>({ id: 0, name: "", location: "", hiveCount: 0 });
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
   
   const navigate = useNavigate();

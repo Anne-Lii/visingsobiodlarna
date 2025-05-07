@@ -13,6 +13,7 @@ import NewsDetail from './pages/NewsDetail';
 import EventsToday from "./pages/EventsToday";
 import CalendarEvents from './pages/CalendarEvents';
 import ApiaryDetails from './pages/ApiaryDetails';
+import HiveDetails from './pages/HiveDetails';
 
 function App() {
   return (
@@ -35,6 +36,8 @@ function App() {
           <Route path="create_news"     element={<ProtectedRoute requiredRole="admin"><CreateNews /></ProtectedRoute>} />
           <Route path="admin"           element={<ProtectedRoute requiredRole="admin"><Admin /></ProtectedRoute>} />
           <Route path="apiary/:id"      element={<ProtectedRoute><ApiaryDetails /></ProtectedRoute>} />
+          <Route path="hive/:id"        element={<ProtectedRoute><HiveDetails /></ProtectedRoute>} />
+
 
         </Route>
       </Routes>

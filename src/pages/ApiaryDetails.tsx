@@ -15,7 +15,7 @@ interface Hive {
     name: string;
     apiaryId: number;
     description?: string;
-  }
+}
 
 const ApiaryDetails = () => {
 
@@ -25,6 +25,7 @@ const ApiaryDetails = () => {
     const [isEditing, setIsEditing] = useState(false);
     const [editedApiary, setEditedApiary] = useState<Apiary | null>(null);
     const [hives, setHives] = useState<Hive[]>([]);
+    const [loadingHives, setLoadingHives] = useState(true);
     const [newHiveName, setNewHiveName] = useState("");
     const [newHiveDescription, setNewHiveDescription] = useState("");
     const [showHiveModal, setShowHiveModal] = useState(false);
@@ -50,10 +51,13 @@ const ApiaryDetails = () => {
         //hämta kupor
         const fetchHives = async () => {
             try {
+                setLoadingHives(true);
                 const response = await api.get(`/hive/by-apiary/${id}`);
                 setHives(response.data);
             } catch (error) {
                 console.error("Kunde inte hämta kupor", error);
+            } finally {
+                setLoadingHives(false);
             }
         };
 
@@ -147,19 +151,24 @@ const ApiaryDetails = () => {
             <div className="apiaryHives">
                 <button className="add_btn" onClick={() => setShowHiveModal(true)}>+ Lägg till kupa</button>
                 <h3>Kupor</h3>
-                {hives.length === 0 ? (
-                    <p>Inga kupor registrerade ännu.</p>
-                ) : (
-                    <ul>
-  {hives.map((hive) => (
-    <li key={hive.id}>
-      <strong>{hive.name}</strong><br />
-      <em>{hive.description}</em>
-    </li>
-  ))}
-</ul>
-                )}
-
+                {loadingHives ? (
+    <p>Laddar kupor...</p>
+  ) : hives.length === 0 ? (
+    <p>Denna bigård har inga registrerade kupor ännu.</p>
+  ) : (
+    <ul>
+      {hives.map((hive) => (
+        <li
+          key={hive.id}
+          onClick={() => navigate(`/hive/${hive.id}`)}
+          className="clickable-apiary" // återanvänd samma klass
+        >
+          <strong>{hive.name}</strong><br />
+          Beskrivning: {hive.description || "–"}
+        </li>
+      ))}
+    </ul>
+  )}
                 {showHiveModal && (
                     <div className="modal-overlay">
                         <div className="modal">

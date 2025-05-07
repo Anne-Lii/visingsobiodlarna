@@ -15,6 +15,7 @@ interface Hive {
     name: string;
     apiaryId: number;
     description?: string;
+    startYear: number;
 }
 
 const ApiaryDetails = () => {
@@ -29,6 +30,7 @@ const ApiaryDetails = () => {
     const [newHiveName, setNewHiveName] = useState("");
     const [newHiveDescription, setNewHiveDescription] = useState("");
     const [showHiveModal, setShowHiveModal] = useState(false);
+    const [newHiveStartYear, setNewHiveStartYear] = useState(new Date().getFullYear());
     const [successMessage, setSuccessMessage] = useState<string | null>(null);
     const { id } = useParams();
     const navigate = useNavigate();
@@ -105,8 +107,10 @@ const ApiaryDetails = () => {
                 name: newHiveName,
                 description: newHiveDescription,
                 apiaryId: Number(id),
+                startYear: newHiveStartYear
             });
-            setHives([...hives, response.data]);
+            const updatedHives = await api.get(`/hive/by-apiary/${id}`);
+            setHives(updatedHives.data);
             setNewHiveName("");
             setNewHiveDescription("");
             setShowHiveModal(false);
@@ -152,23 +156,24 @@ const ApiaryDetails = () => {
                 <button className="add_btn" onClick={() => setShowHiveModal(true)}>+ Lägg till kupa</button>
                 <h3>Kupor</h3>
                 {loadingHives ? (
-    <p>Laddar kupor...</p>
-  ) : hives.length === 0 ? (
-    <p>Denna bigård har inga registrerade kupor ännu.</p>
-  ) : (
-    <ul>
-      {hives.map((hive) => (
-        <li
-          key={hive.id}
-          onClick={() => navigate(`/hive/${hive.id}`)}
-          className="clickable-apiary" // återanvänd samma klass
-        >
-          <strong>{hive.name}</strong><br />
-          Beskrivning: {hive.description || "–"}
-        </li>
-      ))}
-    </ul>
-  )}
+                    <p>Laddar kupor...</p>
+                ) : hives.length === 0 ? (
+                    <p>Denna bigård har inga registrerade kupor ännu.</p>
+                ) : (
+                    <ul>
+                        {hives.map((hive) => (
+                            <li
+                                key={hive.id}
+                                onClick={() => navigate(`/hive/${hive.id}`)}
+                                className="clickable-apiary" // återanvänd samma klass
+                            >
+                                <strong>{hive.name}</strong><br />
+                                <strong>Beskrivning:</strong> {hive.description || "–"}
+                                <p><strong>Startår:</strong> {hive?.startYear}</p>
+                            </li>
+                        ))}
+                    </ul>
+                )}
                 {showHiveModal && (
                     <div className="modal-overlay">
                         <div className="modal">
@@ -185,6 +190,14 @@ const ApiaryDetails = () => {
                                 type="text"
                                 value={newHiveDescription}
                                 onChange={(e) => setNewHiveDescription(e.target.value)}
+                            />
+                            <label>Startår:</label>
+                            <input
+                                type="number"
+                                min="1900"
+                                max="2100"
+                                value={newHiveStartYear}
+                                onChange={(e) => setNewHiveStartYear(Number(e.target.value))}
                             />
                             <button onClick={createHive}>Spara</button>
                             <button onClick={() => setShowHiveModal(false)}>Avbryt</button>

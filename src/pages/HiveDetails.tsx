@@ -27,6 +27,17 @@ const HiveDetails = () => {
     const currentYear = new Date().getFullYear();
     const uniqueYears = Array.from(new Set([...reports.map((r) => r.year), currentYear])).sort((a, b) => b - a);
     const [editedReports, setEditedReports] = useState<{ [week: number]: number | undefined }>({});
+    const [editableHive, setEditableHive] = useState<{
+        name: string;
+        description: string;
+        startYear: number;
+    }>({
+        name: "",
+        description: "",
+        startYear: currentYear
+    });
+    const [isEditingHive, setIsEditingHive] = useState(false);
+
 
     const [isEditing, setIsEditing] = useState(false);
     const navigate = useNavigate();
@@ -67,8 +78,54 @@ const HiveDetails = () => {
         fetchReports();
     }, [id]);
 
+    useEffect(() => {
+        if (hive) {
+            setEditableHive({
+                name: hive.name,
+                description: hive.description || "",
+                startYear: hive.startYear
+            });
+        }
+    }, [hive]);
+
     const filteredReports = reports.filter((r) => r.year === selectedYear);
 
+    //uppdatera kupa
+    const handleUpdateHive = async () => {
+        if (!hive) return;
+        try {
+            await api.put(`/hive/${hive.id}`, {
+                name: editableHive.name,
+                description: editableHive.description,
+                apiaryId: hive.apiaryId,
+                startYear: editableHive.startYear               
+            });
+            const response = await api.get(`/hive/${id}`);
+            setHive(response.data);
+            setIsEditingHive(false);
+            alert("Kupan har uppdaterats!");
+        } catch (error) {
+            console.error("Kunde inte uppdatera kupa", error);
+        }
+    };
+
+    //ta bort kupa
+    const handleDeleteHive = async () => {
+        if (!hive) return;
+        const confirmed = window.confirm("Är du säker på att du vill ta bort denna kupa?");
+        if (!confirmed) return;
+
+        try {
+            await api.delete(`/hive/${hive.id}`);
+            alert("Kupan har tagits bort.");
+            navigate(-1); // tillbaka till föregående sida
+        } catch (error) {
+            console.error("Kunde inte ta bort kupa", error);
+            alert("Något gick fel. Kupan kunde inte tas bort.");
+        }
+    };
+
+    //kvalsterrapporter
     const handleSaveReports = async () => {
         console.log("Sparar ändringar:", editedReports);//DEBUG!!!!!!!!!!!!!!!!!!!!!!!!!!!!
         if (!selectedYear || !id) return;
@@ -127,9 +184,66 @@ const HiveDetails = () => {
     return (
         <div>
             <button onClick={() => navigate(-1)} className="back-link">← Tillbaka</button>
-            <h1>{hive?.name}</h1>
-            <p><strong>Beskrivning:</strong> {hive?.description || "–"}</p>
-            <p><strong>Startdatum:</strong> {hive ? `${hive.startYear}-${String(hive.startMonth).padStart(2, "0")}` : "–"}</p>
+
+            {!isEditingHive ? (
+                <>
+                    <h1>{editableHive.name}</h1>
+                    <p><strong>Beskrivning:</strong> {editableHive.description || "–"}</p>
+                    <p>
+                        <strong>Startår:</strong> {editableHive.startYear}
+                    </p>
+                    <button onClick={() => setIsEditingHive(true)}>Redigera kupa</button>
+                    <button onClick={handleDeleteHive}>Ta bort</button>
+
+                </>
+            ) : (
+                <>
+                    <h1
+                        contentEditable
+                        suppressContentEditableWarning
+                        onBlur={(e) =>
+                            setEditableHive({ ...editableHive, name: e.currentTarget.textContent || "" })
+                        }
+                    >
+                        {editableHive.name}
+                    </h1>
+                    <p>
+                        <strong>Beskrivning:</strong>{" "}
+                        <span
+                            contentEditable
+                            suppressContentEditableWarning
+                            onBlur={(e) =>
+                                setEditableHive({ ...editableHive, description: e.currentTarget.textContent || "" })
+                            }
+                        >
+                            {editableHive.description || ""}
+                        </span>
+                    </p>
+                    <div>
+                        <label><strong>Startår:</strong></label>{" "}
+                        <input
+                            type="number"
+                            min="1900"
+                            max="2100"
+                            value={editableHive.startYear}
+                            onChange={(e) => setEditableHive({ ...editableHive, startYear: Number(e.target.value) })}
+                        />
+
+                    </div>
+                    <button onClick={handleUpdateHive}>Spara kupa</button>
+                    <button onClick={() => {
+                        setIsEditingHive(false);
+                        if (hive) {
+                            setEditableHive({
+                                name: hive.name,
+                                description: hive.description || "",
+                                startYear: hive.startYear
+                            });
+                        }
+                    }}>Avbryt</button>
+                </>
+            )}
+
 
             <h2>Kvalsterrapportering</h2>
             <label>Välj år: </label>

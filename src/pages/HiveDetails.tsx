@@ -1,4 +1,4 @@
-import { useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import api from "../services/apiService";
 import { useEffect, useState } from "react";
 import '../pages/HiveDetails.scss';
@@ -29,6 +29,7 @@ const HiveDetails = () => {
     const [editedReports, setEditedReports] = useState<{ [week: number]: number | undefined }>({});
 
     const [isEditing, setIsEditing] = useState(false);
+    const navigate = useNavigate();
 
     useEffect(() => {
         const fetchHive = async () => {
@@ -125,6 +126,7 @@ const HiveDetails = () => {
 
     return (
         <div>
+            <button onClick={() => navigate(-1)} className="back-link">← Tillbaka</button>
             <h1>{hive?.name}</h1>
             <p><strong>Beskrivning:</strong> {hive?.description || "–"}</p>
             <p><strong>Startdatum:</strong> {hive ? `${hive.startYear}-${String(hive.startMonth).padStart(2, "0")}` : "–"}</p>

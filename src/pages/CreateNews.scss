@@ -33,25 +33,6 @@
             min-height: 200px;
             resize: vertical;
         }
-
-        button {
-            margin-top: 20px;
-            width: 100%;
-            padding: 20px 0;
-            border-radius: 5px;
-            border: none;
-            box-shadow: 5px 5px 10px grey;
-            background-color: $color-honey;
-            color: $color-black;
-            font-size: 24px;
-        }
-
-        button:hover {
-            cursor: pointer;
-            box-shadow: none;
-            background-color: $color-honey-hover;
-            
-        }
     }
 }
 

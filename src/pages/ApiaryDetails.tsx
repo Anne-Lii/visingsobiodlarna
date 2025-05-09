@@ -190,6 +190,8 @@ const ApiaryDetails = () => {
                         ))}
                     </ul>
                 )}
+
+                {/* Modal för att lägga till ny kupa */}
                 {showHiveModal && (
                     <div className="modal-overlay">
                         <div className="modal">
@@ -202,8 +204,7 @@ const ApiaryDetails = () => {
                             />
 
                             <label>Beskrivning (valfri):</label>
-                            <input
-                                type="text"
+                            <textarea
                                 value={newHiveDescription}
                                 onChange={(e) => setNewHiveDescription(e.target.value)}
                             />
@@ -215,8 +216,8 @@ const ApiaryDetails = () => {
                                 value={newHiveStartYear}
                                 onChange={(e) => setNewHiveStartYear(Number(e.target.value))}
                             />
-                            <button onClick={createHive}>Spara</button>
-                            <button onClick={() => setShowHiveModal(false)}>Avbryt</button>
+                            <button className="btn green_btn" onClick={createHive}>Spara</button>
+                            <button className="btn cancel_btn" onClick={() => setShowHiveModal(false)}>Avbryt</button>
                         </div>
                     </div>
                 )}

@@ -69,7 +69,7 @@ const CreateNews = () => {
                         onChange={(e) => setContent(e.target.value)}
                     />
                 </div>
-                <button type="submit">Publicera</button>
+                <button className="publish_btn" type="submit">Publicera</button>
             </form>
         </div>
     )

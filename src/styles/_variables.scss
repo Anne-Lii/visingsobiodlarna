@@ -1,11 +1,14 @@
-$color-honey: #f1b047; //honungsfärg
-$color-honey-hover: #f39e15; //honungsfärg - hover
+$color-honey: #f1b047; //Redigera-knappar
+$color-honey-hover: #f39e15; //Redigera-knappar - hover
 
-$color-green-approve: #74c69d; //Godkänn - knappar
+$color-patrol-add: #268b8f; // +Lägg till knappar
+$color-patrol-add-hover: #237b7e; // +Lägg till knappar - hover
+
+$color-green-approve: #93e2bb; //Godkänn - knappar
 $color-green-approve-hover: #52b788; //Godkänn - knappar - hover
 
-$color-orange-edit: #f7dd68; //Redigera-knappar
-$color-orange-edit-hover: #f7d024; //Redigera-knappar - hover
+$color-orange-edit: #f1b047; //Redigera-knappar
+$color-orange-edit-hover: #f39e15; //Redigera-knappar - hover
 
 $color-red-delete: #f28482; //Delete-knappar
 $color-red-delete-hover: #f56461; //Delete-knappar
@@ -13,22 +16,3 @@ $color-red-delete-hover: #f56461; //Delete-knappar
 $color-white: #ffffff; //vit
 $color-black: #000000; //svart
 
-//Knappar för att lägga till
-.add_btn {
-    display: block;
-    width: 95%;
-    max-width: 1200px;
-    margin: 5px auto;
-    padding: 0.7rem 1.5rem;
-    border-radius: 5px;
-    border: none;
-    background-color: $color-honey;
-    color: $color-black;
-    font-size: 1.2rem;
-    text-align: center;
-    cursor: pointer;
-  
-    &:hover {
-      background-color: $color-honey-hover;
-    }
-  }

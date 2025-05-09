@@ -49,58 +49,8 @@
 
       .admin-buttons-news {
         margin-top: 0.75rem;
-
-        button {
-          padding: 0.5rem 1.3rem;
-          margin: 0.25rem;
-          border: none;
-          border-radius: 4px;
-          cursor: pointer;
-          font-size: 0.9rem;
-        
-
-          background-color: #e0e0e0;
-          color: #333;
-
-          &:hover {
-            background-color: #ccc;
-          }
-
-          &:first-of-type {
-            background-color: $color-orange-edit;
-            color: #000;
-
-            &:hover {
-              background-color: $color-orange-edit-hover;
-            }
-          }
-
-          &:nth-of-type(2) {
-            background-color: $color-red-delete;
-            color: #000;
-
-            &:hover {
-              background-color: $color-red-delete-hover;
-            }
-          }
-        }
       }
     }
   }
 }
 
-
-$color-honey: #f1b047; //honungsfärg
-$color-honey-hover: #f39e15; //honungsfärg - hover
-
-$color-green-approve: #74c69d; //Godkänn - knappar
-$color-green-approve-hover: #52b788; //Godkänn - knappar - hover
-
-$color-orange-edit: #fdb275; //Redigera-knappar
-$color-orange-edit-hover: #f8984a; //Redigera-knappar - hover
-
-$color-red-delete: #f28482; //Delete-knappar
-$color-red-delete-hover: #f56461; //Delete-knappar
-
-$color-white: #ffffff; //vit
-$color-black: #000000; //svart

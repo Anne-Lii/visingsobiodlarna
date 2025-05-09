@@ -131,7 +131,7 @@ const Aside = () => {
   return (
     <aside className="aside">
       <h2>Svärmtelefon!</h2>
-      <p>070-589 48 75</p>
+      <p className="phone_swarm">Thomas Hansen 070-589 48 75</p>
 
       <h3>Kalender</h3>
       <Calendar onClickDay={handleDateClick} tileContent={tileContent} value={selectedDate} tileClassName={tileClassName} />

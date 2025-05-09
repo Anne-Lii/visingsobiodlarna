@@ -153,16 +153,16 @@ const ApiaryDetails = () => {
                             value={editedApiary.location}
                             onChange={(e) => setEditedApiary({ ...editedApiary, location: e.target.value })}
                         />
-                        <button className="green_btn" onClick={handleUpdate}>Spara ändringar</button>
-                        <button className="red_btn" onClick={() => setIsEditing(false)}>Avbryt</button>
+                        <button className="btn green_btn" onClick={handleUpdate}>Spara ändringar</button>
+                        <button className="btn cancel_btn" onClick={() => setIsEditing(false)}>Avbryt</button>
                     </>
                 ) : (
                     <>
                         <p><strong>Namn:</strong> {apiary.name}</p>
                         <p><strong>Plats:</strong> {apiary.location}</p>
                         <p><strong>Antal kupor:</strong> {apiary.hiveCount}</p>
-                        <button onClick={() => setIsEditing(true)} className="edit_btn">Redigera</button>
-                        <button onClick={handleDelete} className="apiary_btn">Ta bort</button>
+                        <button onClick={() => setIsEditing(true)} className="btn edit_btn">Redigera</button>
+                        <button onClick={handleDelete} className="btn remove_btn">Ta bort</button>
                     </>
                 )}
             </div>

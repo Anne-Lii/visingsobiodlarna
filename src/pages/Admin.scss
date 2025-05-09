@@ -34,31 +34,6 @@
         display: flex;
         justify-content: space-between;
         align-items: center;
-
-        button {          
-          padding: 0.4rem 1.2rem;
-          font-size: 0.9rem;
-          border: none;
-          border-radius: 5px;
-        }
-
-        .approveUser_btn {
-          background-color: $color-green-approve;
-          font-size: 1.0rem;
-
-          &:hover {
-            background-color: $color-green-approve-hover;
-          }
-        }
-
-        .deleteUser_btn {
-          background-color: $color-red-delete;
-          font-size: 1.0rem;
-
-          &:hover {
-            background-color: $color-red-delete-hover;
-          }
-        }
       }
     }
   }
@@ -94,30 +69,6 @@
       border: 1px solid #ccc;
       border-radius: 4px;
     }
-
-    button {
-      margin-top: 0.5rem;
-      padding: 0.6rem 1.2rem;
-      border: none;
-      border-radius: 4px;
-      background-color: $color-green-approve;
-      color: white;
-      font-size: 1rem;
-      cursor: pointer;
-
-      &:hover {
-        background-color: #023e8a;
-      }
-
-      &:last-child {
-        background-color: $color-red-delete;
-        margin-left: 0.5rem;
-
-        &:hover {
-          background-color: #888;
-        }
-      }
-    }
   }
 }
 
@@ -150,13 +101,3 @@
     @extend .add-event-form;
   }
 }
-
-
-
-$color-honey: #f1b047; //honungsfärg
-$color-honey-hover: #f39e15; //honungsfärg / hover
-$color-green-approve: #74c69d; //Godkänn-knappar
-$color-orange-edit: #f1a965; //Redigera-knappar
-$color-red-delete: #f28482; //Delete-knappar
-$color-white: #ffffff; //vit
-$color-black: #000000; //svart

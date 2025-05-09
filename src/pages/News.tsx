@@ -3,6 +3,8 @@ import { useEffect, useState } from "react";
 import '../pages/News.scss'
 import { NavLink } from "react-router-dom";
 import { useUser } from "../context/UserContext";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faTrash } from "@fortawesome/free-solid-svg-icons";
 
 interface NewsItem {
   Id: number;
@@ -133,12 +135,13 @@ const News = () => {
               <div className="admin-buttons-news">
                 {editingId === news.Id ? (
                   <>
-                    <button onClick={() => handleSave(news.Id)}>Spara</button>
-                    <button onClick={() => setEditingId(null)}>Avbryt</button>
+                    <button className="btn green_btn" onClick={() => handleSave(news.Id)}>Spara</button>
+                    <button className="btn cancel_btn" onClick={() => setEditingId(null)}>Avbryt</button>
                   </>
                 ) : (
                   <>
                     <button
+                      className="btn edit_btn"
                       onClick={() => {
                         setEditingId(news.Id);
                         setEditedTitle(news.Title);
@@ -147,7 +150,7 @@ const News = () => {
                     >
                       Redigera
                     </button>
-                    <button onClick={() => handleDelete(news.Id)}>Ta bort</button>
+                    <button className="btn remove_btn" onClick={() => handleDelete(news.Id)}>Ta bort <FontAwesomeIcon icon={faTrash} size="lg" /> </button>
                   </>
                 )}
               </div>

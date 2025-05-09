@@ -161,10 +161,10 @@ const Admin = () => {
                                 {user.fullName || "Namn saknas"} ({user.email || "E-post saknas"})
 
                                 {/* Knapp för att godkänna användaren */}
-                                <button className="approveUser_btn" onClick={() => approveUser(user.id)}>Godkänn</button>
+                                <button className="btn green_btn" onClick={() => approveUser(user.id)}>Godkänn</button>
 
                                 {/* Knapp för att ta bort användaren */}
-                                <button className="deleteUser_btn" onClick={() => deleteUser(user.id)}>Ta bort</button>
+                                <button className="btn remove_btn" onClick={() => deleteUser(user.id)}>Ta bort</button>
                             </li>
                         ))}
                     </ul>

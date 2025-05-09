@@ -118,7 +118,7 @@ const HiveDetails = () => {
         try {
             await api.delete(`/hive/${hive.id}`);
             alert("Kupan har tagits bort.");
-            navigate(-1); // tillbaka till föregående sida
+            navigate(`/apiary/${hive.apiaryId}`, { state: { refresh: true } });
         } catch (error) {
             console.error("Kunde inte ta bort kupa", error);
             alert("Något gick fel. Kupan kunde inte tas bort.");
@@ -188,10 +188,8 @@ const HiveDetails = () => {
             {!isEditingHive ? (
                 <>
                     <h1>{editableHive.name}</h1>
-                    <p><strong>Beskrivning:</strong> {editableHive.description || "–"}</p>
-                    <p>
-                        <strong>Startår:</strong> {editableHive.startYear}
-                    </p>
+                    <p> <strong>Startår:</strong> {editableHive.startYear} </p>
+                    <p><strong>Beskrivning:</strong> {editableHive.description || "–"}</p>                    
                     <button onClick={() => setIsEditingHive(true)}>Redigera kupa</button>
                     <button onClick={handleDeleteHive}>Ta bort</button>
 

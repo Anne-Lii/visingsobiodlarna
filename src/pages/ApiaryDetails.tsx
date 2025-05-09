@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useParams, useNavigate, Link } from "react-router-dom";
+import { useParams, useNavigate, Link, useLocation } from "react-router-dom";
 import api from "../services/apiService";
 import '../pages/ApiaryDetails.scss';
 
@@ -34,39 +34,50 @@ const ApiaryDetails = () => {
     const [successMessage, setSuccessMessage] = useState<string | null>(null);
     const { id } = useParams();
     const navigate = useNavigate();
+    const location = useLocation();
 
 
     useEffect(() => {
-        //hämta bigård
-        const fetchApiary = async () => {
-            try {
-                const response = await api.get(`/apiary/${id}`);
-                setApiary(response.data);
-                setEditedApiary(response.data);
-            } catch (error) {
-                console.error("Kunde inte hämta bigård", error);
-            } finally {
-                setLoading(false);
+        const shouldRefresh = location.state?.refresh;
+    
+        const init = async () => {
+            setLoading(true);
+            await Promise.all([fetchApiary(), fetchHives()]);
+            if (shouldRefresh) {
+                window.history.replaceState({}, document.title); //rensa state
             }
         };
+    
+        init();
+    }, [id, location.state]);
 
-        //hämta kupor
-        const fetchHives = async () => {
-            try {
-                setLoadingHives(true);
-                const response = await api.get(`/hive/by-apiary/${id}`);
-                setHives(response.data);
-            } catch (error) {
-                console.error("Kunde inte hämta kupor", error);
-            } finally {
-                setLoadingHives(false);
-            }
-        };
+     //hämta bigård
+     const fetchApiary = async () => {
+        try {
+            const response = await api.get(`/apiary/${id}`);
+            setApiary(response.data);
+            setEditedApiary(response.data);
+        } catch (error) {
+            console.error("Kunde inte hämta bigård", error);
+        } finally {
+            setLoading(false);
+        }
+    };
 
-        fetchApiary();
-        fetchHives();
-    }, [id]);
+    //hämta kupor
+    const fetchHives = async () => {
+        try {
+            setLoadingHives(true);
+            const response = await api.get(`/hive/by-apiary/${id}`);
+            setHives(response.data);
+        } catch (error) {
+            console.error("Kunde inte hämta kupor", error);
+        } finally {
+            setLoadingHives(false);
+        }
+    };
 
+    //updaterar bigård
     const handleUpdate = async () => {
         if (!editedApiary) return;
         try {
@@ -85,6 +96,7 @@ const ApiaryDetails = () => {
         }
     };
 
+    //ta bort en bigård
     const handleDelete = async () => {
         if (!apiary) return;
         if (!window.confirm("Är du säker på att du vill ta bort denna bigård?")) return;
@@ -109,8 +121,9 @@ const ApiaryDetails = () => {
                 apiaryId: Number(id),
                 startYear: newHiveStartYear
             });
-            const updatedHives = await api.get(`/hive/by-apiary/${id}`);
-            setHives(updatedHives.data);
+            
+            await Promise.all([fetchHives(), fetchApiary()]); //Uppdaterar listan med kupor och hiveCount
+
             setNewHiveName("");
             setNewHiveDescription("");
             setShowHiveModal(false);
@@ -121,9 +134,11 @@ const ApiaryDetails = () => {
 
     return (
         <div className="apiary_container">
+
+            {/* Detaljer om bigården */}
             <div className="apiary-details">
                 <Link to="/mypage" className="back-link">← Tillbaka till Mina sidor</Link>
-                <h2>{apiary.name}</h2>
+                <h1>{apiary.name}</h1>
                 {successMessage && <p className="success-message">{successMessage}</p>}
 
                 {isEditing && editedApiary ? (
@@ -138,23 +153,24 @@ const ApiaryDetails = () => {
                             value={editedApiary.location}
                             onChange={(e) => setEditedApiary({ ...editedApiary, location: e.target.value })}
                         />
-                        <button onClick={handleUpdate}>Spara ändringar</button>
-                        <button onClick={() => setIsEditing(false)}>Avbryt</button>
+                        <button className="green_btn" onClick={handleUpdate}>Spara ändringar</button>
+                        <button className="red_btn" onClick={() => setIsEditing(false)}>Avbryt</button>
                     </>
                 ) : (
                     <>
                         <p><strong>Namn:</strong> {apiary.name}</p>
                         <p><strong>Plats:</strong> {apiary.location}</p>
                         <p><strong>Antal kupor:</strong> {apiary.hiveCount}</p>
-                        <button onClick={() => setIsEditing(true)} className="apiary_btn">Redigera</button>
+                        <button onClick={() => setIsEditing(true)} className="edit_btn">Redigera</button>
                         <button onClick={handleDelete} className="apiary_btn">Ta bort</button>
                     </>
                 )}
             </div>
 
+            {/* Lista med kupor tillhörande bigården och knapp för att lägga till ny kupa */}
             <div className="apiaryHives">
                 <button className="add_btn" onClick={() => setShowHiveModal(true)}>+ Lägg till kupa</button>
-                <h3>Kupor</h3>
+                <h2>Kupor</h2>
                 {loadingHives ? (
                     <p>Laddar kupor...</p>
                 ) : hives.length === 0 ? (
@@ -165,11 +181,11 @@ const ApiaryDetails = () => {
                             <li
                                 key={hive.id}
                                 onClick={() => navigate(`/hive/${hive.id}`)}
-                                className="clickable-apiary" // återanvänd samma klass
+                                className="clickable-apiary"
                             >
-                                <strong>{hive.name}</strong><br />
+                                <strong className="hive_title">{hive.name}</strong><br />
                                 <strong>Beskrivning:</strong> {hive.description || "–"}
-                                <p><strong>Startår:</strong> {hive?.startYear}</p>
+                              
                             </li>
                         ))}
                     </ul>

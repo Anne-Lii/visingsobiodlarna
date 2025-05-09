@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import api from "../services/apiService";
 import '../pages/Admin.scss'
 import { useLocation, useNavigate } from "react-router-dom";
+import NewsModal from "../components/NewsModal";
 
 
 interface PendingUser {
@@ -225,30 +226,7 @@ const Admin = () => {
                 </div>
             )}
 
-            {showAddNewsForm && (
-                <div className="modal-overlay">
-                    <div className="add-news-form">
-                        <h2>Ny nyhet</h2>
-                        <form onSubmit={handleNewsSubmit}>
-                            <label>Titel:</label>
-                            <input
-                                type="text"
-                                value={newNews.title}
-                                onChange={(e) => setNewNews({ ...newNews, title: e.target.value })}
-                                required
-                            />
-                            <label>Innehåll:</label>
-                            <textarea
-                                value={newNews.content}
-                                onChange={(e) => setNewNews({ ...newNews, content: e.target.value })}
-                                required
-                            />
-                            <button type="submit">Publicera nyhet</button>
-                            <button type="button" onClick={() => setShowAddNewsForm(false)}>Avbryt</button>
-                        </form>
-                    </div>
-                </div>
-            )}
+            {showAddNewsForm && <NewsModal onClose={() => setShowAddNewsForm(false)} />}
 
         </div>
     )

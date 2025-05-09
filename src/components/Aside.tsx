@@ -125,9 +125,6 @@ const Aside = () => {
 
   const [selectedDate, setSelectedDate] = useState<Date>(initialDate);
 
-
-
-
   return (
     <aside className="aside">
       <h2>Svärmtelefon!</h2>

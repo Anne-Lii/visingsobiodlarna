@@ -1,11 +1,18 @@
-h2, h3 {
-    text-align: center;
+.aside {
+    display: flex;
+    flex-direction: column;
+    align-items: center; // Centrerar allt horisontellt
+
+    li{
+        list-style: none;
+        margin: 10px;
+    }
 }
 
 .phone_swarm {
-    text-align: center;
-    padding-bottom: 50px;
+    padding-bottom: 20px;
 }
+
 
 .event-day {
     background-color: #e1f8d8 !important;
@@ -30,3 +37,4 @@ h2, h3 {
     box-sizing: border-box;
     color: black;
 }
+

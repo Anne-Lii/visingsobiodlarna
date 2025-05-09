@@ -17,8 +17,9 @@ const Mypage = () => {
   const [loading, setLoading] = useState(true);
   const [showModal, setShowModal] = useState(false);
   const [newApiary, setNewApiary] = useState({ name: "", location: "" });
+  const [showMiteModal, setShowMiteModal] = useState(false);
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
-  
+
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -60,8 +61,8 @@ const Mypage = () => {
     <div className="mypage-container">
       <h1>Mina sidor</h1>
       {successMessage && <p className="success-message">{successMessage}</p>}
-      <button className="add_btn" >+ Rapportera kvalster</button>
-      <button className="add_btn" onClick={() => setShowModal(true)}>+ Lägg till bigård</button>      
+      <button className="add_btn" onClick={() => setShowMiteModal(true)}>+ Rapportera kvalster</button>
+      <button className="add_btn" onClick={() => setShowModal(true)}>+ Lägg till bigård</button>
       <div className="my_apiaries">
         <h2>Mina bigårdar</h2>
         {loading ? (
@@ -72,9 +73,9 @@ const Mypage = () => {
           <ul>
             {apiaries.map((apiary) => (
               <li key={apiary.id} onClick={() => navigate(`/apiary/${apiary.id}`)} className="clickable-apiary">
-               <strong>{apiary.name}</strong><br />
-      Plats: {apiary.location}<br />
-      <p>Antal kupor: {apiary.hiveCount}</p>
+                <strong>{apiary.name}</strong><br />
+                Plats: {apiary.location}<br />
+                <p>Antal kupor: {apiary.hiveCount}</p>
               </li>
             ))}
           </ul>
@@ -101,6 +102,16 @@ const Mypage = () => {
             />
             <button onClick={handleSaveApiary}>Spara</button>
             <button onClick={() => setShowModal(false)}>Avbryt</button>
+          </div>
+        </div>
+      )}
+
+      {showMiteModal && (
+        <div className="modal-overlay">
+          <div className="modal">
+            <h2>Rapportera kvalster</h2>
+           
+            <button className="btn cancel_btn" onClick={() => setShowMiteModal(false)}>Stäng</button>
           </div>
         </div>
       )}

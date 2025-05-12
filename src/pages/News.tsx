@@ -5,6 +5,7 @@ import { useUser } from "../context/UserContext";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTrash } from "@fortawesome/free-solid-svg-icons";
 import NewsModal from "../components/NewsModal";
+import { useToast } from "../components/ToastContext";
 
 interface NewsItem {
   Id: number;
@@ -22,6 +23,7 @@ const News = () => {
   const [editedTitle, setEditedTitle] = useState("");
   const [editedContent, setEditedContent] = useState("");
   const [showAddNewsForm, setShowAddNewsForm] = useState(false);
+  const { showToast } = useToast();
 
   const { role } = useUser();
 
@@ -53,9 +55,10 @@ const News = () => {
       );
       setNewsList(prevList => prevList.filter(news => news.Id !== id));
       window.dispatchEvent(new Event("newsUpdated"));//updaterar senaste nyheter i aside komponenten
+      showToast("Nyheten borttagen!.", "success");
     } catch (error) {
       console.error("Kunde inte ta bort nyheten", error);
-      alert("Kunde inte ta bort nyheten.");
+      showToast("Kunde inte ta bort nyheten.", "error");
     }
   };
 
@@ -86,9 +89,10 @@ const News = () => {
       );
       setEditingId(null);
       window.dispatchEvent(new Event("newsUpdated"));
+      showToast("Ändringar sparade!.", "success");
     } catch (error) {
       console.error("Kunde inte spara ändringar", error);
-      alert("Kunde inte spara ändringar.");
+      showToast("Kunde inte spara ändringar.", "error");
     }
   };
   

@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useParams, useNavigate, Link, useLocation } from "react-router-dom";
 import api from "../services/apiService";
 import '../pages/ApiaryDetails.scss';
+import { useToast } from "../components/ToastContext";
 
 interface Apiary {
     id: number;
@@ -31,8 +32,8 @@ const ApiaryDetails = () => {
     const [newHiveDescription, setNewHiveDescription] = useState("");
     const [showHiveModal, setShowHiveModal] = useState(false);
     const [newHiveStartYear, setNewHiveStartYear] = useState(new Date().getFullYear());
-    const [successMessage, setSuccessMessage] = useState<string | null>(null);
     const { id } = useParams();
+    const { showToast } = useToast();
     const navigate = useNavigate();
     const location = useLocation();
 
@@ -89,10 +90,10 @@ const ApiaryDetails = () => {
             });
             setApiary(editedApiary);
             setIsEditing(false);
-            setSuccessMessage("Bigården har uppdaterats.");
-            setTimeout(() => setSuccessMessage(null), 3000);
+            showToast("Bigården har uppdaterats.", "success");
         } catch (error) {
             console.error("Kunde inte uppdatera bigård", error);
+            showToast("Kunde inte uppdatera bigård", "error");
         }
     };
 
@@ -103,8 +104,10 @@ const ApiaryDetails = () => {
         try {
             await api.delete(`/apiary/${apiary.id}`);
             navigate("/mypage");
+            showToast("Bigård borttagen.", "success");
         } catch (error) {
             console.error("Kunde inte radera bigård", error);
+            showToast("Kunde inte radera bigård", "error");
         }
     };
 
@@ -127,8 +130,10 @@ const ApiaryDetails = () => {
             setNewHiveName("");
             setNewHiveDescription("");
             setShowHiveModal(false);
+            showToast("Kupa sparad!", "success");
         } catch (error) {
-            console.error("Kunde inte lägga till kupa", error);
+            console.error("Kunde inte lägga till kupa.", error);
+            showToast("Kunde inte lägga till kupa.", "error");
         }
     };
 
@@ -139,7 +144,7 @@ const ApiaryDetails = () => {
             <div className="apiary-details">
                 <Link to="/mypage" className="back-link">← Tillbaka till Mina sidor</Link>
                 <h1>{apiary.name}</h1>
-                {successMessage && <p className="success-message">{successMessage}</p>}
+               
 
                 {isEditing && editedApiary ? (
                     <>

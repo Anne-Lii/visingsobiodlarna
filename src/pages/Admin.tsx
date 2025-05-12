@@ -3,6 +3,7 @@ import api from "../services/apiService";
 import '../pages/Admin.scss'
 import { useLocation, useNavigate } from "react-router-dom";
 import NewsModal from "../components/NewsModal";
+import { useToast } from "../components/ToastContext";
 
 
 interface PendingUser {
@@ -12,26 +13,23 @@ interface PendingUser {
 }
 
 const Admin = () => {
+
     //states
-    const [pendingUsers, setPendingUsers] = useState<PendingUser[]>([]);
-    const [showAddEventForm, setShowAddEventForm] = useState(false);
-    const [startHour, setStartHour] = useState("");
-    const [startMinute, setStartMinute] = useState("");
-    const [newEvent, setNewEvent] = useState({
+    const [pendingUsers, setPendingUsers] = useState<PendingUser[]>([]);//användare som väntar på godkännande
+    const [showAddEventForm, setShowAddEventForm] = useState(false);//visa eller dölja modal
+    const [startHour, setStartHour] = useState("");//starttid timme
+    const [startMinute, setStartMinute] = useState("");//starttid minut
+    const [newEvent, setNewEvent] = useState({//kalenderevent
         title: "",
         content: "",
         startDate: "",
         startTime: "",
         endDate: ""
     });
-    const [showAddNewsForm, setShowAddNewsForm] = useState(false);
-    const [newNews, setNewNews] = useState({
-        title: "",
-        content: ""
-    });
-    const [error, setError] = useState<string | null>(null);
-    const navigate = useNavigate();
-
+    const [showAddNewsForm, setShowAddNewsForm] = useState(false);//visa eller dölja modal för att lägga till nyhet
+    const [error, setError] = useState<string | null>(null);//felmeddelande utveckling
+    const { showToast } = useToast();//pop-up meddelande
+    const navigate = useNavigate();//navigering
     const location = useLocation();
 
     useEffect(() => {
@@ -44,6 +42,7 @@ const Admin = () => {
         fetchPendingUsers();
     }, []);
 
+    //Hämtar användare som väntar på godkännande
     const fetchPendingUsers = async () => {
         try {
             const response = await api.get("/admin/pending");
@@ -61,9 +60,10 @@ const Admin = () => {
             await api.put(`/admin/approve/${userId}`);
             //Uppdatera användarlistan efter godkännande
             fetchPendingUsers();
+            showToast("Användare godkänd!", "success");
         } catch (error) {
-            setError("Kunde inte godkänna användaren.");
-            console.error("Error approving user: ", error);
+            showToast("Kunde inte godkänna användaren!", "error");
+            console.error("Error approving user: ", error);            
         }
     };
 
@@ -74,8 +74,9 @@ const Admin = () => {
             await api.delete(`/admin/delete/${userId}`);
             //Uppdatera användarlistan efter borttagning
             fetchPendingUsers();
+            showToast("Användare borttagen!", "success");
         } catch (error) {
-            setError("Kunde inte ta bort användaren.");
+            showToast("Kunde inte ta bort användaren!", "error");
             console.error("Error deleting user: ", error);
         }
     };
@@ -98,7 +99,7 @@ const Admin = () => {
                 startDate: startDateTime,
                 endDate: newEvent.endDate || null //Tillåta null om inget slutdatum anges
             });
-            alert("Händelsen skapades!");
+            showToast("Kalenderhändelse skapad!", "success");
             setShowAddEventForm(false);
             //Rensar formuläret
             setNewEvent({
@@ -111,6 +112,7 @@ const Admin = () => {
             navigate("/calendar");//navigerar till översikten av kalenderhändelser
         } catch (error) {
             console.error("Kunde inte lägga till kalenderhändelse", error);
+            showToast("Kunde inte lägga till kalenderhändelse", "error");
         }
     }
 
@@ -127,22 +129,6 @@ const Admin = () => {
             return <option key={mm} value={mm}>{mm}</option>;
         });
     };
-
-    const handleNewsSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-        e.preventDefault();
-        try {
-          await api.post("/news", {
-            title: newNews.title,
-            content: newNews.content
-          });
-          alert("Nyheten publicerades!");
-          setShowAddNewsForm(false);
-          setNewNews({ title: "", content: "" });
-          window.dispatchEvent(new Event("newsUpdated"));
-        } catch (error) {
-          console.error("Kunde inte publicera nyheten", error);
-        }
-      };
 
     return (
         <div className="admin-container">

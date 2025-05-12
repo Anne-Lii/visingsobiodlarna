@@ -3,6 +3,7 @@ import { useParams } from "react-router-dom";
 import api from "../services/apiService";
 import { useUser } from "../context/UserContext";
 import '../pages/EventsToday.scss';
+import { useToast } from "../components/ToastContext";
 
 //från backend (PascalCase)
 interface RawCalendarEvent {
@@ -34,6 +35,7 @@ const EventsToday = () => {
   const [editedContent, setEditedContent] = useState("");
   const [editedStartTime, setEditedStartTime] = useState("");
   const [editedEndTime, setEditedEndTime] = useState("");
+  const { showToast } = useToast();
 
   useEffect(() => {
     const fetchEvents = async () => {
@@ -55,6 +57,7 @@ const EventsToday = () => {
         setEvents(mapped);
       } catch (error) {
         console.error("Kunde inte hämta kalenderhändelser", error);
+        showToast("Kunde inte hämta kalenderhändelser", "error");
       } finally {
         setLoading(false);
       }
@@ -94,9 +97,10 @@ const EventsToday = () => {
         )
       );
       setEditingId(null);
+      showToast("Ändringar sparade!", "success");
     } catch (error) {
       console.error("Kunde inte spara ändringar", error);
-      alert("Kunde inte spara ändringar.");
+      showToast("Kunde inte spara ändringar", "error");
     }
   };
 
@@ -107,8 +111,10 @@ const EventsToday = () => {
     try {
       await api.delete(`/calendar/${id}`);
       setEvents(prev => prev.filter(e => e.id !== id));
+      showToast("Kalenderhändelse borttagen!", "success");
     } catch (error) {
       console.error("Kunde inte ta bort kalenderhändelsen", error);
+     showToast("Kunde inte ta bort kalenderhändelsen", "error");
     }
   };
 

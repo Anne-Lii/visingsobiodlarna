@@ -2,6 +2,7 @@ import { Link, useNavigate, useParams } from "react-router-dom";
 import api from "../services/apiService";
 import { useEffect, useState } from "react";
 import '../pages/HiveDetails.scss';
+import { useToast } from "../components/ToastContext";
 
 interface Hive {
     id: number;
@@ -37,9 +38,8 @@ const HiveDetails = () => {
         startYear: currentYear
     });
     const [isEditingHive, setIsEditingHive] = useState(false);
-
-
     const [isEditing, setIsEditing] = useState(false);
+    const { showToast } = useToast();
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -49,6 +49,7 @@ const HiveDetails = () => {
                 setHive(response.data);
             } catch (error) {
                 console.error("Kunde inte hämta kupa", error);
+                showToast("Kunde inte hämta kupa", "error");
             }
         };
         fetchHive();
@@ -59,7 +60,7 @@ const HiveDetails = () => {
             try {
                 const response = await api.get(`/mites/by-hive/${id}`);
                 const data: MiteReport[] = response.data;
-                console.log("Rapporter från backend:", response.data);
+
                 setReports(data);
 
                 const yearList = data.map((r) => r.year);
@@ -73,6 +74,7 @@ const HiveDetails = () => {
                 }
             } catch (error) {
                 console.error("Kunde inte hämta rapporter", error);
+                showToast("Kunde inte hämta rapporter", "error");
             }
         };
         fetchReports();
@@ -103,9 +105,10 @@ const HiveDetails = () => {
             const response = await api.get(`/hive/${id}`);
             setHive(response.data);
             setIsEditingHive(false);
-            alert("Kupan har uppdaterats!");
+            showToast("Kupan har uppdaterats!", "success");
         } catch (error) {
             console.error("Kunde inte uppdatera kupa", error);
+            showToast("Kunde inte uppdatera kupa", "error");
         }
     };
 
@@ -117,25 +120,23 @@ const HiveDetails = () => {
 
         try {
             await api.delete(`/hive/${hive.id}`);
-            alert("Kupan har tagits bort.");
+            showToast("Kupan har tagits bort.", "success");
             navigate(`/apiary/${hive.apiaryId}`, { state: { refresh: true } });
         } catch (error) {
             console.error("Kunde inte ta bort kupa", error);
-            alert("Något gick fel. Kupan kunde inte tas bort.");
+            showToast("Något gick fel. Kupan kunde inte tas bort.", "error");
         }
     };
 
     //kvalsterrapporter
     const handleSaveReports = async () => {
-        console.log("Sparar ändringar:", editedReports);//DEBUG!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
         if (!selectedYear || !id) return;
-        console.log("Valt år:", selectedYear, "Kupa-ID:", id);//DEBUG!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
         try {
             const savePromises = Object.entries(editedReports).map(async ([weekStr, miteCount]) => {
                 const week = Number(weekStr);
                 const existing = filteredReports.find((r) => r.week === week);
-
-                console.log("Vecka:", week, "MiteCount:", miteCount, "Existing:", existing);//DEBUG!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
                 if (miteCount == null) return;
 
@@ -151,9 +152,7 @@ const HiveDetails = () => {
                         week,
                         miteCount
                     });
-                    console.log("Rapport uppdaterad:", response.status, response.data);//DEBUG!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                 } else {
-                    console.log("Skapar ny rapport för vecka", week);//DEBUG!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                     try {
                         const response = await api.post(`/mites`, {
                             hiveId: Number(id),
@@ -161,9 +160,9 @@ const HiveDetails = () => {
                             week,
                             miteCount
                         });
-                        console.log("Rapport skapad:", response.status, response.data);//DEBUG!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                     } catch (err) {
                         console.error("Kunde inte skapa rapport för vecka", week, err);
+                        showToast("Kunde inte skapa rapport för vecka", "error");
                     }
 
                 }
@@ -175,8 +174,10 @@ const HiveDetails = () => {
             //Uppdaterar listan
             const response = await api.get(`/mites/by-hive/${id}`);
             setReports(response.data);
+            showToast("Rapporter sparade", "success");
         } catch (error) {
             console.error("Kunde inte spara rapporter", error);
+            showToast("Kunde inte spara rapporter", "error");
         }
     };
 
@@ -199,6 +200,8 @@ const HiveDetails = () => {
                     <h1
                         contentEditable
                         suppressContentEditableWarning
+                        spellCheck={false}
+                        tabIndex={0}
                         onBlur={(e) =>
                             setEditableHive({ ...editableHive, name: e.currentTarget.textContent || "" })
                         }
@@ -210,6 +213,8 @@ const HiveDetails = () => {
                         <span
                             contentEditable
                             suppressContentEditableWarning
+                            spellCheck={false}
+                            tabIndex={0}
                             onBlur={(e) =>
                                 setEditableHive({ ...editableHive, description: e.currentTarget.textContent || "" })
                             }
@@ -288,7 +293,7 @@ const HiveDetails = () => {
                                             value={editedReports[week] ?? report?.miteCount ?? ""}
                                             onChange={(e) => {
                                                 const value = e.target.value;
-                                                console.log("🔢 Vecka", week, "nytt värde:", value); //DEBUG!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                                               
                                                 setEditedReports((prev) => ({
                                                     ...prev,
                                                     [week]: value === "" ? undefined : Number(value)

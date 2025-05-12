@@ -3,6 +3,7 @@ import api from "../services/apiService";
 import { useNavigate } from "react-router-dom";
 import { useUser } from "../context/UserContext";
 import '../pages/CalendarEvents.scss'
+import { useToast } from "../components/ToastContext";
 
 interface CalendarEvent {
   id: number;
@@ -19,8 +20,10 @@ const CalendarEvents = () => {
   const [editedTitle, setEditedTitle] = useState("");
   const [editedContent, setEditedContent] = useState("");
   const [editedStartTime, setEditedStartTime] = useState("");
+   const { role, isLoggedIn } = useUser();
+  const { showToast } = useToast();
   const navigate = useNavigate();
-  const { role, isLoggedIn } = useUser();
+ 
 
   useEffect(() => {
     const fetchEvents = async () => {
@@ -69,9 +72,10 @@ const CalendarEvents = () => {
         )
       );
       setEditingId(null);
+      showToast("Ändringar sparade!", "success");
     } catch (error) {
       console.error("Kunde inte spara ändringar", error);
-      alert("Kunde inte spara ändringar.");
+      showToast("Kunde inte spara ändringar", "error");
     }
   };
   
@@ -83,8 +87,10 @@ const CalendarEvents = () => {
     try {
       await api.delete(`/calendar/${id}`);
       setEvents(prev => prev.filter(e => e.id !== id));
+      showToast("Kalenderhändelsen borttagen!", "success");
     } catch (error) {
       console.error("Kunde inte ta bort kalenderhändelsen", error);
+      showToast("Kunde inte ta bort kalenderhändelsen", "error");
     }
   };
 
@@ -121,6 +127,7 @@ const CalendarEvents = () => {
             <strong
               contentEditable={editingId === event.id}
               suppressContentEditableWarning={true}
+              spellCheck={false}
               onInput={(e) => setEditedTitle((e.target as HTMLElement).innerText)}
             >
               {event.title}

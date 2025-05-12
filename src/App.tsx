@@ -7,7 +7,6 @@ import Register from './pages/Register';
 import NewPassword from './pages/New_password';
 import Mypage from './pages/Mypage';
 import ProtectedRoute from './components/ProtectedRoute';
-import CreateNews from './pages/CreateNews';
 import Admin from './pages/Admin';
 import NewsDetail from './pages/NewsDetail';
 import EventsToday from "./pages/EventsToday";
@@ -33,7 +32,6 @@ function App() {
           
           {/* Skyddade routes */}
           <Route path="mypage"          element={<ProtectedRoute><Mypage /></ProtectedRoute>} />
-          <Route path="create_news"     element={<ProtectedRoute requiredRole="admin"><CreateNews /></ProtectedRoute>} />
           <Route path="admin"           element={<ProtectedRoute requiredRole="admin"><Admin /></ProtectedRoute>} />
           <Route path="apiary/:id"      element={<ProtectedRoute><ApiaryDetails /></ProtectedRoute>} />
           <Route path="hive/:id"        element={<ProtectedRoute><HiveDetails /></ProtectedRoute>} />

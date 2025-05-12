@@ -1,10 +1,10 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
 import '../pages/News.scss'
-import { NavLink } from "react-router-dom";
 import { useUser } from "../context/UserContext";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTrash } from "@fortawesome/free-solid-svg-icons";
+import NewsModal from "../components/NewsModal";
 
 interface NewsItem {
   Id: number;
@@ -21,6 +21,7 @@ const News = () => {
   const [editingId, setEditingId] = useState<number | null>(null);
   const [editedTitle, setEditedTitle] = useState("");
   const [editedContent, setEditedContent] = useState("");
+  const [showAddNewsForm, setShowAddNewsForm] = useState(false);
 
   const { role } = useUser();
 
@@ -99,9 +100,9 @@ const News = () => {
 
       {role ==="admin" && (
         <div className="add-news-btn">
-          <NavLink to="/create_news" className="add_btn">
-            +Lägg till nyhet
-          </NavLink>
+          <button className="add_btn" onClick={() => setShowAddNewsForm(true)}>
+            + Lägg till nyhet
+          </button>
         </div>
       )}
 
@@ -158,8 +159,7 @@ const News = () => {
           </li>
         ))}
       </ul>
-
-
+      {showAddNewsForm && <NewsModal onClose={() => setShowAddNewsForm(false)} />}
     </div>
   )
 }

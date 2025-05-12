@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import api from "../services/apiService";
 import '../pages/MyPage.scss'
 import { useNavigate } from "react-router-dom";
+import { useToast } from "../components/ToastContext";
 
 interface Apiary {
   id: number;
@@ -18,7 +19,7 @@ const Mypage = () => {
   const [showModal, setShowModal] = useState(false);
   const [newApiary, setNewApiary] = useState({ name: "", location: "" });
   const [showMiteModal, setShowMiteModal] = useState(false);
-  const [successMessage, setSuccessMessage] = useState<string | null>(null);
+  const { showToast } = useToast();
 
   const navigate = useNavigate();
 
@@ -48,19 +49,17 @@ const Mypage = () => {
       //Uppdaterar listan
       const response = await api.get("/apiary/my");
       setApiaries(response.data);
-
-      setSuccessMessage("Bigården har sparats!");
-      setTimeout(() => setSuccessMessage(null), 3000);
+      showToast("Bigården har sparats!", "success");
 
     } catch (error) {
       console.error("Kunde inte spara bigård", error);
+      showToast("Kunde inte spara bigård", "error");
     }
   };
 
   return (
     <div className="mypage-container">
-      <h1>Mina sidor</h1>
-      {successMessage && <p className="success-message">{successMessage}</p>}
+      <h1>Mina sidor</h1>    
       <button className="add_btn" onClick={() => setShowMiteModal(true)}>+ Rapportera kvalster</button>
       <button className="add_btn" onClick={() => setShowModal(true)}>+ Lägg till bigård</button>
       <div className="my_apiaries">

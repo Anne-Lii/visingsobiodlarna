@@ -1,5 +1,6 @@
 import { useState } from "react";
 import api from "../services/apiService";
+import { useToast } from "./ToastContext";
 
 interface Props {
   onClose: () => void;
@@ -8,16 +9,18 @@ interface Props {
 const NewsModal = ({ onClose }: Props) => {
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
+  const { showToast } = useToast();//Toast-meddelanden
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     try {
       await api.post("/news", { title, content });
-      alert("Nyheten publicerades!");
+      showToast("Nyheten publicerades!", "success");
       window.dispatchEvent(new Event("newsUpdated"));
       onClose();
     } catch (error) {
       console.error("Kunde inte publicera nyheten", error);
+      showToast("Kunde inte publicera nyheten", "error");
     }
   };
 

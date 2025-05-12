@@ -1,0 +1,19 @@
+.confirm-modal {
+  padding: 1rem;
+  background: white;
+  border-radius: 8px;
+  text-align: center;
+  max-width: 400px;
+  margin: auto;
+
+  p {
+    margin-bottom: 1rem;
+    font-weight: bold;
+  }
+
+  .modal-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+  }
+}

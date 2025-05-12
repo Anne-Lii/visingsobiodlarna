@@ -6,6 +6,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTrash } from "@fortawesome/free-solid-svg-icons";
 import NewsModal from "../components/NewsModal";
 import { useToast } from "../components/ToastContext";
+import ConfirmDeleteModal from "../components/ConfirmDeleteModal";
 
 interface NewsItem {
   Id: number;
@@ -23,6 +24,8 @@ const News = () => {
   const [editedTitle, setEditedTitle] = useState("");
   const [editedContent, setEditedContent] = useState("");
   const [showAddNewsForm, setShowAddNewsForm] = useState(false);
+  const [showConfirmModal, setShowConfirmModal] = useState(false);
+  const [pendingDeleteId, setPendingDeleteId] = useState<number | null>(null);
   const { showToast } = useToast();
 
   const { role } = useUser();
@@ -45,20 +48,22 @@ const News = () => {
     fetchNews();
   }, []);
 
-  const handleDelete = async (id: number) => {
-    if (!window.confirm("Är du säker på att du vill ta bort denna nyhet?")) return;
-
+  const confirmDelete = async () => {
+    if (pendingDeleteId === null) return;
     try {
       await axios.delete(
-        `${process.env.REACT_APP_API_BASE_URL}/news/${id}`,
+        `${process.env.REACT_APP_API_BASE_URL}/news/${pendingDeleteId}`,
         { withCredentials: true }
       );
-      setNewsList(prevList => prevList.filter(news => news.Id !== id));
-      window.dispatchEvent(new Event("newsUpdated"));//updaterar senaste nyheter i aside komponenten
-      showToast("Nyheten borttagen!.", "success");
+      setNewsList(prevList => prevList.filter(news => news.Id !== pendingDeleteId));
+      window.dispatchEvent(new Event("newsUpdated"));
+      showToast("Nyheten borttagen!", "success");
     } catch (error) {
       console.error("Kunde inte ta bort nyheten", error);
       showToast("Kunde inte ta bort nyheten.", "error");
+    } finally {
+      setShowConfirmModal(false);
+      setPendingDeleteId(null);
     }
   };
 
@@ -68,7 +73,7 @@ const News = () => {
     try {
       const existingNews = newsList.find(news => news.Id === id);
       if (!existingNews) return;
-  
+
       await axios.put(
         `${process.env.REACT_APP_API_BASE_URL}/news/${id}`,
         {
@@ -79,7 +84,7 @@ const News = () => {
         },
         { withCredentials: true }
       );
-  
+
       setNewsList(prevList =>
         prevList.map(news =>
           news.Id === id
@@ -95,14 +100,14 @@ const News = () => {
       showToast("Kunde inte spara ändringar.", "error");
     }
   };
-  
+
 
 
   return (
     <div className="news_container">
       <h1>Nyheter</h1>
 
-      {role ==="admin" && (
+      {role === "admin" && (
         <div className="add-news-btn">
           <button className="add_btn" onClick={() => setShowAddNewsForm(true)}>
             + Lägg till nyhet
@@ -155,7 +160,17 @@ const News = () => {
                     >
                       Redigera
                     </button>
-                    <button className="btn remove_btn" onClick={() => handleDelete(news.Id)}>Ta bort <FontAwesomeIcon icon={faTrash} size="lg" /> </button>
+
+                    <button
+                      className="btn remove_btn"
+                      onClick={() => {
+                        setPendingDeleteId(news.Id);
+                        setShowConfirmModal(true);
+                      }}
+                    >
+                      Ta bort
+                      <FontAwesomeIcon icon={faTrash} size="lg" />
+                    </button>
                   </>
                 )}
               </div>
@@ -164,6 +179,17 @@ const News = () => {
         ))}
       </ul>
       {showAddNewsForm && <NewsModal onClose={() => setShowAddNewsForm(false)} />}
+
+      {showConfirmModal && (
+        <ConfirmDeleteModal
+          message="Är du säker på att du vill ta bort denna nyhet?"
+          onConfirm={confirmDelete}
+          onCancel={() => {
+            setShowConfirmModal(false);
+            setPendingDeleteId(null);
+          }}
+        />
+      )}
     </div>
   )
 }

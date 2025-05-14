@@ -27,9 +27,7 @@ const News = () => {
   const [showConfirmModal, setShowConfirmModal] = useState(false);
   const [pendingDeleteId, setPendingDeleteId] = useState<number | null>(null);
   const { showToast } = useToast();
-
   const { role } = useUser();
-
 
   useEffect(() => {
     const fetchNews = async () => {
@@ -45,8 +43,20 @@ const News = () => {
       }
     };
 
-    fetchNews();
+    fetchNews(); //Körs direkt vid mount
+
+    //Lyssnar på 'newsUpdated' och hämtar nyheter igen
+    const handleNewsUpdated = () => {
+      fetchNews();
+    };
+
+    window.addEventListener("newsUpdated", handleNewsUpdated);
+
+    return () => {
+      window.removeEventListener("newsUpdated", handleNewsUpdated);
+    };
   }, []);
+
 
   const confirmDelete = async () => {
     if (pendingDeleteId === null) return;

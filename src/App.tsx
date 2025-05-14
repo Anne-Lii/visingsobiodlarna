@@ -4,7 +4,7 @@ import Home from './pages/Home';
 import Login from './pages/Login';
 import News from './pages/News';
 import Register from './pages/Register';
-import NewPassword from './pages/New_password';
+import NewPassword from './pages/NewPassword';
 import Mypage from './pages/Mypage';
 import ProtectedRoute from './components/ProtectedRoute';
 import Admin from './pages/Admin';
@@ -13,6 +13,7 @@ import EventsToday from "./pages/EventsToday";
 import CalendarEvents from './pages/CalendarEvents';
 import ApiaryDetails from './pages/ApiaryDetails';
 import HiveDetails from './pages/HiveDetails';
+import ResetPassword from './pages/ResetPassword';
 
 function App() {
   return (
@@ -26,6 +27,7 @@ function App() {
           <Route path="login"           element={<Login />} />
           <Route path="register"        element={<Register />} />
           <Route path="new_password"    element={<NewPassword />} />
+          <Route path="reset_password"  element={<ResetPassword />} />
           <Route path="news/:id"        element={<NewsDetail />} />
           <Route path="calendar/:date"  element={<EventsToday />} />
           <Route path="calendar"        element={<CalendarEvents />} />

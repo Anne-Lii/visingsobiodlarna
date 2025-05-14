@@ -70,7 +70,8 @@ const ApiaryDetails = () => {
         try {
             setLoadingHives(true);
             const response = await api.get(`/hive/by-apiary/${id}`);
-            setHives(response.data);
+            setHives(response.data.sort((a: Hive, b: Hive) => a.name.localeCompare(b.name))); //sorterar listan med kupor i bokstavsordning
+
         } catch (error) {
             console.error("Kunde inte hämta kupor", error);
         } finally {

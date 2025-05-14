@@ -100,7 +100,7 @@ const HiveDetails = () => {
                 name: editableHive.name,
                 description: editableHive.description,
                 apiaryId: hive.apiaryId,
-                startYear: editableHive.startYear               
+                startYear: editableHive.startYear
             });
             const response = await api.get(`/hive/${id}`);
             setHive(response.data);
@@ -181,49 +181,35 @@ const HiveDetails = () => {
         }
     };
 
-
     return (
-        <div>
+        <div className="hive_container">
             <button onClick={() => navigate(-1)} className="back-link">← Tillbaka</button>
 
-            {!isEditingHive ? (
-                <>
-                    <h1>{editableHive.name}</h1>
-                    <p> <strong>Startår:</strong> {editableHive.startYear} </p>
-                    <p><strong>Beskrivning:</strong> {editableHive.description || "–"}</p>                    
-                    <button onClick={() => setIsEditingHive(true)}>Redigera kupa</button>
-                    <button onClick={handleDeleteHive}>Ta bort</button>
+            <div className="hive-details">
+                {!isEditingHive ? (
+                    <>
+                        <h1>{editableHive.name}</h1>
+                        <p><strong>Startår:</strong> {editableHive.startYear}</p>
+                        <p><strong>Beskrivning:</strong> {editableHive.description || "–"}</p>
+                        <button className="btn edit_btn" onClick={() => setIsEditingHive(true)}>Redigera kupa</button>
+                        <button className="btn cancel_btn" onClick={handleDeleteHive}>Ta bort</button>
+                    </>
+                ) : (
+                    <>
+                        <label>Namn:</label>
+                        <input
+                            type="text"
+                            value={editableHive.name}
+                            onChange={(e) => setEditableHive({ ...editableHive, name: e.target.value })}
+                        />
 
-                </>
-            ) : (
-                <>
-                    <h1
-                        contentEditable
-                        suppressContentEditableWarning
-                        spellCheck={false}
-                        tabIndex={0}
-                        onBlur={(e) =>
-                            setEditableHive({ ...editableHive, name: e.currentTarget.textContent || "" })
-                        }
-                    >
-                        {editableHive.name}
-                    </h1>
-                    <p>
-                        <strong>Beskrivning:</strong>{" "}
-                        <span
-                            contentEditable
-                            suppressContentEditableWarning
-                            spellCheck={false}
-                            tabIndex={0}
-                            onBlur={(e) =>
-                                setEditableHive({ ...editableHive, description: e.currentTarget.textContent || "" })
-                            }
-                        >
-                            {editableHive.description || ""}
-                        </span>
-                    </p>
-                    <div>
-                        <label><strong>Startår:</strong></label>{" "}
+                        <label>Beskrivning:</label>
+                        <textarea
+                            value={editableHive.description}
+                            onChange={(e) => setEditableHive({ ...editableHive, description: e.target.value })}
+                        />
+
+                        <label>Startår:</label>
                         <input
                             type="number"
                             min="1900"
@@ -232,86 +218,90 @@ const HiveDetails = () => {
                             onChange={(e) => setEditableHive({ ...editableHive, startYear: Number(e.target.value) })}
                         />
 
-                    </div>
-                    <button onClick={handleUpdateHive}>Spara kupa</button>
-                    <button onClick={() => {
-                        setIsEditingHive(false);
-                        if (hive) {
-                            setEditableHive({
-                                name: hive.name,
-                                description: hive.description || "",
-                                startYear: hive.startYear
-                            });
-                        }
-                    }}>Avbryt</button>
-                </>
-            )}
-
-
-            <h2>Kvalsterrapportering</h2>
-            <label>Välj år: </label>
-            <select onChange={(e) => setSelectedYear(Number(e.target.value))} value={selectedYear || ""}>
-                {uniqueYears.map((year) => (
-                    <option key={year} value={year}>{year}</option>
-                ))}
-            </select>
-
-            <div style={{ marginTop: "1rem" }}>
-                {!isEditing ? (
-                    <button onClick={() => setIsEditing(true)}>Rapportera kvalster</button>
-                ) : (
-                    <>
-                        <button onClick={() => {
-                            console.log("Spara klickat");
-                            handleSaveReports();
-                        }}>Spara</button>
-                        <button onClick={() => { setIsEditing(false); setEditedReports({}); }}>Avbryt</button>
+                        <button className="btn green_btn" onClick={handleUpdateHive}>Spara kupa</button>
+                        <button
+                            className="btn cancel_btn"
+                            onClick={() => {
+                                setIsEditingHive(false);
+                                if (hive) {
+                                    setEditableHive({
+                                        name: hive.name,
+                                        description: hive.description || "",
+                                        startYear: hive.startYear
+                                    });
+                                }
+                            }}
+                        >
+                            Avbryt
+                        </button>
                     </>
                 )}
             </div>
 
-            <table>
-                <thead>
-                    <tr>
-                        <th>Vecka</th>
-                        <th>Antal kvalster</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {Array.from({ length: 52 }, (_, i) => i + 1).map((week) => {
+            <div className="report-section">
+                <h2>Kvalsterrapportering</h2>
 
-                        const report = filteredReports.find((r) => r.week === week);
+                <label>Välj år: </label>
+                <select value={selectedYear} onChange={(e) => setSelectedYear(Number(e.target.value))}>
+                    {uniqueYears.map(year => (
+                        <option key={year} value={year}>{year}</option>
+                    ))}
+                </select>
 
-                        return (
-                            <tr key={week}>
-                                <td>Vecka {week}</td>
-                                <td>
-                                    {isEditing ? (
-                                        <input
-                                            type="number"
-                                            min="0"
-                                            value={editedReports[week] ?? report?.miteCount ?? ""}
-                                            onChange={(e) => {
-                                                const value = e.target.value;
-                                               
-                                                setEditedReports((prev) => ({
-                                                    ...prev,
-                                                    [week]: value === "" ? undefined : Number(value)
-                                                }));
-                                            }}
-                                        />
-                                    ) : (
-                                        report ? report.miteCount : "–"
-                                    )}
-                                </td>
-                            </tr>
-                        );
-                    })}
-                </tbody>
-            </table>
+                <div style={{ marginTop: "1rem" }}>
+                    {!isEditing ? (
+                        <button className="btn green_btn" onClick={() => setIsEditing(true)}>Rapportera kvalster</button>
+                    ) : (
+                        <>
+                            <button className="btn green_btn" onClick={handleSaveReports}>Spara</button>
+                            <button className="btn cancel_btn" onClick={() => {
+                                setIsEditing(false);
+                                setEditedReports({});
+                            }}>Avbryt</button>
+                        </>
+                    )}
+                </div>
 
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Vecka</th>
+                            <th>Antal kvalster</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {Array.from({ length: 52 }, (_, i) => i + 1).map(week => {
+                            const report = filteredReports.find(r => r.week === week);
+                            return (
+                                <tr key={week}>
+                                    <td>Vecka {week}</td>
+                                    <td>
+                                        {isEditing ? (
+                                            <input
+                                                type="number"
+                                                min="0"
+                                                value={editedReports[week] ?? report?.miteCount ?? ""}
+                                                onChange={(e) => {
+                                                    const value = e.target.value;
+                                                    setEditedReports(prev => ({
+                                                        ...prev,
+                                                        [week]: value === "" ? undefined : Number(value)
+                                                    }));
+                                                }}
+                                            />
+                                        ) : (
+                                            report ? report.miteCount : "–"
+                                        )}
+                                    </td>
+                                </tr>
+                            );
+                        })}
+                    </tbody>
+                </table>
+            </div>
         </div>
     );
+
 };
 
 export default HiveDetails;

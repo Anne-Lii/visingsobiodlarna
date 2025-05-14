@@ -4,6 +4,7 @@ import api from "../services/apiService";
 import { useUser } from "../context/UserContext";
 import '../pages/EventsToday.scss';
 import { useToast } from "../components/ToastContext";
+import ConfirmDeleteModal from "../components/ConfirmDeleteModal";
 
 //från backend (PascalCase)
 interface RawCalendarEvent {
@@ -35,6 +36,8 @@ const EventsToday = () => {
   const [editedContent, setEditedContent] = useState("");
   const [editedStartTime, setEditedStartTime] = useState("");
   const [editedEndTime, setEditedEndTime] = useState("");
+  const [showConfirmModal, setShowConfirmModal] = useState(false);
+  const [pendingDeleteId, setPendingDeleteId] = useState<number | null>(null);
   const { showToast } = useToast();
 
   useEffect(() => {
@@ -104,17 +107,25 @@ const EventsToday = () => {
     }
   };
 
+  //Ta bort en händelse
+  const handleDelete = (id: number) => {
+    setPendingDeleteId(id);
+    setShowConfirmModal(true);
+  };
 
-  const handleDelete = async (id: number) => {
-    if (!window.confirm("Är du säker på att du vill ta bort denna händelse?")) return;
+  const confirmDelete = async () => {
+    if (!pendingDeleteId) return;
 
     try {
-      await api.delete(`/calendar/${id}`);
-      setEvents(prev => prev.filter(e => e.id !== id));
+      await api.delete(`/calendar/${pendingDeleteId}`);
+      setEvents(prev => prev.filter(e => e.id !== pendingDeleteId));
       showToast("Kalenderhändelse borttagen!", "success");
     } catch (error) {
       console.error("Kunde inte ta bort kalenderhändelsen", error);
-     showToast("Kunde inte ta bort kalenderhändelsen", "error");
+      showToast("Kunde inte ta bort kalenderhändelsen", "error");
+    } finally {
+      setShowConfirmModal(false);
+      setPendingDeleteId(null);
     }
   };
 
@@ -164,7 +175,7 @@ const EventsToday = () => {
                   </label>
                 </div>
               )}
-             
+
               {isLoggedIn && role === "admin" && (
                 <div className="admin-buttons-calendar">
                   {editingId === event.id ? (
@@ -193,6 +204,17 @@ const EventsToday = () => {
             </li>
           ))}
         </ul>
+
+      )}
+      {showConfirmModal && (
+        <ConfirmDeleteModal
+          message="Är du säker på att du vill ta bort denna händelse?"
+          onConfirm={confirmDelete}
+          onCancel={() => {
+            setShowConfirmModal(false);
+            setPendingDeleteId(null);
+          }}
+        />
       )}
     </div>
   );

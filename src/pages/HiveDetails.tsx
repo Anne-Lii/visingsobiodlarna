@@ -3,6 +3,7 @@ import api from "../services/apiService";
 import { useEffect, useState } from "react";
 import '../pages/HiveDetails.scss';
 import { useToast } from "../components/ToastContext";
+import ConfirmDeleteModal from "../components/ConfirmDeleteModal";
 
 interface Hive {
     id: number;
@@ -39,6 +40,8 @@ const HiveDetails = () => {
     });
     const [isEditingHive, setIsEditingHive] = useState(false);
     const [isEditing, setIsEditing] = useState(false);
+    const [showConfirmModal, setShowConfirmModal] = useState(false);
+    const [pendingDeleteId, setPendingDeleteId] = useState<number | null>(null);
     const { showToast } = useToast();
     const navigate = useNavigate();
 
@@ -113,18 +116,25 @@ const HiveDetails = () => {
     };
 
     //ta bort kupa
-    const handleDeleteHive = async () => {
+    const handleDeleteHive = () => {
         if (!hive) return;
-        const confirmed = window.confirm("Är du säker på att du vill ta bort denna kupa?");
-        if (!confirmed) return;
+        setPendingDeleteId(hive.id);
+        setShowConfirmModal(true);
+    };
+
+    const confirmDeleteHive = async () => {
+        if (!pendingDeleteId || !hive) return;
 
         try {
-            await api.delete(`/hive/${hive.id}`);
+            await api.delete(`/hive/${pendingDeleteId}`);
             showToast("Kupan har tagits bort.", "success");
             navigate(`/apiary/${hive.apiaryId}`, { state: { refresh: true } });
         } catch (error) {
             console.error("Kunde inte ta bort kupa", error);
             showToast("Något gick fel. Kupan kunde inte tas bort.", "error");
+        } finally {
+            setShowConfirmModal(false);
+            setPendingDeleteId(null);
         }
     };
 
@@ -299,6 +309,17 @@ const HiveDetails = () => {
                     </tbody>
                 </table>
             </div>
+
+            {showConfirmModal && (
+                <ConfirmDeleteModal
+                    message="Är du säker på att du vill ta bort denna kupa?"
+                    onConfirm={confirmDeleteHive}
+                    onCancel={() => {
+                        setShowConfirmModal(false);
+                        setPendingDeleteId(null);
+                    }}
+                />
+            )}
         </div>
     );
 

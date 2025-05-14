@@ -3,6 +3,7 @@ import { useParams, useNavigate, Link, useLocation } from "react-router-dom";
 import api from "../services/apiService";
 import '../pages/ApiaryDetails.scss';
 import { useToast } from "../components/ToastContext";
+import ConfirmDeleteModal from "../components/ConfirmDeleteModal";
 
 interface Apiary {
     id: number;
@@ -32,6 +33,8 @@ const ApiaryDetails = () => {
     const [newHiveDescription, setNewHiveDescription] = useState("");
     const [showHiveModal, setShowHiveModal] = useState(false);
     const [newHiveStartYear, setNewHiveStartYear] = useState(new Date().getFullYear());
+    const [showConfirmModal, setShowConfirmModal] = useState(false);
+    const [pendingDeleteId, setPendingDeleteId] = useState<number | null>(null);
     const { id } = useParams();
     const { showToast } = useToast();
     const navigate = useNavigate();
@@ -40,7 +43,7 @@ const ApiaryDetails = () => {
 
     useEffect(() => {
         const shouldRefresh = location.state?.refresh;
-    
+
         const init = async () => {
             setLoading(true);
             await Promise.all([fetchApiary(), fetchHives()]);
@@ -48,12 +51,12 @@ const ApiaryDetails = () => {
                 window.history.replaceState({}, document.title); //rensa state
             }
         };
-    
+
         init();
     }, [id, location.state]);
 
-     //hämta bigård
-     const fetchApiary = async () => {
+    //hämta bigård
+    const fetchApiary = async () => {
         try {
             const response = await api.get(`/apiary/${id}`);
             setApiary(response.data);
@@ -99,16 +102,24 @@ const ApiaryDetails = () => {
     };
 
     //ta bort en bigård
-    const handleDelete = async () => {
+    const handleDelete = () => {
         if (!apiary) return;
-        if (!window.confirm("Är du säker på att du vill ta bort denna bigård?")) return;
+        setPendingDeleteId(apiary.id);
+        setShowConfirmModal(true);
+    };
+
+    const confirmDelete = async () => {
+        if (!pendingDeleteId) return;
         try {
-            await api.delete(`/apiary/${apiary.id}`);
+            await api.delete(`/apiary/${pendingDeleteId}`);
             navigate("/mypage");
             showToast("Bigård borttagen.", "success");
         } catch (error) {
             console.error("Kunde inte radera bigård", error);
             showToast("Kunde inte radera bigård", "error");
+        } finally {
+            setShowConfirmModal(false);
+            setPendingDeleteId(null);
         }
     };
 
@@ -125,7 +136,7 @@ const ApiaryDetails = () => {
                 apiaryId: Number(id),
                 startYear: newHiveStartYear
             });
-            
+
             await Promise.all([fetchHives(), fetchApiary()]); //Uppdaterar listan med kupor och hiveCount
 
             setNewHiveName("");
@@ -145,7 +156,7 @@ const ApiaryDetails = () => {
             <div className="apiary-details">
                 <Link to="/mypage" className="back-link">← Tillbaka till Mina sidor</Link>
                 <h1>{apiary.name}</h1>
-               
+
 
                 {isEditing && editedApiary ? (
                     <>
@@ -191,7 +202,7 @@ const ApiaryDetails = () => {
                             >
                                 <strong className="hive_title">{hive.name}</strong><br />
                                 <strong>Beskrivning:</strong> {hive.description || "–"}
-                              
+
                             </li>
                         ))}
                     </ul>
@@ -229,7 +240,18 @@ const ApiaryDetails = () => {
                 )}
 
             </div>
+            {showConfirmModal && (
+                <ConfirmDeleteModal
+                    message="Är du säker på att du vill ta bort detta objekt?"
+                    onConfirm={confirmDelete}
+                    onCancel={() => {
+                        setShowConfirmModal(false);
+                        setPendingDeleteId(null);
+                    }}
+                />
+            )}
         </div>
+
 
     );
 };

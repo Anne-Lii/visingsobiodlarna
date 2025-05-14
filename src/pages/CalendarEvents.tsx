@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { useUser } from "../context/UserContext";
 import '../pages/CalendarEvents.scss'
 import { useToast } from "../components/ToastContext";
+import ConfirmDeleteModal from "../components/ConfirmDeleteModal";
 
 interface CalendarEvent {
   id: number;
@@ -20,6 +21,8 @@ const CalendarEvents = () => {
   const [editedTitle, setEditedTitle] = useState("");
   const [editedContent, setEditedContent] = useState("");
   const [editedStartTime, setEditedStartTime] = useState("");
+  const [showConfirmModal, setShowConfirmModal] = useState(false);
+  const [pendingDeleteId, setPendingDeleteId] = useState<number | null>(null);
   const { role, isLoggedIn } = useUser();
   const { showToast } = useToast();
   const navigate = useNavigate();
@@ -81,16 +84,24 @@ const CalendarEvents = () => {
 
 
   //Funktion att ta bort event
-  const handleDelete = async (id: number) => {
-    if (!window.confirm("Är du säker på att du vill ta bort denna händelse?")) return;
+  const handleDelete = (id: number) => {
+    setPendingDeleteId(id);
+    setShowConfirmModal(true);
+  };
+
+  const confirmDelete = async () => {
+    if (!pendingDeleteId) return;
 
     try {
-      await api.delete(`/calendar/${id}`);
-      setEvents(prev => prev.filter(e => e.id !== id));
+      await api.delete(`/calendar/${pendingDeleteId}`);
+      setEvents(prev => prev.filter(e => e.id !== pendingDeleteId));
       showToast("Kalenderhändelsen borttagen!", "success");
     } catch (error) {
       console.error("Kunde inte ta bort kalenderhändelsen", error);
       showToast("Kunde inte ta bort kalenderhändelsen", "error");
+    } finally {
+      setShowConfirmModal(false);
+      setPendingDeleteId(null);
     }
   };
 
@@ -168,7 +179,16 @@ const CalendarEvents = () => {
           </li>
         ))}
       </ul>
-
+      {showConfirmModal && (
+        <ConfirmDeleteModal
+          message="Är du säker på att du vill ta bort denna händelse?"
+          onConfirm={confirmDelete}
+          onCancel={() => {
+            setShowConfirmModal(false);
+            setPendingDeleteId(null);
+          }}
+        />
+      )}
 
     </div>
   )

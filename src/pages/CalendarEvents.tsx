@@ -20,10 +20,10 @@ const CalendarEvents = () => {
   const [editedTitle, setEditedTitle] = useState("");
   const [editedContent, setEditedContent] = useState("");
   const [editedStartTime, setEditedStartTime] = useState("");
-   const { role, isLoggedIn } = useUser();
+  const { role, isLoggedIn } = useUser();
   const { showToast } = useToast();
   const navigate = useNavigate();
- 
+
 
   useEffect(() => {
     const fetchEvents = async () => {
@@ -54,10 +54,10 @@ const CalendarEvents = () => {
   const handleSave = async (id: number) => {
     const eventToUpdate = events.find(e => e.id === id);
     if (!eventToUpdate) return;
-  
+
     const datePart = eventToUpdate.startDate.split("T")[0];
     const newStart = editedStartTime ? `${datePart}T${editedStartTime}` : eventToUpdate.startDate;
-  
+
     try {
       await api.put(`/calendar/${id}`, {
         id: id,
@@ -65,7 +65,7 @@ const CalendarEvents = () => {
         content: editedContent,
         startDate: newStart
       });
-  
+
       setEvents(prev =>
         prev.map(e =>
           e.id === id ? { ...e, title: editedTitle, content: editedContent, startDate: newStart } : e
@@ -78,7 +78,7 @@ const CalendarEvents = () => {
       showToast("Kunde inte spara ändringar", "error");
     }
   };
-  
+
 
   //Funktion att ta bort event
   const handleDelete = async (id: number) => {
@@ -112,24 +112,24 @@ const CalendarEvents = () => {
             </small>
 
             {editingId === event.id && (
-  <div className="time-input">
-    <label>
-      Starttid:{" "}
-      <input
-        type="time"
-        value={editedStartTime}
-        onChange={(e) => setEditedStartTime(e.target.value)}
-      />
-    </label>
-  </div>
-)}
+              <div className="time-input">
+                <label>
+                  Starttid:{" "}
+                  <input
+                    type="time"
+                    value={editedStartTime}
+                    onChange={(e) => setEditedStartTime(e.target.value)}
+                  />
+                </label>
+              </div>
+            )}
 
             <strong
               contentEditable={editingId === event.id}
               suppressContentEditableWarning={true}
               spellCheck={false}
               onInput={(e) => setEditedTitle((e.target as HTMLElement).innerText)}
-            >
+              tabIndex={0}>
               {event.title}
             </strong>
             <br />

@@ -11,6 +11,30 @@ interface Apiary {
   hiveCount: number;
 }
 
+interface Hive {
+  id: number;
+  name: string;
+  description?: string;
+  apiaryId: number;
+  startYear: number;
+}
+
+//Plocka ut nuvarande veckonummer
+const getCurrentWeek = () => {
+  const date = new Date();
+  //Torsdag i den här veckan används för att säkerställa korrekt vecka
+  date.setHours(0, 0, 0, 0);
+  date.setDate(date.getDate() + 3 - ((date.getDay() + 6) % 7));
+  const week1 = new Date(date.getFullYear(), 0, 4);
+  return (
+    1 +
+    Math.round(
+      ((date.getTime() - week1.getTime()) / 86400000 - 3 + ((week1.getDay() + 6) % 7)) / 7
+    )
+  );
+};
+
+
 const Mypage = () => {
 
   //states
@@ -19,9 +43,22 @@ const Mypage = () => {
   const [showModal, setShowModal] = useState(false);
   const [newApiary, setNewApiary] = useState({ name: "", location: "" });
   const [showMiteModal, setShowMiteModal] = useState(false);
-  const { showToast } = useToast();
+  const [selectedYear, setSelectedYear] = useState(new Date().getFullYear());
+  const [selectedWeek, setSelectedWeek] = useState<number>(getCurrentWeek());
+  const [selectedApiaryId, setSelectedApiaryId] = useState<number | null>(null);
+  const [hives, setHives] = useState<Hive[]>([]);
+  const [miteCounts, setMiteCounts] = useState<{ [hiveId: number]: number | undefined }>({});
+  const [processedHives, setProcessedHives] = useState<number[]>([]);
+  const [currentHiveIndex, setCurrentHiveIndex] = useState(0);
+  const [shouldResumeSaving, setShouldResumeSaving] = useState(false);
+  const [overwriteModal, setOverwriteModal] = useState<{
+    hive: Hive | null;
+    miteCount: number;
+  } | null>(null);
 
+  const { showToast } = useToast();
   const navigate = useNavigate();
+
 
   useEffect(() => {
     const fetchApiaries = async () => {
@@ -38,8 +75,15 @@ const Mypage = () => {
     fetchApiaries();
   }, []);
 
+  useEffect(() => {
+    if (shouldResumeSaving && !overwriteModal) {
+      setShouldResumeSaving(false);
+      handleSaveMiteReports();
+    }
+  }, [shouldResumeSaving, overwriteModal]);
 
 
+  //Spara bigård
   const handleSaveApiary = async () => {
     try {
       await api.post("/apiary", newApiary);
@@ -57,9 +101,96 @@ const Mypage = () => {
     }
   };
 
+  //spara kvalsterrapport
+  const handleSaveMiteReports = async () => {
+    if (!selectedApiaryId || hives.length === 0) return;
+
+    for (let i = currentHiveIndex; i < hives.length; i++) {
+      const hive = hives[i];
+      if (processedHives.includes(hive.id)) continue;
+
+      const count = miteCounts[hive.id];
+      if (count == null) continue;
+
+      try {
+        const existing = await api.get(`/mites/by-hive/${hive.id}`);
+        const alreadyExists = existing.data.some(
+          (r: any) => r.year === selectedYear && r.week === selectedWeek
+        );
+
+        if (alreadyExists) {
+          setOverwriteModal({ hive, miteCount: count });
+          setCurrentHiveIndex(i); //Spara vart användaren pausade
+          return;
+        }
+
+        await api.post("/mites", {
+          hiveId: hive.id,
+          year: selectedYear,
+          week: selectedWeek,
+          miteCount: count,
+        });
+
+        setProcessedHives((prev) => [...prev, hive.id]);
+
+      } catch (error) {
+        console.error("Fel vid sparning", error);
+        showToast("Fel vid sparning", "error");
+      }
+    }
+
+    finishSaving();
+  };
+
+  //fortsätter spara rapport efter val om överskrivning eller ej
+  const finishSaving = () => {
+    showToast("Rapporter sparade", "success");
+    setShowMiteModal(false);
+    setSelectedApiaryId(null);
+    setHives([]);
+    setMiteCounts({});
+    setProcessedHives([]);
+  };
+
+  //användaren väljer att skriva över antalet kvalster som redan finns rapporterade den veckan
+  const confirmOverwrite = async () => {
+    if (!overwriteModal?.hive) return;
+
+    try {
+      const { hive, miteCount } = overwriteModal;
+      await api.put("/mites", {
+        hiveId: hive.id,
+        year: selectedYear,
+        week: selectedWeek,
+        miteCount
+      });
+
+      setProcessedHives((prev) => [...prev, hive.id]);
+      setCurrentHiveIndex((prev) => prev + 1);
+      setOverwriteModal(null);
+      setShouldResumeSaving(true);
+    } catch (error) {
+      console.error("Kunde inte skriva över", error);
+      showToast("Kunde inte skriva över rapport", "error");
+      setOverwriteModal(null);
+    }
+  };
+
+  //användaren väljer INTE att skriva över antalet kvalster som redan finns rapporterade den veckan
+  const cancelOverwrite = () => {
+    const hive = overwriteModal?.hive;
+    if (hive) {
+      setProcessedHives((prev) => [...prev, hive.id]);
+      setCurrentHiveIndex((prev) => prev + 1);
+    }
+    setOverwriteModal(null);
+    setShouldResumeSaving(true);
+  };
+
+
   return (
     <div className="mypage-container">
-      <h1>Mina sidor</h1>    
+      <h1>Mina sidor</h1>
       <button className="add_btn" onClick={() => setShowMiteModal(true)}>+ Rapportera kvalster</button>
       <button className="add_btn" onClick={() => setShowModal(true)}>+ Lägg till bigård</button>
       <div className="my_apiaries">
@@ -105,12 +236,101 @@ const Mypage = () => {
         </div>
       )}
 
+      {/* Modal för att rapportera kvalster från Mina sidor */}
       {showMiteModal && (
         <div className="modal-overlay">
           <div className="modal">
             <h2>Rapportera kvalster</h2>
-           
-            <button className="btn cancel_btn" onClick={() => setShowMiteModal(false)}>Stäng</button>
+
+            <label>Välj år:</label>
+            <select value={selectedYear} onChange={(e) => setSelectedYear(Number(e.target.value))}>
+              {Array.from({ length: 5 }, (_, i) => {
+                const year = new Date().getFullYear() - i;
+                return <option key={year} value={year}>{year}</option>;
+              })}
+            </select>
+
+            <label>Välj vecka:</label>
+            <select value={selectedWeek} onChange={(e) => setSelectedWeek(Number(e.target.value))}>
+              {Array.from({ length: 52 }, (_, i) => (
+                <option key={i + 1} value={i + 1}>Vecka {i + 1}</option>
+              ))}
+            </select>
+
+            <label>Välj bigård:</label>
+            <select
+              value={selectedApiaryId ?? ""}
+              onChange={async (e) => {
+                const id = Number(e.target.value);
+                setSelectedApiaryId(id);
+                const response = await api.get(`/hive/by-apiary/${id}`);
+                setHives(response.data);
+                setMiteCounts({});
+              }}
+            >
+              <option value="">-- Välj --</option>
+              {apiaries.map((a) => (
+                <option key={a.id} value={a.id}>{a.name}</option>
+              ))}
+            </select>
+
+            {selectedApiaryId && (
+              <div className="mite-table">
+                <table>
+                  <thead>
+                    <tr>
+                      <th>Kupa</th>
+                      <th>Antal kvalster (v{selectedWeek})</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {hives.map((hive) => (
+                      <tr key={hive.id}>
+                        <td>{hive.name}</td>
+                        <td>
+                          <input
+                            type="number"
+                            min="0"
+                            value={miteCounts[hive.id] ?? ""}
+                            onChange={(e) =>
+                              setMiteCounts((prev) => ({
+                                ...prev,
+                                [hive.id]: e.target.value === "" ? undefined : Number(e.target.value),
+                              }))
+                            }
+                          />
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            )}
+
+            <div className="modal-actions">
+              <button onClick={handleSaveMiteReports}>Spara</button>
+              <button className="cancel_btn" onClick={() => {
+                setShowMiteModal(false);
+                setSelectedApiaryId(null);
+                setHives([]);
+                setMiteCounts({});
+              }}>Avbryt</button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Modal som visas vid rapportering av kvalster om det redan finns kvalster rapporterat den veckan */}
+      {overwriteModal && (
+        <div className="modal-overlay">
+          <div className="modal">
+            <h2>Bekräfta överskrivning</h2>
+            <p>
+              Det finns redan en kvalsterrapport för <strong>{overwriteModal.hive?.name}</strong> vecka {selectedWeek}.
+            </p>
+            <p>Vill du skriva över den med det nya värdet: <strong>{overwriteModal.miteCount}</strong>?</p>
+            <button onClick={confirmOverwrite}>OK</button>
+            <button className="cancel_btn" onClick={cancelOverwrite}>Avbryt</button>
           </div>
         </div>
       )}

@@ -6,17 +6,17 @@ import 'react-calendar/dist/Calendar.css';
 import '../components/Aside.scss'
 
 interface NewsItem {
-  Id: number;
-  Title: string;
-  Content: string;
-  PublishDate: string;
+  id: number;
+  title: string;
+  content: string;
+  publishDate: string;
 }
 
 interface FeedItem {
   id: number;
   title: string;
   type: 'news' | 'event';
-  date: string; // ISO-format
+  date: string; //ISO-format
 }
 
 
@@ -36,17 +36,17 @@ const Aside = () => {
     ]);
 
     const newsItems: FeedItem[] = newsResponse.data.map(news => ({
-      id: news.Id,
-      title: news.Title,
+      id: news.id,
+      title: news.title,
       type: 'news',
-      date: news.PublishDate,
+      date: news.publishDate,
     }));
 
     const eventItems: FeedItem[] = calendarResponse.data.map(event => ({
-      id: event.Id,
-      title: event.Title,
+      id: event.id,
+      title: event.title,
       type: 'event',
-      date: event.StartDate,
+      date: event.startDate,
     }));
 
     const combined = [...newsItems, ...eventItems].sort(
@@ -58,8 +58,8 @@ const Aside = () => {
     // ✅ Lägg till detta:
     const transformedCalendar = calendarResponse.data.map(event => ({
       ...event,
-      startDate: event.StartDate,
-      endDate: event.EndDate,
+      startDate: event.startDate,
+      endDate: event.endDate,
     }));
     setCalendarEvents(transformedCalendar);
 

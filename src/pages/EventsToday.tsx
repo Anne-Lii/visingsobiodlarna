@@ -6,16 +6,16 @@ import '../pages/EventsToday.scss';
 import { useToast } from "../components/ToastContext";
 import ConfirmDeleteModal from "../components/ConfirmDeleteModal";
 
-//från backend (PascalCase)
+
 interface RawCalendarEvent {
-  Id: number;
-  Title: string;
-  Content: string;
-  StartDate: string;
-  EndDate: string | null;
+  id: number;
+  title: string;
+  content: string;
+  startDate: string;
+  endDate: string | null;
 }
 
-//i frontend (camelCase)
+
 interface CalendarEvent {
   id: number;
   title: string;
@@ -45,16 +45,16 @@ const EventsToday = () => {
       try {
         const response = await api.get("/calendar");
         const filtered = (response.data as RawCalendarEvent[]).filter(event => {
-          const eventDate = new Date(event.StartDate).toLocaleDateString("sv-SE").replaceAll(".", "-");
+          const eventDate = new Date(event.startDate).toLocaleDateString("sv-SE").replaceAll(".", "-");
           return eventDate === date;
         });
 
         const mapped: CalendarEvent[] = filtered.map(e => ({
-          id: e.Id,
-          title: e.Title,
-          content: e.Content,
-          startDate: e.StartDate,
-          endDate: e.EndDate,
+          id: e.id,
+          title: e.title,
+          content: e.content,
+          startDate: e.startDate,
+          endDate: e.endDate,
         }));
 
         setEvents(mapped);

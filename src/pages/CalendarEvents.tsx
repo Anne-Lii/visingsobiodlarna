@@ -33,10 +33,10 @@ const CalendarEvents = () => {
       try {
         const response = await api.get("/calendar");
         const transformed: CalendarEvent[] = response.data.map((e: any) => ({
-          id: e.Id,
-          title: e.Title,
-          content: e.Content,
-          startDate: e.StartDate,
+          id: e.id,
+          title: e.title,
+          content: e.content,
+          startDate: e.startDate,
         }));
 
         const today = new Date();

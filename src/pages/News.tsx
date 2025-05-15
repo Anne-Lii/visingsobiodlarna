@@ -9,10 +9,10 @@ import { useToast } from "../components/ToastContext";
 import ConfirmDeleteModal from "../components/ConfirmDeleteModal";
 
 interface NewsItem {
-  Id: number;
-  Title: string;
-  Content: string;
-  PublishDate: string;
+  id: number;
+  title: string;
+  content: string;
+  publishDate: string;
 }
 
 const News = () => {
@@ -65,7 +65,7 @@ const News = () => {
         `${process.env.REACT_APP_API_BASE_URL}/news/${pendingDeleteId}`,
         { withCredentials: true }
       );
-      setNewsList(prevList => prevList.filter(news => news.Id !== pendingDeleteId));
+      setNewsList(prevList => prevList.filter(news => news.id !== pendingDeleteId));
       window.dispatchEvent(new Event("newsUpdated"));
       showToast("Nyheten borttagen!", "success");
     } catch (error) {
@@ -81,7 +81,7 @@ const News = () => {
 
   const handleSave = async (id: number) => {
     try {
-      const existingNews = newsList.find(news => news.Id === id);
+      const existingNews = newsList.find(news => news.id === id);
       if (!existingNews) return;
 
       await axios.put(
@@ -90,15 +90,15 @@ const News = () => {
           id: id,
           title: editedTitle,
           content: editedContent,
-          publishDate: existingNews.PublishDate
+          publishDate: existingNews.publishDate
         },
         { withCredentials: true }
       );
 
       setNewsList(prevList =>
         prevList.map(news =>
-          news.Id === id
-            ? { ...news, Title: editedTitle, Content: editedContent, PublishDate: existingNews.PublishDate }
+          news.id === id
+            ? { ...news, title: editedTitle, content: editedContent, publishDate: existingNews.publishDate }
             : news
         )
       );
@@ -131,31 +131,31 @@ const News = () => {
 
       <ul>
         {newsList.map((news) => (
-          <li key={news.Id}>
+          <li key={news.id}>
             <div>
               <strong
-                contentEditable={editingId === news.Id}
+                contentEditable={editingId === news.id}
                 suppressContentEditableWarning={true}
                 onInput={(e) => setEditedTitle((e.target as HTMLElement).innerText)}
               >
-                {news.Title}
+                {news.title}
               </strong>
               <br />
-              <small>{new Date(news.PublishDate).toLocaleDateString()}</small>
+              <small>{new Date(news.publishDate).toLocaleDateString()}</small>
               <p
-                contentEditable={editingId === news.Id}
+                contentEditable={editingId === news.id}
                 suppressContentEditableWarning={true}
                 onInput={(e) => setEditedContent((e.target as HTMLElement).innerText)}
               >
-                {news.Content}
+                {news.content}
               </p>
             </div>
 
             {role === "admin" && (
               <div className="admin-buttons-news">
-                {editingId === news.Id ? (
+                {editingId === news.id ? (
                   <>
-                    <button className="btn green_btn" onClick={() => handleSave(news.Id)}>Spara</button>
+                    <button className="btn green_btn" onClick={() => handleSave(news.id)}>Spara</button>
                     <button className="btn cancel_btn" onClick={() => setEditingId(null)}>Avbryt</button>
                   </>
                 ) : (
@@ -163,9 +163,9 @@ const News = () => {
                     <button
                       className="btn edit_btn"
                       onClick={() => {
-                        setEditingId(news.Id);
-                        setEditedTitle(news.Title);
-                        setEditedContent(news.Content);
+                        setEditingId(news.id);
+                        setEditedTitle(news.title);
+                        setEditedContent(news.content);
                       }}
                     >
                       Redigera
@@ -174,7 +174,7 @@ const News = () => {
                     <button
                       className="btn remove_btn"
                       onClick={() => {
-                        setPendingDeleteId(news.Id);
+                        setPendingDeleteId(news.id);
                         setShowConfirmModal(true);
                       }}
                     >

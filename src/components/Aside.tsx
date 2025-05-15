@@ -12,62 +12,80 @@ interface NewsItem {
   PublishDate: string;
 }
 
+interface FeedItem {
+  id: number;
+  title: string;
+  type: 'news' | 'event';
+  date: string; // ISO-format
+}
+
 
 const Aside = () => {
 
   //states
   const [latestNews, setLatestNews] = useState<NewsItem[]>([]);
   const [calendarEvents, setCalendarEvents] = useState<any[]>([]);
+  const [combinedFeed, setCombinedFeed] = useState<FeedItem[]>([]);
 
-  //Hämtar nyheter
   useEffect(() => {
-    const fetchNews = async () => {
-      try {
-        const response = await api.get<NewsItem[]>("/news");
-        const sortedNews = response.data
-          .sort((a, b) => new Date(b.PublishDate).getTime() - new Date(a.PublishDate).getTime())
-          .slice(0, 3); //Bara de tre senaste
-        setLatestNews(sortedNews);
-      } catch (error) {
-        console.error("Kunde inte hämta nyheter", error);
-      }
-    };
+  const fetchData = async () => {
+  try {
+    const [newsResponse, calendarResponse] = await Promise.all([
+      api.get<NewsItem[]>("/news"),
+      api.get<any[]>("/calendar"),
+    ]);
 
-    fetchNews();
+    const newsItems: FeedItem[] = newsResponse.data.map(news => ({
+      id: news.Id,
+      title: news.Title,
+      type: 'news',
+      date: news.PublishDate,
+    }));
 
-    const handleNewsUpdated = () => {
-      fetchNews();
-    };  
-    window.addEventListener("newsUpdated", handleNewsUpdated);  
-    return () => {
-      window.removeEventListener("newsUpdated", handleNewsUpdated);
-    };
-  }, []);
+    const eventItems: FeedItem[] = calendarResponse.data.map(event => ({
+      id: event.Id,
+      title: event.Title,
+      type: 'event',
+      date: event.StartDate,
+    }));
 
+    const combined = [...newsItems, ...eventItems].sort(
+      (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()
+    );
 
-  //Hämtar kalenderevents
-  useEffect(() => {
-    const fetchCalendarEvents = async () => {
-      try {
-        const response = await api.get("/calendar");
+    setCombinedFeed(combined.slice(0, 3));
 
-        //PascalCase -> camelCase
-        const transformed = response.data.map((event: any) => ({
-          id: event.Id,
-          title: event.Title,
-          content: event.Content,
-          startDate: event.StartDate,
-          endDate: event.EndDate
-        }));
+    // ✅ Lägg till detta:
+    const transformedCalendar = calendarResponse.data.map(event => ({
+      ...event,
+      startDate: event.StartDate,
+      endDate: event.EndDate,
+    }));
+    setCalendarEvents(transformedCalendar);
 
-        setCalendarEvents(transformed);
-      } catch (error) {
-        console.error("Kunde inte hämta kalenderhändelser", error);
-      }
-    };
+  } catch (error) {
+    console.error("Kunde inte hämta nyheter eller kalenderhändelser", error);
+  }
+};
 
-    fetchCalendarEvents();
-  }, []);
+  fetchData();
+
+  const handleNewsUpdated = () => {
+    fetchData();
+  };
+  const handleEventsUpdated = () => {
+    fetchData();
+  };
+
+  window.addEventListener("newsUpdated", handleNewsUpdated);
+  window.addEventListener("calendarUpdated", handleEventsUpdated);
+
+  return () => {
+    window.removeEventListener("newsUpdated", handleNewsUpdated);
+    window.removeEventListener("calendarUpdated", handleEventsUpdated);
+  };
+}, []);
+
 
   //funktion som kontrollerar om ett datum har en händelse och lägger till understrucken markering
   const tileContent = ({ date, view }: { date: Date; view: string }) => {
@@ -135,16 +153,16 @@ const Aside = () => {
       <NavLink to="/calendar" className="calendar-link">
         Visa alla kalenderhändelser
       </NavLink>
-      <h3>Senaste nyheterna</h3>
-      <ul>
-        {latestNews.map(news => (
-          <li key={news.Id}>
-            <NavLink to={`/news/${news.Id}`}>
-              {news.Title}
-            </NavLink>
-          </li>
-        ))}
-      </ul>
+      <h3>Senaste nytt</h3>
+<ul>
+  {combinedFeed.map(item => (
+    <li key={`${item.type}-${item.id}`}>
+      <NavLink to={item.type === 'news' ? `/news/${item.id}` : `/calendar/${item.date.slice(0, 10)}`}>
+        {item.title}
+      </NavLink>
+    </li>
+  ))}
+</ul>
     </aside>
   )
 }

@@ -100,6 +100,7 @@ const Admin = () => {
                 endDate: newEvent.endDate || null //Tillåta null om inget slutdatum anges
             });
             showToast("Kalenderhändelse skapad!", "success");
+            window.dispatchEvent(new Event("calendarUpdated"));//uppdaterar Aside komponenten
             setShowAddEventForm(false);
             //Rensar formuläret
             setNewEvent({

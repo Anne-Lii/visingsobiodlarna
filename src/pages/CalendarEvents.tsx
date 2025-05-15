@@ -76,6 +76,7 @@ const CalendarEvents = () => {
       );
       setEditingId(null);
       showToast("Ändringar sparade!", "success");
+      window.dispatchEvent(new Event("calendarUpdated"));
     } catch (error) {
       console.error("Kunde inte spara ändringar", error);
       showToast("Kunde inte spara ändringar", "error");
@@ -96,6 +97,7 @@ const CalendarEvents = () => {
       await api.delete(`/calendar/${pendingDeleteId}`);
       setEvents(prev => prev.filter(e => e.id !== pendingDeleteId));
       showToast("Kalenderhändelsen borttagen!", "success");
+      window.dispatchEvent(new Event("calendarUpdated"));
     } catch (error) {
       console.error("Kunde inte ta bort kalenderhändelsen", error);
       showToast("Kunde inte ta bort kalenderhändelsen", "error");

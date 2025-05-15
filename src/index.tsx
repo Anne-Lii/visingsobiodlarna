@@ -4,6 +4,7 @@ import './index.scss';
 import App from './App';
 import { UserProvider } from './context/UserContext';
 import { ToastProvider } from './components/ToastContext';
+import { NewsProvider } from './context/NewsContext';
 
 
 
@@ -13,7 +14,9 @@ root.render(
   <React.StrictMode>
     <ToastProvider>
       <UserProvider>
-        <App />
+        <NewsProvider>
+          <App />
+        </NewsProvider>        
       </UserProvider>
     </ToastProvider>
 

@@ -7,6 +7,7 @@ import { faTrash } from "@fortawesome/free-solid-svg-icons";
 import NewsModal from "../components/NewsModal";
 import { useToast } from "../components/ToastContext";
 import ConfirmDeleteModal from "../components/ConfirmDeleteModal";
+import { useNews } from "../context/NewsContext";
 
 interface NewsItem {
   id: number;
@@ -18,8 +19,7 @@ interface NewsItem {
 const News = () => {
 
   //states
-  const [newsList, setNewsList] = useState<NewsItem[]>([]);
-  const [error, setError] = useState<string | null>(null);
+ const { news, refreshNews } = useNews();
   const [editingId, setEditingId] = useState<number | null>(null);
   const [editedTitle, setEditedTitle] = useState("");
   const [editedContent, setEditedContent] = useState("");
@@ -29,35 +29,6 @@ const News = () => {
   const { showToast } = useToast();
   const { role } = useUser();
 
-  useEffect(() => {
-    const fetchNews = async () => {
-      try {
-        const response = await axios.get<NewsItem[]>(
-          `${process.env.REACT_APP_API_BASE_URL}/news`,
-          { withCredentials: true }
-        );
-        setNewsList(response.data);
-      } catch (err) {
-        console.error("Kunde inte hämta nyheter", err);
-        setError("Kunde inte ladda nyheter just nu.");
-      }
-    };
-
-    fetchNews(); //Körs direkt vid mount
-
-    //Lyssnar på 'newsUpdated' och hämtar nyheter igen
-    const handleNewsUpdated = () => {
-      fetchNews();
-    };
-
-    window.addEventListener("newsUpdated", handleNewsUpdated);
-
-    return () => {
-      window.removeEventListener("newsUpdated", handleNewsUpdated);
-    };
-  }, []);
-
-
   const confirmDelete = async () => {
     if (pendingDeleteId === null) return;
     try {
@@ -65,8 +36,7 @@ const News = () => {
         `${process.env.REACT_APP_API_BASE_URL}/news/${pendingDeleteId}`,
         { withCredentials: true }
       );
-      setNewsList(prevList => prevList.filter(news => news.id !== pendingDeleteId));
-      window.dispatchEvent(new Event("newsUpdated"));
+      refreshNews();
       showToast("Nyheten borttagen!", "success");
     } catch (error) {
       console.error("Kunde inte ta bort nyheten", error);
@@ -77,11 +47,9 @@ const News = () => {
     }
   };
 
-
-
   const handleSave = async (id: number) => {
     try {
-      const existingNews = newsList.find(news => news.id === id);
+      const existingNews = news.find(news => news.id === id);
       if (!existingNews) return;
 
       await axios.put(
@@ -94,16 +62,8 @@ const News = () => {
         },
         { withCredentials: true }
       );
-
-      setNewsList(prevList =>
-        prevList.map(news =>
-          news.id === id
-            ? { ...news, title: editedTitle, content: editedContent, publishDate: existingNews.publishDate }
-            : news
-        )
-      );
+      refreshNews();      
       setEditingId(null);
-      window.dispatchEvent(new Event("newsUpdated"));
       showToast("Ändringar sparade!.", "success");
     } catch (error) {
       console.error("Kunde inte spara ändringar", error);
@@ -125,12 +85,10 @@ const News = () => {
         </div>
       )}
 
-      {error && <p style={{ color: "red" }}>{error}</p>}
-
-      {newsList.length === 0 && !error && <p>Inga nyheter att visa.</p>}
+      {news.length === 0 && <p>Inga nyheter att visa.</p>}      
 
       <ul>
-        {newsList.map((news) => (
+        {news.map((news) => (
           <li key={news.id}>
             <div>
               <strong

@@ -1,22 +1,29 @@
 import { useState } from "react";
 import api from "../services/apiService";
 import { useToast } from "./ToastContext";
+import { useNews } from "../context/NewsContext";
 
 interface Props {
   onClose: () => void;
 }
 
 const NewsModal = ({ onClose }: Props) => {
+
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
+  const { refreshNews } = useNews();
   const { showToast } = useToast();//Toast-meddelanden
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     try {
-      await api.post("/news", { title, content });
+      await api.post("/news", {
+        title,
+        content,
+        publishDate: new Date().toISOString()
+      });
       showToast("Nyheten publicerades!", "success");
-      window.dispatchEvent(new Event("newsUpdated"));
+      refreshNews();
       onClose();
     } catch (error) {
       console.error("Kunde inte publicera nyheten", error);

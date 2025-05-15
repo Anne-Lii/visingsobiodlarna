@@ -4,13 +4,8 @@ import { NavLink, useNavigate, useLocation } from "react-router-dom";
 import Calendar from "react-calendar";
 import 'react-calendar/dist/Calendar.css';
 import '../components/Aside.scss'
+import { NewsItem, useNews } from "../context/NewsContext";
 
-interface NewsItem {
-  id: number;
-  title: string;
-  content: string;
-  publishDate: string;
-}
 
 interface FeedItem {
   id: number;
@@ -19,91 +14,70 @@ interface FeedItem {
   date: string; //ISO-format
 }
 
-
 const Aside = () => {
 
   //states
-  const [latestNews, setLatestNews] = useState<NewsItem[]>([]);
   const [calendarEvents, setCalendarEvents] = useState<any[]>([]);
   const [combinedFeed, setCombinedFeed] = useState<FeedItem[]>([]);
+  const { news } = useNews();
+
+  //gör datumet klickbart för att visa aktuella händelser den dagen
+  const navigate = useNavigate();
+  const location = useLocation();
+  const match = location.pathname.match(/^\/calendar\/(\d{4}-\d{2}-\d{2})$/); // ⬅ FLYTTAD HIT
+
+  const [selectedDate, setSelectedDate] = useState<Date>(() => {
+    return match ? new Date(match[1]) : new Date();
+  });
 
   useEffect(() => {
-  const fetchData = async () => {
-  try {
-    const [newsResponse, calendarResponse] = await Promise.all([
-      api.get<NewsItem[]>("/news"),
-      api.get<any[]>("/calendar"),
-    ]);
+    const fetchCalendar = async () => {
+      try {
+        const calendarResponse = await api.get("/calendar");
 
-    const newsItems: FeedItem[] = newsResponse.data.map(news => ({
-      id: news.id,
-      title: news.title,
-      type: 'news',
-      date: news.publishDate,
-    }));
+        const eventItems: FeedItem[] = calendarResponse.data.map((event: any) => ({
+          id: event.id,
+          title: event.title,
+          type: 'event',
+          date: event.publishDate,
+        }));
 
-    const eventItems: FeedItem[] = calendarResponse.data.map(event => ({
-      id: event.id,
-      title: event.title,
-      type: 'event',
-      date: event.startDate,
-    }));
+        const newsItems: FeedItem[] = news.map((n) => ({
+          id: n.id,
+          title: n.title,
+          type: 'news',
+          date: n.publishDate,
+        }));
 
-    const combined = [...newsItems, ...eventItems].sort(
-      (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()
-    );
+        const combined = [...newsItems, ...eventItems].sort(
+          (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()
+        );
+      
+        setCombinedFeed(combined.slice(0, 3));
+        const transformedCalendar = calendarResponse.data.map((event: any) => ({
+          ...event,
+          startDate: event.startDate,
+          endDate: event.endDate,
+        }));
+        setCalendarEvents(transformedCalendar);
+      } catch (error) {
+        console.error("Kunde inte hämta kalenderhändelser", error);
+      }
+    };
 
-    setCombinedFeed(combined.slice(0, 3));
+    fetchCalendar();
+  }, [news]);
 
-    // ✅ Lägg till detta:
-    const transformedCalendar = calendarResponse.data.map(event => ({
-      ...event,
-      startDate: event.startDate,
-      endDate: event.endDate,
-    }));
-    setCalendarEvents(transformedCalendar);
-
-  } catch (error) {
-    console.error("Kunde inte hämta nyheter eller kalenderhändelser", error);
-  }
-};
-
-  fetchData();
-
-  const handleNewsUpdated = () => {
-    fetchData();
-  };
-  const handleEventsUpdated = () => {
-    fetchData();
-  };
-
-  window.addEventListener("newsUpdated", handleNewsUpdated);
-  window.addEventListener("calendarUpdated", handleEventsUpdated);
-
-  return () => {
-    window.removeEventListener("newsUpdated", handleNewsUpdated);
-    window.removeEventListener("calendarUpdated", handleEventsUpdated);
-  };
-}, []);
 
 
   //funktion som kontrollerar om ett datum har en händelse och lägger till understrucken markering
   const tileContent = ({ date, view }: { date: Date; view: string }) => {
     if (view === 'month') {
-
-      //Kollar om det finns något event på detta datum
       const hasEvent = calendarEvents.some(event => {
         const eventDate = new Date(event.startDate);
-        return (
-          eventDate.getFullYear() === date.getFullYear() &&
-          eventDate.getMonth() === date.getMonth() &&
-          eventDate.getDate() === date.getDate()
-        );
+        return eventDate.toDateString() === date.toDateString();
       });
-
-      if (hasEvent) {
-        return <div className="event-underline"></div>;
-      }
+      return hasEvent ? <div className="event-underline"></div> : null;
     }
     return null;
   };
@@ -113,35 +87,18 @@ const Aside = () => {
     if (view === 'month') {
       const hasEvent = calendarEvents.some(event => {
         const eventDate = new Date(event.startDate);
-        return (
-          eventDate.getFullYear() === date.getFullYear() &&
-          eventDate.getMonth() === date.getMonth() &&
-          eventDate.getDate() === date.getDate()
-        );
+        return eventDate.toDateString() === date.toDateString();
       });
-
-      if (hasEvent) {
-        return 'event-day';//lägger till klass till dag med event
-      }
+      return hasEvent ? 'event-day' : null;
     }
     return null;
   };
 
-  //gör datumet klickbart för att visa aktuella händelser den dagen
-  const navigate = useNavigate();
-  const location = useLocation();
-
   const handleDateClick = (date: Date) => {
-    setSelectedDate(date); // Sätt vald datum först!
+    setSelectedDate(date);
     const isoDate = date.toLocaleDateString("sv-SE").replaceAll(".", "-");
     navigate(`/calendar/${isoDate}`);
   };
-
-  //Plockar ut datumet om man är på en kalender-dagsvy
-  const match = location.pathname.match(/^\/calendar\/(\d{4}-\d{2}-\d{2})$/);
-  const initialDate = match ? new Date(match[1]) : new Date();
-
-  const [selectedDate, setSelectedDate] = useState<Date>(initialDate);
 
   return (
     <aside className="aside">
@@ -153,16 +110,17 @@ const Aside = () => {
       <NavLink to="/calendar" className="calendar-link">
         Visa alla kalenderhändelser
       </NavLink>
+
       <h3>Senaste nytt</h3>
-<ul>
-  {combinedFeed.map(item => (
-    <li key={`${item.type}-${item.id}`}>
-      <NavLink to={item.type === 'news' ? `/news/${item.id}` : `/calendar/${item.date.slice(0, 10)}`}>
-        {item.title}
-      </NavLink>
-    </li>
-  ))}
-</ul>
+      <ul>
+        {combinedFeed.map(item => (
+          <li key={`${item.type}-${item.id}`}>
+            <NavLink to={item.type === 'news' ? `/news/${item.id}` : `/calendar/${item.date.slice(0, 10)}`}>
+              {item.title}
+            </NavLink>
+          </li>
+        ))}
+      </ul>
     </aside>
   )
 }

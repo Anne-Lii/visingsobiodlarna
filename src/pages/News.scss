@@ -4,11 +4,15 @@
   max-width: 800px;
   margin: 0 auto;
   padding: 2rem 1rem;
+  font-family: inherit;
+  color: #333;
+  line-height: 1.5;
 
   h1 {
     font-size: 2rem;
     margin-bottom: 1.5rem;
     text-align: center;
+    font-weight: 700;
   }
 
   ul {
@@ -22,6 +26,7 @@
       padding: 1rem;
       margin-bottom: 1rem;
       position: relative;
+      box-shadow: 1px 1px 4px rgba(0,0,0,0.05);
 
       small {
         color: #555;
@@ -33,6 +38,7 @@
         font-size: 1.1rem;
         margin: 0.5rem 0;
         font-weight: 600;
+        outline-offset: 3px;
       }
 
       p {
@@ -41,16 +47,30 @@
       }
 
       [contenteditable="true"] {
-        outline: 1px dashed #aaa;
-        background-color: #fffce8;
-        padding: 2px;
+        outline: 1px solid #aaa;
+        background-color: #ffffff;
+        padding: 4px 6px;
         border-radius: 3px;
+        min-height: 1.2em;
       }
 
       .admin-buttons-news {
         margin-top: 0.75rem;
+        display: flex;
+        gap: 0.5rem;
+        flex-wrap: wrap;
+
+        .btn {
+          font-size: 0.9rem;
+          padding: 0.4rem 1rem;
+          box-shadow: 3px 3px 5px grey;
+          transition: box-shadow 0.2s ease;
+
+          &:hover {
+            box-shadow: none;
+          }
+        }
       }
     }
   }
 }
-

@@ -19,7 +19,7 @@ interface NewsItem {
 const News = () => {
 
   //states
- const { news, refreshNews } = useNews();
+  const { news, refreshNews } = useNews();
   const [editingId, setEditingId] = useState<number | null>(null);
   const [editedTitle, setEditedTitle] = useState("");
   const [editedContent, setEditedContent] = useState("");
@@ -62,7 +62,7 @@ const News = () => {
         },
         { withCredentials: true }
       );
-      refreshNews();      
+      refreshNews();
       setEditingId(null);
       showToast("Ändringar sparade!.", "success");
     } catch (error) {
@@ -85,7 +85,7 @@ const News = () => {
         </div>
       )}
 
-      {news.length === 0 && <p>Inga nyheter att visa.</p>}      
+      {news.length === 0 && <p>Inga nyheter att visa.</p>}
 
       <ul>
         {news.map((news) => (
@@ -94,19 +94,23 @@ const News = () => {
               <strong
                 contentEditable={editingId === news.id}
                 suppressContentEditableWarning={true}
+                tabIndex={editingId === news.id ? 0 : -1}
                 onInput={(e) => setEditedTitle((e.target as HTMLElement).innerText)}
               >
                 {news.title}
               </strong>
-              <br />
-              <small>{new Date(news.publishDate).toLocaleDateString()}</small>
+
+              <small>{new Date(news.publishDate).toLocaleDateString("sv-SE")}</small>
+
               <p
                 contentEditable={editingId === news.id}
                 suppressContentEditableWarning={true}
+                tabIndex={editingId === news.id ? 0 : -1}
                 onInput={(e) => setEditedContent((e.target as HTMLElement).innerText)}
               >
                 {news.content}
               </p>
+
             </div>
 
             {role === "admin" && (
@@ -142,6 +146,7 @@ const News = () => {
                   </>
                 )}
               </div>
+
             )}
           </li>
         ))}

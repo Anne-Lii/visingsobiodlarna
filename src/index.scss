@@ -69,7 +69,7 @@ h1 {
     border: none;
     border-radius: 6px;
     cursor: pointer;
-    font-size: 1rem;
+    font-size: 1.2rem;
     box-shadow: 3px 3px 5px grey;
     line-height: 1.2;
 }
@@ -118,6 +118,7 @@ h1 {
     margin-left: 0.3rem;
     display: inline-block;
     transform: scaleX(-1);
+    
 }
 
 //Gröna knappar för Spara eller Godkänna
@@ -131,7 +132,10 @@ h1 {
 
 //Ta bort knappar
 .remove_btn {
-    background-color: $color-red-delete;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+     background-color: $color-red-delete;
 }
 
 .remove_btn:hover {

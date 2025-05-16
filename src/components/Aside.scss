@@ -1,40 +1,132 @@
+@use '../styles/variables' as *;
+
 .aside {
-    display: flex;
-    flex-direction: column;
-    align-items: center; // Centrerar allt horisontellt
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 1rem;
+  max-width: 320px;
+  background-color: $color-white;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+  font-family: inherit;
+  color: #333;
 
-    li{
-        list-style: none;
-        margin: 10px;
+  h2 {
+    margin-bottom: 0.5rem;
+    font-size: 1.5rem;
+    font-weight: 700;
+    text-align: center;
+    color: $color-black;
+  }
+
+  h3 {
+    margin-top: 1.5rem;
+    margin-bottom: 0.75rem;
+    font-size: 1.2rem;
+    color: $color-black;
+    width: 100%;
+    border-bottom: 2px solid $color-honey;
+    padding-bottom: 0.3rem;
+  }
+
+  .phone_swarm {
+    font-weight: 600;
+    margin-bottom: 1.5rem;
+    font-size: 1.1rem;
+    color: $color-black;
+  }
+
+  ul {
+    list-style: none;
+    padding-left: 0;
+    width: 100%;
+
+    li {
+      margin-bottom: 0.6rem;
+
+      a {
+        color: $color-black;
+        text-decoration: none;
+        font-weight: 500;
+        transition: color 0.2s;
+
+        &:hover,
+        &:focus {
+          color: $color-petrol-add-hover;
+          text-decoration: underline;
+          outline: none;
+        }
+      }
     }
+  }
+
+  // Kalender
+  .react-calendar {
+    width: 100%;
+    max-width: 320px;
+    border: none;
+    border-radius: 8px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    font-family: inherit;
+
+    &__tile {
+      padding: 0.6rem 0.4rem;
+      font-weight: 400;
+      transition: background-color 0.2s;
+
+      &:hover,
+      &:focus {
+        background-color: $color-honey-hover;
+        color: $color-black;
+        outline: none;
+        cursor: pointer;
+      }
+    }
+
+    &__tile--now {
+      background-color: $color-honey;
+      color: $color-black;
+      font-weight: 700;
+      border-radius: 6px;
+      box-shadow: 0 0 5px $color-honey-hover;
+    }
+
+    &__tile--active {
+      background-color: $color-petrol-add;
+      color: $color-white;
+      border-radius: 6px;
+    }
+  }
+
+  .event-day {
+    background-color: $color-honey !important;
+    font-weight: 700;
+    border-radius: 6px;
+    color: $color-black !important;
+  }
+
+  .event-underline {
+    width: 40%;
+    height: 3px;
+    background-color: $color-petrol-add;
+    margin: 0.2rem auto 0 auto;
+    border-radius: 2px;
+  }
+
+  .calendar-link {
+    margin-top: 0.5rem;
+    display: inline-block;
+    font-weight: 600;
+    color: $color-petrol-add;
+    text-decoration: none;
+    transition: color 0.2s;
+
+    &:hover,
+    &:focus {
+      color: $color-petrol-add-hover;
+      text-decoration: underline;
+      outline: none;
+      cursor: pointer;
+    }
+  }
 }
-
-.phone_swarm {
-    padding-bottom: 20px;
-}
-
-
-.event-day {
-    background-color: #e1f8d8 !important;
-    font-weight: bolder;
-    border-radius: 3px;
-}
-
-.event-underline {
-    width: 50%;
-    height: 2px;
-    background-color: #000;
-    margin: auto;
-    display: block;
-}
-
-.react-calendar__tile--now {
-    position: relative;
-    z-index: 1;
-    border: 1px solid #000000 !important;
-    font-weight: bold;
-    background: none !important;
-    box-sizing: border-box;
-    color: black;
-}
-

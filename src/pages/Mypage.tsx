@@ -58,7 +58,7 @@ const Mypage = () => {
 
   //states honungsskörd
   const [showHoneyModal, setShowHoneyModal] = useState(false);
-  const [harvestDate, setHarvestDate] = useState<string>(""); //Datum för skörd t.ex. "2025-05-15"
+  const [harvestDate, setHarvestDate] = useState<string>(""); //Datum för skörd t.ex. 2025-05-15
   const [harvestKg, setHarvestKg] = useState<string>(""); //sträng för att tillåta kommatecken
   const [selectedHarvestYear, setSelectedHarvestYear] = useState(new Date().getFullYear());
   const [harvests, setHarvests] = useState<{ batchId: string; amountKg: number; harvestDate: string }[]>([]);
@@ -93,29 +93,30 @@ const Mypage = () => {
   }, [shouldResumeSaving, overwriteModal]);
 
 
-  //hämta skörderapport från backend vid val av år.
-  useEffect(() => {
-    const fetchHarvests = async () => {
-      try {
-        const response = await api.get(`/honeyharvest?year=${selectedHarvestYear}`);
-        const data = response.data
-          .filter((h: any) => h.batchId && !h.isTotalForYear)
-          .map((h: any) => ({
-            batchId: h.batchId,
-            amountKg: h.amountKg,
-            harvestDate: h.harvestDate
-          }));
-        setHarvests(data);
-      } catch (error) {
-        console.error("Kunde inte hämta honungsskörd", error);
-      }
-    };
+  //hämtar skörderapport från backend vid val av år.
+  const loadHarvests = async () => {
+    try {
+      const response = await api.get(`/honeyharvest?year=${selectedHarvestYear}`);
+      const data = response.data
+        .filter((h: any) => h.batchId && !h.isTotalForYear)
+        .map((h: any) => ({
+          batchId: h.batchId,
+          amountKg: h.amountKg,
+          harvestDate: h.harvestDate
+        }));
+      setHarvests(data);
+    } catch (error) {
+      console.error("Kunde inte hämta honungsskörd", error);
+      showToast("Kunde inte hämta honungsskörd", "error");
+    }
+  };
 
-    fetchHarvests();
+  useEffect(() => {
+    loadHarvests();
   }, [selectedHarvestYear]);
 
 
-  //Spara bigård
+  //Sparar bigård
   const handleSaveApiary = async () => {
     try {
       await api.post("/apiary", newApiary);
@@ -133,7 +134,7 @@ const Mypage = () => {
     }
   };
 
-  //spara kvalsterrapport
+  //sparar kvalsterrapport
   const handleSaveMiteReports = async () => {
     if (!selectedApiaryId || hives.length === 0) return;
 
@@ -152,7 +153,7 @@ const Mypage = () => {
 
         if (alreadyExists) {
           setOverwriteModal({ hive, miteCount: count });
-          setCurrentHiveIndex(i); //Spara vart användaren pausade
+          setCurrentHiveIndex(i); //Sparar vart användaren pausade
           return;
         }
 
@@ -233,8 +234,6 @@ const Mypage = () => {
       showToast("Vänligen ange både datum och vikt.", "error");
       return;
     }
-
-    // Konvertera kilo till nummer och hantera kommatecken som decimalpunkt
     const kilos = Number(harvestKg.replace(",", "."));
     if (isNaN(kilos) || kilos <= 0) {
       showToast("Ange ett giltigt antal kilo.", "error");
@@ -242,14 +241,8 @@ const Mypage = () => {
     }
 
     try {
-      // Hämta befintliga batchar för året från backend (exempel)
       const year = new Date(harvestDate).getFullYear();
-      const response = await api.get(`/honeyharvest?year=${year}`); // backend-endpoint behöver finnas
-      const existingBatches = response.data.map((h: any) => h.batchId); // anta att batchId finns i svar
-
-      const batchId = generateBatchId(year, existingBatches);
-
-      // Skicka POST-anrop till backend med skörden
+      //Skickar POST-anrop till backend med skörden
       await api.post("/honeyharvest", {
         harvestDate,
         amountKg: kilos,
@@ -261,7 +254,9 @@ const Mypage = () => {
       setShowHoneyModal(false);
       setHarvestDate("");
       setHarvestKg("");
-      // Eventuellt hämta om listor eller uppdatera state här
+
+      //Laddar om listan med skörderapporter
+      loadHarvests();
     } catch (error) {
       console.error("Kunde inte spara honungsskörd", error);
       showToast("Kunde inte spara honungsskörd", "error");
@@ -269,6 +264,16 @@ const Mypage = () => {
   };
 
 
+  const handleDeleteHarvest = async (batchId: string) => {
+    if (!window.confirm("Vill du ta bort denna skörderapport?")) return;
+    try {
+      await api.delete(`/honeyharvest/${batchId}`);
+      showToast("Skörderapport borttagen", "success");
+      loadHarvests();
+    } catch {
+      showToast("Misslyckades att ta bort skörderapport", "error");
+    }
+  };
 
   return (
     <div className="mypage-container">

@@ -60,6 +60,10 @@ const Mypage = () => {
   const [showHoneyModal, setShowHoneyModal] = useState(false);
   const [harvestDate, setHarvestDate] = useState<string>(""); //Datum för skörd t.ex. "2025-05-15"
   const [harvestKg, setHarvestKg] = useState<string>(""); //sträng för att tillåta kommatecken
+  const [selectedHarvestYear, setSelectedHarvestYear] = useState(new Date().getFullYear());
+  const [harvests, setHarvests] = useState<{ batchId: string; amountKg: number; harvestDate: string }[]>([]);
+  const totalForYear = harvests.reduce((sum, h) => sum + h.amountKg, 0);
+
 
 
   const { showToast } = useToast();
@@ -87,6 +91,28 @@ const Mypage = () => {
       handleSaveMiteReports();
     }
   }, [shouldResumeSaving, overwriteModal]);
+
+
+  //hämta skörderapport från backend vid val av år.
+  useEffect(() => {
+    const fetchHarvests = async () => {
+      try {
+        const response = await api.get(`/honeyharvest?year=${selectedHarvestYear}`);
+        const data = response.data
+          .filter((h: any) => h.batchId && !h.isTotalForYear)
+          .map((h: any) => ({
+            batchId: h.batchId,
+            amountKg: h.amountKg,
+            harvestDate: h.harvestDate
+          }));
+        setHarvests(data);
+      } catch (error) {
+        console.error("Kunde inte hämta honungsskörd", error);
+      }
+    };
+
+    fetchHarvests();
+  }, [selectedHarvestYear]);
 
 
   //Spara bigård
@@ -203,44 +229,44 @@ const Mypage = () => {
   };
 
   const handleSaveHarvest = async () => {
-  if (!harvestDate || !harvestKg) {
-    showToast("Vänligen ange både datum och vikt.", "error");
-    return;
-  }
+    if (!harvestDate || !harvestKg) {
+      showToast("Vänligen ange både datum och vikt.", "error");
+      return;
+    }
 
-  // Konvertera kilo till nummer och hantera kommatecken som decimalpunkt
-  const kilos = Number(harvestKg.replace(",", "."));
-  if (isNaN(kilos) || kilos <= 0) {
-    showToast("Ange ett giltigt antal kilo.", "error");
-    return;
-  }
+    // Konvertera kilo till nummer och hantera kommatecken som decimalpunkt
+    const kilos = Number(harvestKg.replace(",", "."));
+    if (isNaN(kilos) || kilos <= 0) {
+      showToast("Ange ett giltigt antal kilo.", "error");
+      return;
+    }
 
-  try {
-    // Hämta befintliga batchar för året från backend (exempel)
-    const year = new Date(harvestDate).getFullYear();
-    const response = await api.get(`/honeyharvest?year=${year}`); // backend-endpoint behöver finnas
-    const existingBatches = response.data.map((h: any) => h.batchId); // anta att batchId finns i svar
+    try {
+      // Hämta befintliga batchar för året från backend (exempel)
+      const year = new Date(harvestDate).getFullYear();
+      const response = await api.get(`/honeyharvest?year=${year}`); // backend-endpoint behöver finnas
+      const existingBatches = response.data.map((h: any) => h.batchId); // anta att batchId finns i svar
 
-    const batchId = generateBatchId(year, existingBatches);
+      const batchId = generateBatchId(year, existingBatches);
 
-    // Skicka POST-anrop till backend med skörden
-    await api.post("/honeyharvest", {
-      harvestDate,
-      amountKg: kilos,
-      year,
-      isTotalForYear: false
-    });
+      // Skicka POST-anrop till backend med skörden
+      await api.post("/honeyharvest", {
+        harvestDate,
+        amountKg: kilos,
+        year,
+        isTotalForYear: false
+      });
 
-    showToast("Honungsskörden sparades!", "success");
-    setShowHoneyModal(false);
-    setHarvestDate("");
-    setHarvestKg("");
-    // Eventuellt hämta om listor eller uppdatera state här
-  } catch (error) {
-    console.error("Kunde inte spara honungsskörd", error);
-    showToast("Kunde inte spara honungsskörd", "error");
-  }
-};
+      showToast("Honungsskörden sparades!", "success");
+      setShowHoneyModal(false);
+      setHarvestDate("");
+      setHarvestKg("");
+      // Eventuellt hämta om listor eller uppdatera state här
+    } catch (error) {
+      console.error("Kunde inte spara honungsskörd", error);
+      showToast("Kunde inte spara honungsskörd", "error");
+    }
+  };
 
 
 
@@ -250,7 +276,48 @@ const Mypage = () => {
       <button className="add_btn" onClick={() => setShowMiteModal(true)}>+ Rapportera kvalster</button>
       <button className="add_btn" onClick={() => setShowHoneyModal(true)}>+ Honungsskörd</button>
       <button className="add_btn" onClick={() => setShowModal(true)}>+ Lägg till bigård</button>
-      
+
+      <div className="honeyharvest-container">
+        <h2>Honungsskörd</h2>
+
+        <label>Välj år:</label>
+        <select value={selectedHarvestYear} onChange={(e) => setSelectedHarvestYear(Number(e.target.value))}>
+          {Array.from({ length: 5 }, (_, i) => {
+            const year = new Date().getFullYear() - i;
+            return <option key={year} value={year}>{year}</option>;
+          })}
+        </select>
+
+        {harvests.length > 0 ? (
+          <table>
+            <thead>
+              <tr>
+                <th>Batchnummer</th>
+                <th>Datum</th>
+                <th>Vikt (kg)</th>
+              </tr>
+            </thead>
+            <tbody>
+              {harvests.map((h, index) => (
+                <tr key={index}>
+                  <td>{h.batchId}</td>
+                  <td>{new Date(h.harvestDate).toLocaleDateString("sv-SE")}</td>
+                  <td>{h.amountKg.toFixed(1)}</td>
+                </tr>
+              ))}
+              <tr>
+                <td colSpan={2}><strong>Totalt {selectedYear}</strong></td>
+                <td><strong>{totalForYear.toFixed(1)} kg</strong></td>
+              </tr>
+            </tbody>
+          </table>
+        ) : (
+          <p>Inga skörderapporter registrerade för {selectedHarvestYear}.</p>
+        )}
+
+
+      </div>
+
       <div className="my_apiaries">
         <h2>Mina bigårdar</h2>
         {loading ? (

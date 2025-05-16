@@ -56,6 +56,12 @@ const Mypage = () => {
     miteCount: number;
   } | null>(null);
 
+  //states honungsskörd
+  const [showHoneyModal, setShowHoneyModal] = useState(false);
+  const [harvestDate, setHarvestDate] = useState<string>(""); //Datum för skörd t.ex. "2025-05-15"
+  const [harvestKg, setHarvestKg] = useState<string>(""); //sträng för att tillåta kommatecken
+
+
   const { showToast } = useToast();
   const navigate = useNavigate();
 
@@ -187,12 +193,64 @@ const Mypage = () => {
     setShouldResumeSaving(true);
   };
 
+  //funktion för att skapa batchnummer
+  const generateBatchId = (year: number, existingBatches: string[]): string => {
+
+    //Räknar antal registreringar för året + 1 och formatera som 3-siffrigt löpnummer
+    const countThisYear = existingBatches.filter(b => b?.trim().startsWith(year.toString())).length;
+    const batchNumber = (countThisYear + 1).toString().padStart(3, "0");
+    return `${year}:${batchNumber}`;
+  };
+
+  const handleSaveHarvest = async () => {
+  if (!harvestDate || !harvestKg) {
+    showToast("Vänligen ange både datum och vikt.", "error");
+    return;
+  }
+
+  // Konvertera kilo till nummer och hantera kommatecken som decimalpunkt
+  const kilos = Number(harvestKg.replace(",", "."));
+  if (isNaN(kilos) || kilos <= 0) {
+    showToast("Ange ett giltigt antal kilo.", "error");
+    return;
+  }
+
+  try {
+    // Hämta befintliga batchar för året från backend (exempel)
+    const year = new Date(harvestDate).getFullYear();
+    const response = await api.get(`/honeyharvests?year=${year}`); // backend-endpoint behöver finnas
+    const existingBatches = response.data.map((h: any) => h.batchId); // anta att batchId finns i svar
+
+    const batchId = generateBatchId(year, existingBatches);
+
+    // Skicka POST-anrop till backend med skörden
+    await api.post("/honeyharvests", {
+      harvestDate,
+      amountKg: kilos,
+      year,
+      isTotalForYear: false
+    });
+
+    showToast("Honungsskörden sparades!", "success");
+    setShowHoneyModal(false);
+    setHarvestDate("");
+    setHarvestKg("");
+    // Eventuellt hämta om listor eller uppdatera state här
+  } catch (error) {
+    console.error("Kunde inte spara honungsskörd", error);
+    showToast("Kunde inte spara honungsskörd", "error");
+  }
+};
+
+
 
   return (
     <div className="mypage-container">
       <h1>Mina sidor</h1>
       <button className="add_btn" onClick={() => setShowMiteModal(true)}>+ Rapportera kvalster</button>
+      <button className="add_btn" onClick={() => setShowHoneyModal(true)}>+ Honungsskörd</button>
       <button className="add_btn" onClick={() => setShowModal(true)}>+ Lägg till bigård</button>
+      
       <div className="my_apiaries">
         <h2>Mina bigårdar</h2>
         {loading ? (
@@ -334,6 +392,38 @@ const Mypage = () => {
           </div>
         </div>
       )}
+
+      {showHoneyModal && (
+        <div className="modal-overlay">
+          <div className="modal">
+            <h2>Registrera honungsskörd</h2>
+
+            <label>Datum för skörd:</label>
+            <input
+              type="date"
+              value={harvestDate}
+              onChange={(e) => setHarvestDate(e.target.value)}
+              required
+            />
+
+            <label>Antal kilo (t.ex. 23,5):</label>
+            <input
+              type="text"
+              value={harvestKg}
+              onChange={(e) => setHarvestKg(e.target.value)}
+              pattern="^\d+([,\.]\d+)?$" //regex för siffra med valfritt decimaltecken , eller .
+              title="Ange ett tal, t.ex. 23,5"
+              required
+            />
+
+            <div className="modal-actions">
+              <button onClick={handleSaveHarvest}>Spara</button>
+              <button className="cancel_btn" onClick={() => setShowHoneyModal(false)}>Avbryt</button>
+            </div>
+          </div>
+        </div>
+      )}
+
 
     </div>
   )

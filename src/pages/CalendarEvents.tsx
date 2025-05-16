@@ -119,6 +119,16 @@ const CalendarEvents = () => {
       <ul>
         {events.map(event => (
           <li key={event.id}>
+
+            <strong
+              contentEditable={editingId === event.id}
+              suppressContentEditableWarning={true}
+              spellCheck={false}
+              onInput={(e) => setEditedTitle((e.target as HTMLElement).innerText)}
+              tabIndex={0}>
+              {event.title}
+            </strong>
+
             <small>
               {new Date(event.startDate).toLocaleDateString("sv-SE")} kl.{" "}
               {new Date(event.startDate).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}
@@ -137,14 +147,7 @@ const CalendarEvents = () => {
               </div>
             )}
 
-            <strong
-              contentEditable={editingId === event.id}
-              suppressContentEditableWarning={true}
-              spellCheck={false}
-              onInput={(e) => setEditedTitle((e.target as HTMLElement).innerText)}
-              tabIndex={0}>
-              {event.title}
-            </strong>
+
             <br />
             <p
               contentEditable={editingId === event.id}

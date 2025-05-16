@@ -145,6 +145,10 @@ const DocumentsSection = ({ isAdmin }: { isAdmin: boolean }) => {
                     )}
                 </>
             )}
+
+            <p>
+                <a href="/dokument" className="all-documents-link">Alla dokument</a>
+            </p>
         </section>
     );
 };

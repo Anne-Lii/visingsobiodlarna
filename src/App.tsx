@@ -14,6 +14,7 @@ import CalendarEvents from './pages/CalendarEvents';
 import ApiaryDetails from './pages/ApiaryDetails';
 import HiveDetails from './pages/HiveDetails';
 import ResetPassword from './pages/ResetPassword';
+import AllDocumentsPage from './pages/Documents';
 
 function App() {
   return (
@@ -31,6 +32,7 @@ function App() {
           <Route path="news/:id"        element={<NewsDetail />} />
           <Route path="calendar/:date"  element={<EventsToday />} />
           <Route path="calendar"        element={<CalendarEvents />} />
+          <Route path="dokument"        element={<AllDocumentsPage />} />
           
           {/* Skyddade routes */}
           <Route path="mypage"          element={<ProtectedRoute><Mypage /></ProtectedRoute>} />

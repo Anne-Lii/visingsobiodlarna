@@ -5,6 +5,11 @@ import Calendar from "react-calendar";
 import 'react-calendar/dist/Calendar.css';
 import '../components/Aside.scss'
 import { NewsItem, useNews } from "../context/NewsContext";
+import DocumentsSection from "./DocumentSection";
+import { useUser } from "../context/UserContext";
+
+
+
 
 
 interface FeedItem {
@@ -30,6 +35,9 @@ const Aside = () => {
     return match ? new Date(match[1]) : new Date();
   });
 
+  const { role, isLoggedIn } = useUser();
+  const isAdmin = role === "admin";
+
   useEffect(() => {
     const fetchCalendar = async () => {
       try {
@@ -52,7 +60,7 @@ const Aside = () => {
         const combined = [...newsItems, ...eventItems].sort(
           (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()
         );
-      
+
         setCombinedFeed(combined.slice(0, 3));
         const transformedCalendar = calendarResponse.data.map((event: any) => ({
           ...event,
@@ -121,6 +129,9 @@ const Aside = () => {
           </li>
         ))}
       </ul>
+
+      <DocumentsSection isAdmin={isAdmin} />
+
     </aside>
   )
 }

@@ -218,13 +218,13 @@ const Mypage = () => {
   try {
     // Hämta befintliga batchar för året från backend (exempel)
     const year = new Date(harvestDate).getFullYear();
-    const response = await api.get(`/honeyharvests?year=${year}`); // backend-endpoint behöver finnas
+    const response = await api.get(`/honeyharvest?year=${year}`); // backend-endpoint behöver finnas
     const existingBatches = response.data.map((h: any) => h.batchId); // anta att batchId finns i svar
 
     const batchId = generateBatchId(year, existingBatches);
 
     // Skicka POST-anrop till backend med skörden
-    await api.post("/honeyharvests", {
+    await api.post("/honeyharvest", {
       harvestDate,
       amountKg: kilos,
       year,

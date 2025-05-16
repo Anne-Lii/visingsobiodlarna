@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { fetchDocuments, uploadDocument, deleteDocument } from "../services/apiService";
+import { fetchDocuments, uploadDocument, deleteDocument, getDownloadLink } from "../services/apiService";
 import { useToast } from "./ToastContext";
 import './DocumentSection.scss';
 
@@ -18,6 +18,8 @@ const DocumentsSection = ({ isAdmin }: { isAdmin: boolean }) => {
     const [title, setTitle] = useState("");
     const [category, setCategory] = useState("Protokoll");
     const [file, setFile] = useState<File | null>(null);
+    const [selectedProtocolId, setSelectedProtocolId] = useState("");
+    const [selectedOtherId, setSelectedOtherId] = useState("");
     const { showToast } = useToast();
 
     const loadDocuments = async () => {
@@ -56,6 +58,20 @@ const DocumentsSection = ({ isAdmin }: { isAdmin: boolean }) => {
         }
     };
 
+    const handleSelect = async (
+        id: number,
+        setSelected: React.Dispatch<React.SetStateAction<string>>
+    ) => {
+        try {
+            const res = await getDownloadLink(id);
+            window.open(res.data.url, "_blank");
+        } catch {
+            showToast("Kunde inte öppna dokument", "error");
+        } finally {
+            setSelected(""); //Återställ select till default
+        }
+    };
+
     const handleDelete = async (id: number) => {
         if (!window.confirm("Är du säker på att du vill ta bort dokumentet?")) return;
         try {
@@ -74,21 +90,27 @@ const DocumentsSection = ({ isAdmin }: { isAdmin: boolean }) => {
         <section className="documents-section">
             <h2>Dokument</h2>
 
-          
-            <select onChange={(e) => window.open(e.target.value)} defaultValue="">
+
+            <select
+                value={selectedProtocolId}
+                onChange={(e) => handleSelect(Number(e.target.value), setSelectedProtocolId)}
+            >
                 <option disabled value="">Protokoll</option>
                 {protocolDocs.map((doc) => (
-                    <option key={doc.id} value={doc.fileUrl}>
+                    <option key={doc.id} value={doc.id}>
                         {doc.title} ({new Date(doc.uploadDate).toLocaleDateString("sv-SE")})
                     </option>
                 ))}
             </select>
 
-          
-            <select onChange={(e) => window.open(e.target.value)} defaultValue="">
+
+            <select
+                value={selectedOtherId}
+                onChange={(e) => handleSelect(Number(e.target.value), setSelectedOtherId)}
+            >
                 <option disabled value="">Övriga dokument</option>
                 {otherDocs.map((doc) => (
-                    <option key={doc.id} value={doc.fileUrl}>
+                    <option key={doc.id} value={doc.id}>
                         {doc.title} ({new Date(doc.uploadDate).toLocaleDateString("sv-SE")})
                     </option>
                 ))}

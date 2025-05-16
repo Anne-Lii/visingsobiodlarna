@@ -18,5 +18,8 @@ export const uploadDocument = (formData: FormData) =>
 export const deleteDocument = (id: number) =>
   api.delete(`/documents/${id}`);
 
+export const getDownloadLink = (id: number) =>
+  api.get(`/documents/${id}/downloadlink`);
+
 export default api;
 

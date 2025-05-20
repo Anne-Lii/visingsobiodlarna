@@ -88,6 +88,29 @@ nav {
     display: none;
 }
 
+//Minskar fontsize i menyn på skärmar mellan 1024px - 769px
+@media (max-width: 1024px) and (min-width: 769px) {
+  .menu-link {
+    margin: 0 1rem;
+
+    a {
+      font-size: 18px;
+    }
+  }
+
+  .logo img {
+    height: 90px;
+  }
+
+  .nav-list {
+    gap: 1rem;
+  }
+
+  .login-link {
+    margin-left: auto;
+  }
+}
+
 
 //Media Querys för mindre skärmar än 768pixlar
 @media (max-width: 768px) {

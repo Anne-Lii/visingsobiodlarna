@@ -3,7 +3,7 @@
 header {
     height: 160px;
     width: 100%;
-    background-color:$color-white;
+    background-color: $color-white;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -67,12 +67,12 @@ nav {
     cursor: pointer;
     margin-left: auto;
     z-index: 20;
-  
+
     &.open {
-      color: rgb(231, 173, 46); 
+        color: rgb(231, 173, 46);
     }
 }
-  
+
 .overlay {
     position: fixed;
     top: 0;
@@ -83,16 +83,19 @@ nav {
 }
 
 
-
+//Menyval som göms på desktop
+.mobile-only {
+    display: none;
+}
 
 
 //Media Querys för mindre skärmar än 768pixlar
 @media (max-width: 768px) {
 
     .burger {
-      display: block; //Visar burger-ikon på små skärmar
+        display: block; //Visar burger-ikon på små skärmar
     }
-  
+
     .nav-list {
         display: none;
         flex-direction: column;
@@ -105,26 +108,30 @@ nav {
         align-items: center;
         justify-content: flex-start;
         padding-top: 200px;
-        gap: 2rem;  
+        gap: 2rem;
         box-sizing: border-box;
         z-index: 20;
     }
-  
-    .nav-list.open {
-      display: flex;
-      z-index: 20;
-    }
-  
-    .menu-link {
-      margin: 1rem 0;
 
-      a {
-        font-size: 32px;
-        font-weight: bold;
-      }
+    .nav-list.open {
+        display: flex;
+        z-index: 20;
     }
-  
+
+    .menu-link {
+        margin: 1rem 0;
+
+        a {
+            font-size: 32px;
+            font-weight: bold;
+        }
+    }
+
     .login-link {
-      margin-left: 0;
+        margin-left: 0;
     }
-  }
+
+    .mobile-only {
+        display: block;
+    }
+}

@@ -1,29 +1,58 @@
 @use '../styles/variables' as *;
 
 .layout {
-    min-height: 100vh;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+
+  .content-wrapper {
     display: flex;
-    flex-direction: column;
-  
-    .content-wrapper {
-      display: flex;
-      flex: 1;
-      gap: 20px;
-      padding: 15px;
-    }
-  
-    .main-content {
-      flex: 7;
-      padding: 2rem;
-      box-sizing: border-box;
-      background-color: $color-white;
-    }
-  
-    .aside {
-      flex: 3;
-      background-color: #f5f5f5;
-      padding: 20px;
-      box-sizing: border-box;
-    }
+    flex: 1;
+    gap: 20px;
+    padding: 15px;
   }
-  
+
+  .main-content {
+    flex: 7;
+    padding: 2rem;
+    box-sizing: border-box;
+    background-color: $color-white;
+  }
+
+  .aside {
+    flex: 3;
+    background-color: #f5f5f5;
+    padding: 20px;
+    box-sizing: border-box;
+  }
+}
+
+.swarm-alert-mobile {
+  display: none; // döljs som standard
+  background-color: $color-honey;
+  padding: 0.7rem;
+  text-align: center;
+  font-weight: bold;
+  color: $color-black;
+
+  h2 {
+    margin: 0;
+    font-size: 1.2rem;
+  }
+
+  p {
+    margin: 0;
+    font-size: 1.1rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .swarm-alert-mobile {
+    display: block;
+  }
+
+  .aside .phone_swarm,
+  .aside h2 {
+    display: none; // göm i aside på mobil
+  }
+}

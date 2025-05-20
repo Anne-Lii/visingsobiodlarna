@@ -44,6 +44,12 @@ const Header = () => {
                             Nyheter
                         </NavLink>
                     </li>
+                    <li className="menu-link mobile-only">
+                        <NavLink to="/calendar" onClick={closeMenu} className={({ isActive }) => isActive ? 'active' : ''}>
+                            Kalender
+                        </NavLink>
+                    </li>
+
 
                     {/* Meny om användaren är inloggad */}
                     {isLoggedIn && (
@@ -51,6 +57,11 @@ const Header = () => {
                             <li className="menu-link">
                                 <NavLink to="/mypage" onClick={closeMenu} className={({ isActive }) => isActive ? 'active' : ''}>
                                     Mina sidor</NavLink>
+                            </li>
+                            <li className="menu-link mobile-only">
+                                <NavLink to="/dokument" onClick={closeMenu} className={({ isActive }) => isActive ? 'active' : ''}>
+                                    Dokument
+                                </NavLink>
                             </li>
 
                             {role === 'admin' && (

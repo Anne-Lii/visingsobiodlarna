@@ -31,7 +31,14 @@ const Header = () => {
                 <button className="burger" onClick={() => setMenuOpen(!menuOpen)} aria-label="Meny">{menuOpen ? '✖' : '☰'}</button>
                 {menuOpen && <div className="overlay" onClick={closeMenu}></div>}
 
+
                 <ul className={`nav-list ${menuOpen ? 'open' : ''}`}>
+
+                    {menuOpen && (
+                        <li className="close-menu">
+                            <button onClick={closeMenu} aria-label="Stäng meny" className="close-btn">✖</button>
+                        </li>
+                    )}
 
                     <li className="menu-link">
                         <NavLink to="/" onClick={closeMenu} className={({ isActive }) => isActive ? 'active' : ''}>

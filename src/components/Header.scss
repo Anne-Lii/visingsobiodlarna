@@ -90,25 +90,25 @@ nav {
 
 //Minskar fontsize i menyn på skärmar mellan 1024px - 769px
 @media (max-width: 1024px) and (min-width: 769px) {
-  .menu-link {
-    margin: 0 1rem;
+    .menu-link {
+        margin: 0 1rem;
 
-    a {
-      font-size: 18px;
+        a {
+            font-size: 18px;
+        }
     }
-  }
 
-  .logo img {
-    height: 90px;
-  }
+    .logo img {
+        height: 90px;
+    }
 
-  .nav-list {
-    gap: 1rem;
-  }
+    .nav-list {
+        gap: 1rem;
+    }
 
-  .login-link {
-    margin-left: auto;
-  }
+    .login-link {
+        margin-left: auto;
+    }
 }
 
 
@@ -156,5 +156,20 @@ nav {
 
     .mobile-only {
         display: block;
+    }
+
+    .close-menu {
+        width: 100%;
+        display: flex;
+        justify-content: flex-end;
+        padding: 1rem 1.5rem;
+    }
+
+    .close-btn {
+        background: none;
+        border: none;
+        font-size: 2rem;
+        cursor: pointer;
+        color: $color-honey;
     }
 }

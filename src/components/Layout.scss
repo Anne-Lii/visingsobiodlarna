@@ -46,13 +46,31 @@
   }
 }
 
+//mobilskärmar
 @media (max-width: 768px) {
   .swarm-alert-mobile {
     display: block;
+    padding: 0.5rem;
   }
 
   .aside .phone_swarm,
   .aside h2 {
-    display: none; // göm i aside på mobil
+    display: none; //göm i aside på mobil
+  }
+
+  .layout {
+    .content-wrapper {
+      flex-direction: column;
+      gap: 5px;
+      padding: 10px;
+    }
+
+    .main-content {
+      padding: 0;
+    }
+
+    .aside {
+      padding: 0; // tas bort helt då aside ändå inte syns
+    }
   }
 }

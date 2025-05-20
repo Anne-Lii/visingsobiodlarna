@@ -2,6 +2,7 @@ import { useState } from "react";
 import api from "../services/apiService";
 import { useToast } from "./ToastContext";
 import { useNews } from "../context/NewsContext";
+import './NewsModal.scss';//styling sass
 
 interface Props {
   onClose: () => void;

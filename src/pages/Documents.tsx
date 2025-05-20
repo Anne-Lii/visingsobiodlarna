@@ -108,7 +108,7 @@ const AllDocumentsPage = () => {
 
     return (
         <div className="all-documents-page">
-            <h2>Alla dokument</h2>
+            <h1>Alla dokument</h1>
             {renderTable("Protokoll", protocols)}
             {renderTable("Övriga dokument", others)}
         </div>

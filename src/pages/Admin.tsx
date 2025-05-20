@@ -159,11 +159,9 @@ const Admin = () => {
                 )}
             </div>
 
-
-
             {showAddEventForm && (
                 <div className="modal-overlay">
-                    <div className="add-event-form">
+                    <div className="modal">
                         <h2>Ny kalenderhändelse</h2>
                         <form onSubmit={handleSubmit}>
                             <label htmlFor="title" id="title">Titel:</label>
@@ -206,8 +204,8 @@ const Admin = () => {
                                 value={newEvent.endDate}
                                 onChange={(e) => setNewEvent({ ...newEvent, endDate: e.target.value })}
                             />
-                            <button type="submit">Spara händelse</button>
-                            <button type="button" onClick={() => setShowAddEventForm(false)}>Avbryt</button>
+                            <button className="btn green_btn" type="submit">Spara händelse</button>
+                            <button className="btn cancel_btn" type="button" onClick={() => setShowAddEventForm(false)}>Avbryt</button>
                         </form>
                     </div>
                 </div>

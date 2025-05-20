@@ -1,6 +1,7 @@
 .all-documents-page {
- 
+
   width: 100%;
+  padding: 10px;
 
   h2 {
     font-size: 1.8rem;
@@ -23,7 +24,8 @@
     border-radius: 8px;
     overflow: hidden;
 
-    th, td {
+    th,
+    td {
       padding: 0.8rem 1rem;
       text-align: left;
       border-bottom: 1px solid #eee;
@@ -61,15 +63,17 @@
   }
 
   .link-button {
-  all: unset;
-  color: #0077cc;
-  cursor: pointer;
-  text-decoration: underline;
-  font-size: inherit;
-  font-family: inherit;
+    all: unset;
+    color: #0077cc;
+    cursor: pointer;
+    text-decoration: underline;
+    font-size: inherit;
+    font-family: inherit;
 
-  &:hover {
-    color: #005fa3;
+    &:hover {
+      color: #005fa3;
+    }
   }
+
 }
-}
+

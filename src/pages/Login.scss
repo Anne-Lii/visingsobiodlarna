@@ -47,3 +47,10 @@ input {
     color: green;
     text-decoration: none;
   }
+
+  @media (max-width: 768px) {
+    .login-container {
+        padding: 20px;
+    }
+    
+  }

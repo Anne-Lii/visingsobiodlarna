@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { fetchDocuments, deleteDocument, getDownloadLink } from "../services/apiService";
+import UploadDocumentModal from "../components/UploadDocumentModal";
 import { useToast } from "../components/ToastContext";
 import { useUser } from "../context/UserContext";
 import "./Documents.scss";
@@ -15,6 +16,7 @@ interface Document {
 
 const AllDocumentsPage = () => {
     const [documents, setDocuments] = useState<Document[]>([]);
+    const [showUploadModal, setShowUploadModal] = useState(false);
     const { showToast } = useToast();
     const { role } = useUser();
 
@@ -68,6 +70,7 @@ const AllDocumentsPage = () => {
         }
     };
 
+
     const renderTable = (title: string, docs: Document[]) => (
         <>
             <h3>{title}</h3>
@@ -109,6 +112,23 @@ const AllDocumentsPage = () => {
     return (
         <div className="all-documents-page">
             <h1>Alla dokument</h1>
+            {
+                role === "admin" && (
+                    <>
+                        <button className="btn add_btn" onClick={() => setShowUploadModal(true)}>+ Lägg till dokument</button>
+                        {showUploadModal && (
+                            <UploadDocumentModal
+                                onClose={() => setShowUploadModal(false)}
+                                onUploaded={() => {
+                                    // ladda om listan efter uppladdning
+                                    fetchDocuments().then(res => setDocuments(res.data));
+                                }}
+                            />
+                        )}
+                    </>
+                )
+            }
+            
             {renderTable("Protokoll", protocols)}
             {renderTable("Övriga dokument", others)}
         </div>

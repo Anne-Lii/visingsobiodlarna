@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { fetchDocuments, uploadDocument, deleteDocument, getDownloadLink } from "../services/apiService";
 import { useToast } from "./ToastContext";
 import './DocumentSection.scss';
+import UploadDocumentModal from "./UploadDocumentModal";
 
 
 interface Document {
@@ -119,30 +120,13 @@ const DocumentsSection = ({ isAdmin }: { isAdmin: boolean }) => {
             {isAdmin && (
                 <>
                     <button onClick={() => setShowUploadModal(true)}>+ Lägg till dokument</button>
-
                     {showUploadModal && (
-                        <div className="modal-overlay">
-                            <div className="modal">
-                                <h2>Ladda upp dokument</h2>
-                                <label>Titel:</label>
-                                <input type="text" value={title} onChange={(e) => setTitle(e.target.value)} />
-
-                                <label>Kategori:</label>
-                                <select value={category} onChange={(e) => setCategory(e.target.value)}>
-                                    <option value="Protokoll">Protokoll</option>
-                                    <option value="Övrigt">Övrigt</option>
-                                </select>
-
-                                <label>Välj fil:</label>
-                                <input type="file" onChange={(e) => setFile(e.target.files?.[0] || null)} />
-
-                                <div className="modal-actions">
-                                    <button onClick={handleUpload}>Ladda upp</button>
-                                    <button className="cancel_btn" onClick={() => setShowUploadModal(false)}>Avbryt</button>
-                                </div>
-                            </div>
-                        </div>
+                        <UploadDocumentModal
+                            onClose={() => setShowUploadModal(false)}
+                            onUploaded={loadDocuments}
+                        />
                     )}
+
                 </>
             )}
 

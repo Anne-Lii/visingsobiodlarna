@@ -52,8 +52,8 @@ const UploadDocumentModal = ({ onClose, onUploaded }: Props) => {
         <input type="file" onChange={(e) => setFile(e.target.files?.[0] || null)} />
 
         <div className="modal-actions">
-          <button onClick={handleUpload}>Ladda upp</button>
-          <button className="cancel_btn" onClick={onClose}>Avbryt</button>
+          <button className="btn green_btn" onClick={handleUpload}>Ladda upp</button>
+          <button className="btn cancel_btn" onClick={onClose}>Avbryt</button>
         </div>
       </div>
     </div>

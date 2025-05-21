@@ -135,7 +135,7 @@ const CalendarEvents = () => {
 
       <h1>Kommande kalenderhändelser</h1>
       {isLoggedIn && role === "admin" && (
-        <button onClick={() => navigate("/admin", { state: { openAddEvent: true } })}>
+        <button className="btn add_btn" onClick={() => navigate("/admin", { state: { openAddEvent: true } })}>
           + Lägg till ny kalenderhändelse
         </button>
       )}
@@ -185,12 +185,13 @@ const CalendarEvents = () => {
               <div className="admin-buttons-calendar">
                 {editingId === event.id ? (
                   <>
-                    <button onClick={() => handleSave(event.id)}>Spara</button>
-                    <button onClick={() => setEditingId(null)}>Avbryt</button>
+                    <button className="btn green_btn" onClick={() => handleSave(event.id)}>Spara</button>
+                    <button className="btn cancel_btn" onClick={() => setEditingId(null)}>Avbryt</button>
                   </>
                 ) : (
                   <>
                     <button
+                     className="btn edit_btn"
                       onClick={() => {
                         setEditingId(event.id);
                         setEditedTitle(event.title);
@@ -200,7 +201,7 @@ const CalendarEvents = () => {
                     >
                       Redigera
                     </button>
-                    <button onClick={() => handleDelete(event.id)}>Ta bort</button>
+                    <button className="btn cancel_btn" onClick={() => handleDelete(event.id)}>Ta bort</button>
                   </>
                 )}
               </div>

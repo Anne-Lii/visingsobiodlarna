@@ -5,6 +5,8 @@ import { useUser } from "../context/UserContext";
 import '../pages/CalendarEvents.scss'
 import { useToast } from "../components/ToastContext";
 import ConfirmDeleteModal from "../components/ConfirmDeleteModal";
+import 'react-calendar/dist/Calendar.css';
+import CalendarWidget from "../components/CalendarWidget";
 
 interface CalendarEvent {
   id: number;
@@ -23,6 +25,8 @@ const CalendarEvents = () => {
   const [editedStartTime, setEditedStartTime] = useState("");
   const [showConfirmModal, setShowConfirmModal] = useState(false);
   const [pendingDeleteId, setPendingDeleteId] = useState<number | null>(null);
+  const [selectedDate, setSelectedDate] = useState(new Date());
+  const [calendarEvents, setCalendarEvents] = useState<{ startDate: string }[]>([]);
   const { role, isLoggedIn } = useUser();
   const { showToast } = useToast();
   const navigate = useNavigate();
@@ -32,17 +36,20 @@ const CalendarEvents = () => {
     const fetchEvents = async () => {
       try {
         const response = await api.get("/calendar");
-        const transformed: CalendarEvent[] = response.data.map((e: any) => ({
+        const transformed = response.data.map((e: any) => ({
           id: e.id,
           title: e.title,
           content: e.content,
           startDate: e.startDate,
         }));
 
+        setCalendarEvents(transformed);
         const today = new Date();
         const upcoming = transformed
-          .filter(e => new Date(e.startDate) >= today)
-          .sort((a, b) => new Date(a.startDate).getTime() - new Date(b.startDate).getTime());
+          .filter((e: CalendarEvent) => new Date(e.startDate) >= today)
+          .sort((a: CalendarEvent, b: CalendarEvent) =>
+            new Date(a.startDate).getTime() - new Date(b.startDate).getTime()
+          );
 
         setEvents(upcoming);
       } catch (error) {
@@ -107,8 +114,25 @@ const CalendarEvents = () => {
     }
   };
 
+  //Kalender
+  const handleDateClick = (date: Date) => {
+    setSelectedDate(date);
+    const isoDate = date.toLocaleDateString("sv-SE").replaceAll(".", "-");
+    navigate(`/calendar/${isoDate}`);
+  };
+
   return (
     <div className="calendar-events">
+
+      {/* Kalendern */}
+      <div className="mobile-calendar">
+        <CalendarWidget
+          events={calendarEvents}
+          selectedDate={selectedDate}
+          onDateClick={handleDateClick}
+        />
+      </div>
+
       <h1>Kommande kalenderhändelser</h1>
       {isLoggedIn && role === "admin" && (
         <button onClick={() => navigate("/admin", { state: { openAddEvent: true } })}>

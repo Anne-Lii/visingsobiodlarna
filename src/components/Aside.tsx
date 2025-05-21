@@ -1,12 +1,12 @@
 import { useEffect, useState } from "react";
 import api from "../services/apiService";
 import { NavLink, useNavigate, useLocation } from "react-router-dom";
-import Calendar from "react-calendar";
 import 'react-calendar/dist/Calendar.css';
 import '../components/Aside.scss'
-import { NewsItem, useNews } from "../context/NewsContext";
+import { useNews } from "../context/NewsContext";
 import DocumentsSection from "./DocumentSection";
 import { useUser } from "../context/UserContext";
+import CalendarWidget from "./CalendarWidget";
 
 
 
@@ -22,7 +22,7 @@ interface FeedItem {
 const Aside = () => {
 
   //states
-  const [calendarEvents, setCalendarEvents] = useState<any[]>([]);
+  const [calendarEvents, setCalendarEvents] = useState<{ startDate: string }[]>([]);
   const [combinedFeed, setCombinedFeed] = useState<FeedItem[]>([]);
   const { news } = useNews();
 
@@ -77,31 +77,6 @@ const Aside = () => {
   }, [news]);
 
 
-
-  //funktion som kontrollerar om ett datum har en händelse och lägger till understrucken markering
-  const tileContent = ({ date, view }: { date: Date; view: string }) => {
-    if (view === 'month') {
-      const hasEvent = calendarEvents.some(event => {
-        const eventDate = new Date(event.startDate);
-        return eventDate.toDateString() === date.toDateString();
-      });
-      return hasEvent ? <div className="event-underline"></div> : null;
-    }
-    return null;
-  };
-
-  //funktion som kontrollerar om ett datum har en händelse och lägger till bakgrundsfärg
-  const tileClassName = ({ date, view }: { date: Date; view: string }) => {
-    if (view === 'month') {
-      const hasEvent = calendarEvents.some(event => {
-        const eventDate = new Date(event.startDate);
-        return eventDate.toDateString() === date.toDateString();
-      });
-      return hasEvent ? 'event-day' : null;
-    }
-    return null;
-  };
-
   const handleDateClick = (date: Date) => {
     setSelectedDate(date);
     const isoDate = date.toLocaleDateString("sv-SE").replaceAll(".", "-");
@@ -114,7 +89,11 @@ const Aside = () => {
       <p className="phone_swarm">Thomas Hansen 070-589 48 75</p>
 
       <h3>Kalender</h3>
-      <Calendar onClickDay={handleDateClick} tileContent={tileContent} value={selectedDate} tileClassName={tileClassName} />
+      <CalendarWidget
+        events={calendarEvents}
+        selectedDate={selectedDate}
+        onDateClick={handleDateClick}
+      />
       <NavLink to="/calendar" className="calendar-link">
         Visa alla kalenderhändelser
       </NavLink>
@@ -132,7 +111,7 @@ const Aside = () => {
 
       <DocumentsSection isAdmin={isAdmin} />
 
-      
+
 
     </aside>
   )

@@ -1,110 +1,143 @@
 @use '../styles/variables' as *;
 
 .calendar-events {
-    max-width: 700px;
-    margin: 0 auto;
-    padding: 2rem 1rem;
-  
-    h1 {
-      font-size: 2rem;
-      margin-bottom: 1.5rem;
-      text-align: center;
-    }
-  
-    button {
-      padding: 0.5rem 1.3rem;
-      margin: 0.25rem;
+  max-width: 700px;
+  margin: 0 auto;
+  padding: 2rem 1rem;
+
+  .mobile-calendar {
+    display: none;
+
+    .react-calendar {
+      width: 100%;
       border: none;
-      border-radius: 4px;
-      cursor: pointer;
-      font-size: 0.9rem;
-      transition: background 0.2s ease-in-out;
-  
-      &:hover {
-        opacity: 0.9;
-      }
+      border-radius: 8px;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+      margin-bottom: 2rem;
     }
-  
-    > button {
-      display: block;
-      margin: 0 auto 2rem auto;
-      background-color: $color-honey;
-      color: #000000;
-  
-      &:hover {
-        background-color: #1b4332;
-      }
+
+    .event-day {
+      background-color: $color-honey !important;
+      font-weight: 700;
+      border-radius: 6px;
+      color: $color-black !important;
     }
-  
-    ul {
-      list-style: none;
-      padding: 0;
-  
-      li {
-        background: #f9f9f9;
-        border: 1px solid #ddd;
-        border-radius: 6px;
-        padding: 1rem;
-        margin-bottom: 1rem;
-        position: relative;
-  
-        small {
-          color: #747474;
-          font-size: 0.90rem;
 
-        }
-  
-        strong {
-          display: block;
-          font-size: 1.1rem;
-          margin: 0.5rem 0;
-          font-weight: 600;
-        }
-  
-        p {
-          margin:5px 0;
-          white-space: pre-wrap;
+    .event-underline {
+      width: 40%;
+      height: 3px;
+      background-color: $color-petrol-add;
+      margin: 0.2rem auto 0 auto;
+      border-radius: 2px;
+    }
+  }
 
-        }
-  
-        [contenteditable="true"] {
-          outline: 1px dashed #aaa;
-          background-color: #fffce8;
-          padding: 2px;
-          border-radius: 3px;
-        }
-  
-        .admin-buttons-calendar {
-          margin-top: 0.75rem;
-  
-          button {
-            background-color: #e0e0e0;
-            color: #333;
-  
+  h1 {
+    font-size: 2rem;
+    margin-bottom: 1.5rem;
+    text-align: center;
+  }
+
+  button {
+    padding: 0.5rem 1.3rem;
+    margin: 0.25rem;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    transition: background 0.2s ease-in-out;
+
+    &:hover {
+      opacity: 0.9;
+    }
+  }
+
+  >button {
+    display: block;
+    margin: 0 auto 2rem auto;
+    background-color: $color-honey;
+    color: #000000;
+
+    &:hover {
+      background-color: #1b4332;
+    }
+  }
+
+  ul {
+    list-style: none;
+    padding: 0;
+
+    li {
+      background: #f9f9f9;
+      border: 1px solid #ddd;
+      border-radius: 6px;
+      padding: 1rem;
+      margin-bottom: 1rem;
+      position: relative;
+
+      small {
+        color: #747474;
+        font-size: 0.90rem;
+
+      }
+
+      strong {
+        display: block;
+        font-size: 1.1rem;
+        margin: 0.5rem 0;
+        font-weight: 600;
+      }
+
+      p {
+        margin: 5px 0;
+        white-space: pre-wrap;
+
+      }
+
+      [contenteditable="true"] {
+        outline: 1px dashed #aaa;
+        background-color: #fffce8;
+        padding: 2px;
+        border-radius: 3px;
+      }
+
+      .admin-buttons-calendar {
+        margin-top: 0.75rem;
+
+        button {
+          background-color: #e0e0e0;
+          color: #333;
+
+          &:hover {
+            background-color: #ccc;
+          }
+
+          &:first-of-type {
+            background-color: #74c69d;
+            color: #000000;
+
             &:hover {
-              background-color: #ccc;
+              background-color: #52b788;
             }
-  
-            &:first-of-type {
-              background-color: #74c69d;
-              color: #000000;
-  
-              &:hover {
-                background-color: #52b788;
-              }
-            }
-  
-            &:nth-of-type(2) {
-              background-color: #f28482;
-              color: #000000;
-  
-              &:hover {
-                background-color: #e63946;
-              }
+          }
+
+          &:nth-of-type(2) {
+            background-color: #f28482;
+            color: #000000;
+
+            &:hover {
+              background-color: #e63946;
             }
           }
         }
       }
     }
   }
-  
+
+  @media (max-width: 768px) {
+    .mobile-calendar {
+      display: block;
+    }
+  }
+
+}

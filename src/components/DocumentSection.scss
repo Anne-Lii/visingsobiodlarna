@@ -1,36 +1,21 @@
-.documents-section {
-  margin-top: 2rem;
-  padding: 1rem;
+@use '../styles/variables' as *;
 
-  h2 {
-    text-align: center;
-    margin-bottom: 1.5rem;
-  }
+.documents-section {
+  width: 100%;
 
   select {
     display: block;
     width: 100%;
-    max-width: 500px;
-    margin: 0.5rem auto;
-    padding: 0.5rem;
-    font-size: 1rem;
+    padding: 0 5px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    font-size: 18px;
+    background-color: #fff;
+    font-family: inherit;
+    height: 42px;
+    margin-bottom: 1rem; // 👈 Lägg till lite avstånd mellan dem
   }
 
-  button {
-    display: block;
-    margin: 1rem auto;
-    padding: 0.5rem 1rem;
-    font-size: 1rem;
-    background-color: #006400;
-    color: white;
-    border: none;
-    border-radius: 6px;
-    cursor: pointer;
-
-    &:hover {
-      background-color: #228b22;
-    }
-  }
 
   .modal-overlay {
     position: fixed;

@@ -16,7 +16,7 @@
     }
   
     .apiary-details, .apiaryHives {
-      padding: 1.5rem;
+      padding: 1rem;
       margin-bottom: 2rem;
   
       label {
@@ -109,24 +109,15 @@
           min-height: 200px;
         }
 
-        .green_btn {
-          background-color: $color-green-approve;
-          &:hover {
-            background-color: $color-green-approve-hover;
-          }
-        }
-
-        
-
-        
-
-        .cancel_btn {
-          background-color: $color-red-delete;
-          &:hover {
-            background-color: $color-red-delete-hover;
-          }
-        }
   
       }
     }
+  }
+
+  //mobilskärmar
+    @media (max-width: 768px) {
+      .apiary_container {
+        padding: 10px;
+      }
+    
   }

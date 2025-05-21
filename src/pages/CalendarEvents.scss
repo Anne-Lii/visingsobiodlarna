@@ -32,10 +32,6 @@
     }
   }
 
- 
-
- 
-
   ul {
     list-style: none;
     padding: 0;
@@ -68,13 +64,12 @@
       }
 
       [contenteditable="true"] {
-        outline: 1px dashed #aaa;
-        background-color: #fffce8;
-        padding: 2px;
+        outline: 1px solid #aaa;
+        background-color: #ffffff;
+        padding: 4px 6px;
         border-radius: 3px;
+        min-height: 1.2em;
       }
-
-      
     }
   }
 

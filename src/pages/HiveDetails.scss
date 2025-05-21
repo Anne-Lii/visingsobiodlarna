@@ -36,25 +36,27 @@
       border-radius: 8px;
     }
 
-    .green_btn {
-      background-color: $color-green-approve;
-
-      &:hover {
-        background-color: $color-green-approve-hover;
-      }
-    }
-
-    .cancel_btn {
-      background-color: $color-red-delete;
-
-      &:hover {
-        background-color: $color-red-delete-hover;
-      }
+    textarea {
+      min-height: 100px;
+      font-family: sans-serif;
+      font-size: 16px;
     }
   }
 
+
   .report-section {
     margin-top: 2rem;
+
+    select {
+        width: 100%;
+        padding-left: 10px;
+        border: 1px solid #ccc;
+        border-radius: 8px;
+        font-size: 1rem;
+        background-color: #fff;
+        font-family: inherit;
+        height: 32px;
+    }
 
     table {
       width: 100%;
@@ -111,19 +113,7 @@
         min-height: 200px;
       }
 
-      .green_btn {
-        background-color: $color-green-approve;
-        &:hover {
-          background-color: $color-green-approve-hover;
-        }
-      }
-
-      .cancel_btn {
-        background-color: $color-red-delete;
-        &:hover {
-          background-color: $color-red-delete-hover;
-        }
-      }
+  
     }
   }
 }

@@ -108,11 +108,10 @@ const Aside = () => {
           </li>
         ))}
       </ul>
-
+      
+      <h3>Dokument</h3>
       <DocumentsSection isAdmin={isAdmin} />
-
-
-
+      
     </aside>
   )
 }

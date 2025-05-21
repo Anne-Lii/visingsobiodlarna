@@ -193,7 +193,7 @@ const HiveDetails = () => {
 
     return (
         <div className="hive_container">
-            <button onClick={() => navigate(-1)} className="back-link">← Tillbaka</button>
+            <button className="back-link" onClick={() => navigate(-1)}>← Tillbaka</button>
 
             <div className="hive-details">
                 {!isEditingHive ? (
@@ -260,7 +260,7 @@ const HiveDetails = () => {
 
                 <div style={{ marginTop: "1rem" }}>
                     {!isEditing ? (
-                        <button className="btn green_btn" onClick={() => setIsEditing(true)}>Rapportera kvalster</button>
+                        <button className="btn add_btn" onClick={() => setIsEditing(true)}>+ Rapportera kvalster</button>
                     ) : (
                         <>
                             <button className="btn green_btn" onClick={handleSaveReports}>Spara</button>

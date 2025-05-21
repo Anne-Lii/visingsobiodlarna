@@ -55,7 +55,19 @@ h1 {
         border-radius: 8px;
         font-size: 1rem;
     }
+
+    select {
+        padding: 0.8rem;
+        border: 1px solid #ccc;
+        border-radius: 8px;
+        font-size: 1rem;
+        background-color: #fff;
+        font-family: inherit;
+        height: 42px;
+    }
 }
+
+
 
 
 
@@ -118,7 +130,7 @@ h1 {
     margin-left: 0.3rem;
     display: inline-block;
     transform: scaleX(-1);
-    
+
 }
 
 //Gröna knappar för Spara eller Godkänna
@@ -135,7 +147,7 @@ h1 {
     display: inline-flex;
     align-items: center;
     gap: 0.4rem;
-     background-color: $color-red-delete;
+    background-color: $color-red-delete;
 }
 
 .remove_btn:hover {

@@ -278,9 +278,9 @@ const Mypage = () => {
   return (
     <div className="mypage-container">
       <h1>Mina sidor</h1>
-      <button className="add_btn" onClick={() => setShowMiteModal(true)}>+ Rapportera kvalster</button>
-      <button className="add_btn" onClick={() => setShowHoneyModal(true)}>+ Honungsskörd</button>
-      <button className="add_btn" onClick={() => setShowModal(true)}>+ Lägg till bigård</button>
+      <button className="btn add_btn" onClick={() => setShowMiteModal(true)}>+ Rapportera kvalster</button>
+      <button className="btn add_btn" onClick={() => setShowHoneyModal(true)}>+ Honungsskörd</button>
+      <button className="btn add_btn" onClick={() => setShowModal(true)}>+ Lägg till bigård</button>
 
       <div className="honeyharvest-container">
         <h2>Honungsskörd</h2>
@@ -360,8 +360,8 @@ const Mypage = () => {
               value={newApiary.location}
               onChange={(e) => setNewApiary({ ...newApiary, location: e.target.value })}
             />
-            <button onClick={handleSaveApiary}>Spara</button>
-            <button onClick={() => setShowModal(false)}>Avbryt</button>
+            <button className="btn green_btn" onClick={handleSaveApiary}>Spara</button>
+            <button className="btn cancel_btn" onClick={() => setShowModal(false)}>Avbryt</button>
           </div>
         </div>
       )}
@@ -438,8 +438,8 @@ const Mypage = () => {
             )}
 
             <div className="modal-actions">
-              <button onClick={handleSaveMiteReports}>Spara</button>
-              <button className="cancel_btn" onClick={() => {
+              <button className="btn green_btn" onClick={handleSaveMiteReports}>Spara</button>
+              <button className="btn cancel_btn" onClick={() => {
                 setShowMiteModal(false);
                 setSelectedApiaryId(null);
                 setHives([]);
@@ -459,8 +459,8 @@ const Mypage = () => {
               Det finns redan en kvalsterrapport för <strong>{overwriteModal.hive?.name}</strong> vecka {selectedWeek}.
             </p>
             <p>Vill du skriva över den med det nya värdet: <strong>{overwriteModal.miteCount}</strong>?</p>
-            <button onClick={confirmOverwrite}>OK</button>
-            <button className="cancel_btn" onClick={cancelOverwrite}>Avbryt</button>
+            <button className="btn green_btn" onClick={confirmOverwrite}>OK</button>
+            <button className="btn cancel_btn" onClick={cancelOverwrite}>Avbryt</button>
           </div>
         </div>
       )}
@@ -489,8 +489,8 @@ const Mypage = () => {
             />
 
             <div className="modal-actions">
-              <button onClick={handleSaveHarvest}>Spara</button>
-              <button className="cancel_btn" onClick={() => setShowHoneyModal(false)}>Avbryt</button>
+              <button className="btn green_btn" onClick={handleSaveHarvest}>Spara</button>
+              <button className="btn cancel_btn" onClick={() => setShowHoneyModal(false)}>Avbryt</button>
             </div>
           </div>
         </div>

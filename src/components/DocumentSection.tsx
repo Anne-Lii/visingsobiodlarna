@@ -89,9 +89,7 @@ const DocumentsSection = ({ isAdmin }: { isAdmin: boolean }) => {
 
     return (
         <section className="documents-section">
-            <h2>Dokument</h2>
-
-
+            
             <select
                 value={selectedProtocolId}
                 onChange={(e) => handleSelect(Number(e.target.value), setSelectedProtocolId)}
@@ -119,7 +117,7 @@ const DocumentsSection = ({ isAdmin }: { isAdmin: boolean }) => {
 
             {isAdmin && (
                 <>
-                    <button onClick={() => setShowUploadModal(true)}>+ Lägg till dokument</button>
+                    <button className="btn add_btn" onClick={() => setShowUploadModal(true)}>+ Lägg till dokument</button>
                     {showUploadModal && (
                         <UploadDocumentModal
                             onClose={() => setShowUploadModal(false)}

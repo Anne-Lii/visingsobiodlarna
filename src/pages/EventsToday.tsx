@@ -182,12 +182,13 @@ const EventsToday = () => {
                 <div className="admin-buttons-calendar">
                   {editingId === event.id ? (
                     <>
-                      <button onClick={() => handleSave(event.id)}>Spara</button>
-                      <button onClick={() => setEditingId(null)}>Avbryt</button>
+                      <button className="btn green_btn" onClick={() => handleSave(event.id)}>Spara</button>
+                      <button className="btn cancel_btn" onClick={() => setEditingId(null)}>Avbryt</button>
                     </>
                   ) : (
                     <>
                       <button
+                       className="btn edit_btn"
                         onClick={() => {
                           setEditingId(event.id);
                           setEditedTitle(event.title);
@@ -198,7 +199,7 @@ const EventsToday = () => {
                       >
                         Redigera
                       </button>
-                      <button onClick={() => handleDelete(event.id)}>Ta bort</button>
+                      <button className="btn cancel_btn" onClick={() => handleDelete(event.id)}>Ta bort</button>
                     </>
                   )}
                 </div>

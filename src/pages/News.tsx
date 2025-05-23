@@ -1,5 +1,5 @@
 import axios from "axios";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import '../pages/News.scss'
 import { useUser } from "../context/UserContext";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -8,13 +8,6 @@ import NewsModal from "../components/NewsModal";
 import { useToast } from "../components/ToastContext";
 import ConfirmDeleteModal from "../components/ConfirmDeleteModal";
 import { useNews } from "../context/NewsContext";
-
-interface NewsItem {
-  id: number;
-  title: string;
-  content: string;
-  publishDate: string;
-}
 
 const News = () => {
 

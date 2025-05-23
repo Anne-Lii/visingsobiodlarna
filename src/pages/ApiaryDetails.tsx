@@ -130,7 +130,7 @@ const ApiaryDetails = () => {
     const createHive = async () => {
         if (!id || !newHiveName.trim()) return;
         try {
-            const response = await api.post("/hive", {
+            await api.post("/hive", {
                 name: newHiveName,
                 description: newHiveDescription,
                 apiaryId: Number(id),

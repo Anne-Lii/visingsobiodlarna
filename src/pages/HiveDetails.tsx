@@ -1,4 +1,4 @@
-import { Link, useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import api from "../services/apiService";
 import { useEffect, useState } from "react";
 import '../pages/HiveDetails.scss';
@@ -156,7 +156,7 @@ const HiveDetails = () => {
                         return;
                     }
 
-                    const response = await api.put(`/mites/${existing.id}`, {
+                    await api.put(`/mites/${existing.id}`, {
                         hiveId: Number(id),
                         year: selectedYear,
                         week,
@@ -164,7 +164,7 @@ const HiveDetails = () => {
                     });
                 } else {
                     try {
-                        const response = await api.post(`/mites`, {
+                        await api.post(`/mites`, {
                             hiveId: Number(id),
                             year: selectedYear,
                             week,

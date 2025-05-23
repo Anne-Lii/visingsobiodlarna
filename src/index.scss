@@ -11,13 +11,34 @@ body {
     font-family: sans-serif;
     background-color: $color-honey;
     line-height: 1.4;
-    color: #333;
+    color: $color-black;
 }
 
 h1 {
     text-align: center;
+    font-size: 32px;
+    color: $color-black;
 }
 
+h2 {
+    font-size: 24px;
+    color: $color-black;
+}
+
+h3 {
+    font-size: 20px;
+    color: $color-black;
+}
+
+p {
+    font-size: 18px;
+    line-height: 1.4;
+    color: $color-black;
+}
+
+a {
+    color: $color-black;
+}
 
 //Modal
 .modal-overlay {
@@ -69,11 +90,6 @@ h1 {
 
 
 
-
-
-
-
-
 //KNAPPAR
 .btn {
     margin-right: 0.5rem;
@@ -84,6 +100,7 @@ h1 {
     font-size: 1.2rem;
     box-shadow: 3px 3px 5px grey;
     line-height: 1.2;
+    white-space: nowrap;
 }
 
 .btn:hover {

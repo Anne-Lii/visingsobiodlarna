@@ -35,7 +35,7 @@ const Aside = () => {
     return match ? new Date(match[1]) : new Date();
   });
 
-  const { role, isLoggedIn } = useUser();
+  const { role } = useUser();
   const isAdmin = role === "admin";
 
   useEffect(() => {

@@ -63,9 +63,6 @@ const Mypage = () => {
   const [selectedHarvestYear, setSelectedHarvestYear] = useState(new Date().getFullYear());
   const [harvests, setHarvests] = useState<{ batchId: string; amountKg: number; harvestDate: string }[]>([]);
   const totalForYear = harvests.reduce((sum, h) => sum + h.amountKg, 0);
-
-
-
   const { showToast } = useToast();
   const navigate = useNavigate();
 

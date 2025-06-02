@@ -51,7 +51,7 @@ const Aside = () => {
           id: event.id,
           title: event.title,
           type: 'event',
-          date: event.publishDate,
+          date: event.startDate,
         }));
 
         const newsItems: FeedItem[] = news.map((n) => ({

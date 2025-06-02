@@ -3,10 +3,10 @@ import { useEffect, useState } from "react";
 import api from "../services/apiService";
 
 interface NewsItem {
-    Id: number;
-    Title: string;
-    Content: string;
-    PublishDate: string;
+    id: number;
+    title: string;
+    content: string;
+    publishDate: string;
   }
 
 const NewsDetail = () => {
@@ -32,9 +32,9 @@ const NewsDetail = () => {
 
   return (
     <div>
-    <h1>{newsItem.Title}</h1>
-    <small>Publicerad: {new Date(newsItem.PublishDate).toLocaleDateString()}</small>
-    <p>{newsItem.Content}</p>
+    <h1>{newsItem.title}</h1>
+    <small>Publicerad: {new Date(newsItem.publishDate).toLocaleDateString()}</small>
+    <p>{newsItem.content}</p>
     
   </div>
   );

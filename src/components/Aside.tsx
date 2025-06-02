@@ -32,7 +32,11 @@ const Aside = () => {
   const match = location.pathname.match(/^\/calendar\/(\d{4}-\d{2}-\d{2})$/); // ⬅ FLYTTAD HIT
 
   const [selectedDate, setSelectedDate] = useState<Date>(() => {
-    return match ? new Date(match[1]) : new Date();
+    if (match) {
+      const parsed = new Date(match[1]);
+      return isNaN(parsed.getTime()) ? new Date() : parsed;
+    }
+    return new Date();
   });
 
   const { role } = useUser();
@@ -102,16 +106,24 @@ const Aside = () => {
       <ul>
         {combinedFeed.map(item => (
           <li key={`${item.type}-${item.id}`}>
-            <NavLink to={item.type === 'news' ? `/news/${item.id}` : `/calendar/${item.date.slice(0, 10)}`}>
+            <NavLink
+              to={
+                item.type === 'news'
+                  ? `/news/${item.id}`
+                  : item.date && !isNaN(new Date(item.date).getTime())
+                    ? `/calendar/${new Date(item.date).toISOString().slice(0, 10)}`
+                    : "/calendar"
+              }
+            >
               {item.title}
             </NavLink>
           </li>
         ))}
       </ul>
-      
+
       <h3>Dokument</h3>
       <DocumentsSection isAdmin={isAdmin} />
-      
+
     </aside>
   )
 }

@@ -8,10 +8,6 @@ import DocumentsSection from "./DocumentSection";
 import { useUser } from "../context/UserContext";
 import CalendarWidget from "./CalendarWidget";
 
-
-
-
-
 interface FeedItem {
   id: number;
   title: string;
@@ -29,7 +25,7 @@ const Aside = () => {
   //gör datumet klickbart för att visa aktuella händelser den dagen
   const navigate = useNavigate();
   const location = useLocation();
-  const match = location.pathname.match(/^\/calendar\/(\d{4}-\d{2}-\d{2})$/); // ⬅ FLYTTAD HIT
+  const match = location.pathname.match(/^\/calendar\/(\d{4}-\d{2}-\d{2})$/);
 
   const [selectedDate, setSelectedDate] = useState<Date>(() => {
     if (match) {

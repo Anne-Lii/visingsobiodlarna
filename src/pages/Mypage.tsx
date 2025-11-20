@@ -61,7 +61,7 @@ const Mypage = () => {
   const [harvestDate, setHarvestDate] = useState<string>(""); //Datum för skörd t.ex. 2025-05-15
   const [harvestKg, setHarvestKg] = useState<string>(""); //sträng för att tillåta kommatecken
   const [selectedHarvestYear, setSelectedHarvestYear] = useState(new Date().getFullYear());
-  const [harvests, setHarvests] = useState<{ batchId: string; amountKg: number; harvestDate: string }[]>([]);
+  const [harvests, setHarvests] = useState<{ id: number; batchId: string; amountKg: number; harvestDate: string }[]>([]);
   const totalForYear = harvests.reduce((sum, h) => sum + h.amountKg, 0);
   const { showToast } = useToast();
   const navigate = useNavigate();
@@ -97,6 +97,7 @@ const Mypage = () => {
       const data = response.data
         .filter((h: any) => h.batchId && !h.isTotalForYear)
         .map((h: any) => ({
+          id: h.id,
           batchId: h.batchId,
           amountKg: h.amountKg,
           harvestDate: h.harvestDate
@@ -261,10 +262,10 @@ const Mypage = () => {
   };
 
 
-  const handleDeleteHarvest = async (batchId: string) => {
+  const handleDeleteHarvest = async (id: number) => {
     if (!window.confirm("Vill du ta bort denna skörderapport?")) return;
     try {
-      await api.delete(`/honeyharvest/${batchId}`);
+      await api.delete(`/honeyharvest/${id}`);
       showToast("Skörderapport borttagen", "success");
       loadHarvests();
     } catch {
@@ -297,6 +298,7 @@ const Mypage = () => {
                 <th>Batchnummer</th>
                 <th>Datum</th>
                 <th>Vikt (kg)</th>
+                <th>Radera</th>
               </tr>
             </thead>
             <tbody>
@@ -305,11 +307,13 @@ const Mypage = () => {
                   <td>{h.batchId}</td>
                   <td>{new Date(h.harvestDate).toLocaleDateString("sv-SE")}</td>
                   <td>{h.amountKg.toFixed(1)}</td>
+                  <td><button className="btn small_btn delete_btn" onClick={() => handleDeleteHarvest(h.id)}>X</button></td>
                 </tr>
               ))}
               <tr>
                 <td colSpan={2}><strong>Totalt {selectedYear}</strong></td>
                 <td><strong>{totalForYear.toFixed(1)} kg</strong></td>
+                <td></td>
               </tr>
             </tbody>
           </table>

@@ -19,7 +19,7 @@ const ProtectedRoute = ({ children, requiredRole }: ProtectedRouteProps) => {
         return <Navigate to="/login" replace />;
     }
     if (requiredRole && role !== requiredRole) {
-        return <Navigate to="/" replace />; //skickas till start om användaren ej är admin
+        return <Navigate to="/" replace />; //användaren skickas till startsidan om användaren ej är admin
       }
 
     return children;

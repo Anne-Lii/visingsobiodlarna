@@ -3,7 +3,7 @@ Frontend for the **Visingsö Beekeepers Association** digital platform.
 
 ---
 
-## 🌟 About
+## About
 This React application provides the user interface for the Visingsö Beekeepers platform.  
 It allows members to:  
 - Register and log in with JWT authentication  
@@ -20,7 +20,7 @@ It allows members to:
 
 ---
 
-## 🛠️ Tech Stack
+## Tech Stack
 - **Framework:** React (TypeScript)  
 - **State & Routing:** React Router, Context API  
 - **Styling:** SCSS, responsive design  
@@ -30,7 +30,7 @@ It allows members to:
 
 ---
 
-## 🚀 Getting Started
+## Getting Started
 Clone the repository and install dependencies:  
 ```bash
 git clone https://github.com/Anne-Lii/visingsobiodlarna_frontend.git

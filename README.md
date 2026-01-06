@@ -1,6 +1,5 @@
 # Visingsö Beekeepers Association – Frontend
-Frontend for the **Visingsö Beekeepers Association** digital platform.  
-Developed as part of my final degree project in Web Development (Mid Sweden University, 2025).  
+Frontend for the **Visingsö Beekeepers Association** digital platform. 
 
 ---
 

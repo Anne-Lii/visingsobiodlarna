@@ -139,7 +139,7 @@ const Admin = () => {
             <button className="add_btn" onClick={() => addEvent()}>+ Lägg till kalenderhändelse</button>
 
             <div className="pendingUser-container">
-                <h2>Registreringar som väntar på godkännande:</h2>
+                <h2>Registreringar som väntar på godkännande: </h2>
                 {pendingUsers.length === 0 ? (
                     <p>Inga användare väntar på godkännande.</p>
                 ) : (

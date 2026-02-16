@@ -4,7 +4,7 @@ import Home from './pages/Home';
 import Login from './pages/Login';
 import News from './pages/News';
 import Register from './pages/Register';
-import NewPassword from './pages/NewPassword';
+import NewPassword from './pages/ForgotPassword';
 import Mypage from './pages/Mypage';
 import ProtectedRoute from './components/ProtectedRoute';
 import Admin from './pages/Admin';
@@ -27,8 +27,8 @@ function App() {
           <Route path="news"            element={<News />} />
           <Route path="login"           element={<Login />} />
           <Route path="register"        element={<Register />} />
-          <Route path="new_password"    element={<NewPassword />} />
-          <Route path="reset_password"  element={<ResetPassword />} />
+          <Route path="forgot-password"    element={<NewPassword />} />
+          <Route path="reset-password"  element={<ResetPassword />} />
           <Route path="news/:id"        element={<NewsDetail />} />
           <Route path="calendar/:date"  element={<EventsToday />} />
           <Route path="calendar"        element={<CalendarEvents />} />

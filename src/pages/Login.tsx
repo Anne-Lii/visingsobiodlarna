@@ -45,7 +45,7 @@ const Login = () => {
         <div className="form-group">
           <label htmlFor="password">Lösenord</label>
           <input type="password" id="password" name="password" autoComplete="current-password" value={password} onChange={(e) => setPassword(e.target.value)}required />
-          <p><NavLink to="/new_password">Glömt lösenord?</NavLink></p>
+          <p><NavLink to="/forgot-password">Glömt lösenord?</NavLink></p>
         </div>
 
         <div className="form-group">

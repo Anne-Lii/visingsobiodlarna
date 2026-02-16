@@ -7,8 +7,9 @@ const ResetPassword = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const params = new URLSearchParams(location.search);
-  const email = params.get("email") || "";
-  const token = params.get("token") || "";
+  const email = params.get("email") ? decodeURIComponent(params.get("email")!) : "";
+  const token = params.get("token") ? decodeURIComponent(params.get("token")!) : "";
+
 
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");

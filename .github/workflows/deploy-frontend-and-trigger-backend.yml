@@ -1,26 +1,11 @@
-name: Deploy Frontend and Trigger Backend
+name: Trigger backend deploy on frontend push
 
 on:
   push:
     branches: ["main"]
 
 jobs:
-  deploy_frontend:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Deploy to Azure Static Web Apps
-        uses: Azure/static-web-apps-deploy@v1
-        with:
-          azure_static_web_apps_api_token: ${{ secrets.AZURE_STATIC_WEB_APPS_API_TOKEN_BRAVE_GROUND_01E23D603 }}
-          repo_token: ${{ secrets.GITHUB_TOKEN }}
-          action: "upload"
-          app_location: "/"
-          output_location: "build"
-
   trigger_backend:
-    needs: deploy_frontend
     runs-on: ubuntu-latest
     steps:
       - name: Trigger backend deploy

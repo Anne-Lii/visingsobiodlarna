@@ -16,4 +16,4 @@ jobs:
             -H "Accept: application/vnd.github+json" \
             -H "Authorization: Bearer $GH_TOKEN" \
             https://api.github.com/repos/Anne-Lii/visingsobiodlarna_api/actions/workflows/deploy-backend.yml/dispatches \
-            -d '{"ref":"main"}'
+            -d "{\"ref\":\"main\",\"inputs\":{\"frontend_sha\":\"${GITHUB_SHA}\"}}"

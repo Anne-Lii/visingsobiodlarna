@@ -86,7 +86,7 @@ const Aside = () => {
   return (
     <aside className="aside">
       <h2>Svärmtelefon!</h2>
-      <p className="phone_swarm">Thomas Hansen 0723-27 27 77</p>
+      <p className="phone_swarm">Thomas Hansen 0723-XX XX XX</p>
 
       <h3>Kalender</h3>
       <CalendarWidget

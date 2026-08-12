@@ -16,7 +16,7 @@ const Layout = () => {
                     <div className="swarm-alert-mobile">
                         <h2>Svärmtelefon!</h2>
                         <p>Thomas Hansen</p>
-                        <p>070-589 48 75</p>
+                        <p>0723-XX XX XX</p>
                     </div>
                     <Outlet />
                 </main>

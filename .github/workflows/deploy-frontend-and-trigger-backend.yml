@@ -15,5 +15,5 @@ jobs:
           curl -L -X POST \
             -H "Accept: application/vnd.github+json" \
             -H "Authorization: Bearer $GH_TOKEN" \
-            https://api.github.com/repos/Anne-Lii/visingsobiodlarna_api/actions/workflows/deploy-backend.yml/dispatches \
+            https://api.github.com/repos/Anne-Lii/visingsobiodlarna_api/actions/workflows/deploy.yml/dispatches \
             -d "{\"ref\":\"main\",\"inputs\":{\"frontend_sha\":\"${GITHUB_SHA}\"}}"

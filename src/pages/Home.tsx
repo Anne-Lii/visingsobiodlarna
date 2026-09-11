@@ -9,15 +9,29 @@ const Home = () => {
       <img className='start-image' src={hives} alt="bikupor under träd på en äng" />
       <div className="info-text">
         <p>
-          Visingsöbiodlarna är en ideell förening som samlar öns biodlare för att främja kunskapsutbyte, gemenskap och hållbar biodling. 
-          På Visingsö bedrivs biodling i en unik miljö med närhet till natur och pollinerrika landskap. Vi är för tillfället 17 aktiva biodlare på ön som delar på ca 92 kupor.
+          På Visingsö odlas enbart bin av Ligustica-rasen alltsedan 1982 då ön fick status som renparningsområde för denna biras.
+          Visingsö Biodlarförening samarbetar med Ligusticaföreningen och sköter öns parningsstation från maj till augusti. 
+          Där paras 250-300 drottningar varje år med öns drönarbin.
         </p>
         <p>
-          Föreningen ansvarar även för en godkänd parningsstation för Ligusticaföreningen, vilket ger möjlighet till kontrollerad parning av drottningar i en skyddad zon. 
-          Detta bidrar till friska och starka bisamhällen med goda egenskaper.
+          För att säkerställa goda avelsegenskaper följer vi ett 10-punktsprogram vid urval för avelsarbetet. 
+          Vid en parningsstation tillämpas så kallas populationsparning, vilket innebär att alla bisamhällen inom parningsstationens flygområde deltar i avelsarbetet. 
+          Detta ställer stora krav på öns alla biodlare att vidmakthålla goda avelsegenskaper hos samhällena.
         </p>
         <p>
-          Genom vår digitala plattform kan medlemmar enkelt hantera sina bigårdar, rapportera data och ta del av nyheter, evenemang och dokument från föreningen.
+          Som ett led i detta arbete genomförs en kalibreringsdag varje år då samtliga bisamhällen kontrolleras enligt en manual fastställd av Ligusticaföreningen.
+        </p>
+        <p>
+          Vårt fokus ligger på varroakontroll med låga kvalsterantal, bra temperament, god övervintringsförmåga och bra immunförsvar mot virus.
+        </p>
+        <p>
+          Vi är ett 20-tal biodlare med varierande erfarenhet och har sammanlagt ett 90-tal samhällen. Parningsstationen och några föreningsmedlemmar har sammanlagt ett 20-tal digitala kupvågar där man i sin mobil kan följa vikt och temperaturförändringar. (Kupvågarna är framtagna av Staffan Magnusson).
+        </p>
+        <p>
+          Föreningen har i flera år haft och har fortfarande ett pollinationsuppdrag på äppelodlingarna i Torp på Visingsö.
+        </p>
+        <p>
+          Visingsöbiodlarna har tilldelats både kommunens miljöpris och naturvårdspris.
         </p>
       </div>
     </div>

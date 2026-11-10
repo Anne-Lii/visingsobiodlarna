@@ -1,7 +1,7 @@
 import { useNavigate, useParams } from "react-router-dom";
 import api from "../services/apiService";
 import { useEffect, useState } from "react";
-import '../pages/HiveDetails.scss';
+//import '../pages/HiveDetails.scss';
 import { useToast } from "../components/ToastContext";
 import ConfirmDeleteModal from "../components/ConfirmDeleteModal";
 
@@ -13,22 +13,22 @@ interface Hive {
     startMonth: number;
     apiaryId: number;
 }
-
+/*
 interface MiteReport {
     id: number;
     year: number;
     week: number;
     miteCount: number;
 }
-
+*/
 const HiveDetails = () => {
     const { id } = useParams();
     const [hive, setHive] = useState<Hive | null>(null);
-    const [reports, setReports] = useState<MiteReport[]>([]);
-    const [selectedYear, setSelectedYear] = useState<number>(new Date().getFullYear());
+    //const [reports, setReports] = useState<MiteReport[]>([]);
+    //const [selectedYear, setSelectedYear] = useState<number>(new Date().getFullYear());
     const currentYear = new Date().getFullYear();
-    const uniqueYears = Array.from(new Set([...reports.map((r) => r.year), currentYear])).sort((a, b) => b - a);
-    const [editedReports, setEditedReports] = useState<{ [week: number]: number | undefined }>({});
+    //const uniqueYears = Array.from(new Set([...reports.map((r) => r.year), currentYear])).sort((a, b) => b - a);
+    //const [editedReports, setEditedReports] = useState<{ [week: number]: number | undefined }>({});
     const [editableHive, setEditableHive] = useState<{
         name: string;
         description: string;
@@ -39,7 +39,7 @@ const HiveDetails = () => {
         startYear: currentYear
     });
     const [isEditingHive, setIsEditingHive] = useState(false);
-    const [isEditing, setIsEditing] = useState(false);
+    //const [isEditing, setIsEditing] = useState(false);
     const [showConfirmModal, setShowConfirmModal] = useState(false);
     const [pendingDeleteId, setPendingDeleteId] = useState<number | null>(null);
     const { showToast } = useToast();
@@ -58,6 +58,7 @@ const HiveDetails = () => {
         fetchHive();
     }, [id]);
 
+    /*
     useEffect(() => {
         const fetchReports = async () => {
             try {
@@ -82,6 +83,7 @@ const HiveDetails = () => {
         };
         fetchReports();
     }, [id]);
+    */
 
     useEffect(() => {
         if (hive) {
@@ -93,7 +95,7 @@ const HiveDetails = () => {
         }
     }, [hive]);
 
-    const filteredReports = reports.filter((r) => r.year === selectedYear);
+    //const filteredReports = reports.filter((r) => r.year === selectedYear);
 
     //uppdatera kupa
     const handleUpdateHive = async () => {
@@ -139,6 +141,7 @@ const HiveDetails = () => {
     };
 
     //kvalsterrapporter
+    /*
     const handleSaveReports = async () => {
 
         if (!selectedYear || !id) return;
@@ -190,6 +193,7 @@ const HiveDetails = () => {
             showToast("Kunde inte spara rapporter", "error");
         }
     };
+    */
 
     return (
         <div className="hive_container">
@@ -248,6 +252,7 @@ const HiveDetails = () => {
                 )}
             </div>
 
+            {/*
             <div className="report-section">
                 <h2>Kvalsterrapportering</h2>
 
@@ -309,6 +314,7 @@ const HiveDetails = () => {
                     </tbody>
                 </table>
             </div>
+            */}
 
             {showConfirmModal && (
                 <ConfirmDeleteModal

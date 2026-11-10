@@ -11,6 +11,7 @@ interface Apiary {
   hiveCount: number;
 }
 
+/*
 interface Hive {
   id: number;
   name: string;
@@ -18,6 +19,7 @@ interface Hive {
   apiaryId: number;
   startYear: number;
 }
+
 
 //Plocka ut nuvarande veckonummer
 const getCurrentWeek = () => {
@@ -33,6 +35,7 @@ const getCurrentWeek = () => {
     )
   );
 };
+*/
 
 
 const Mypage = () => {
@@ -42,19 +45,21 @@ const Mypage = () => {
   const [loading, setLoading] = useState(true);
   const [showModal, setShowModal] = useState(false);
   const [newApiary, setNewApiary] = useState({ name: "", location: "" });
-  const [showMiteModal, setShowMiteModal] = useState(false);
-  const [selectedYear, setSelectedYear] = useState(new Date().getFullYear());
-  const [selectedWeek, setSelectedWeek] = useState<number>(getCurrentWeek());
-  const [selectedApiaryId, setSelectedApiaryId] = useState<number | null>(null);
-  const [hives, setHives] = useState<Hive[]>([]);
-  const [miteCounts, setMiteCounts] = useState<{ [hiveId: number]: number | undefined }>({});
-  const [processedHives, setProcessedHives] = useState<number[]>([]);
-  const [currentHiveIndex, setCurrentHiveIndex] = useState(0);
-  const [shouldResumeSaving, setShouldResumeSaving] = useState(false);
+  //const [showMiteModal, setShowMiteModal] = useState(false);
+  //const [selectedYear, setSelectedYear] = useState(new Date().getFullYear());
+  //const [selectedWeek, setSelectedWeek] = useState<number>(getCurrentWeek());
+  //const [selectedApiaryId, setSelectedApiaryId] = useState<number | null>(null);
+  //const [hives, setHives] = useState<Hive[]>([]);
+  //const [miteCounts, setMiteCounts] = useState<{ [hiveId: number]: number | undefined }>({});
+  //const [processedHives, setProcessedHives] = useState<number[]>([]);
+  //const [currentHiveIndex, setCurrentHiveIndex] = useState(0);
+  //const [shouldResumeSaving, setShouldResumeSaving] = useState(false);
+  /*
   const [overwriteModal, setOverwriteModal] = useState<{
     hive: Hive | null;
     miteCount: number;
   } | null>(null);
+   */
 
   //states honungsskörd
   const [showHoneyModal, setShowHoneyModal] = useState(false);
@@ -82,12 +87,14 @@ const Mypage = () => {
     fetchApiaries();
   }, []);
 
+  /*
   useEffect(() => {
     if (shouldResumeSaving && !overwriteModal) {
       setShouldResumeSaving(false);
       handleSaveMiteReports();
     }
   }, [shouldResumeSaving, overwriteModal]);
+  */
 
 
   //hämtar skörderapport från backend vid val av år.
@@ -132,6 +139,7 @@ const Mypage = () => {
     }
   };
 
+  /*
   //sparar kvalsterrapport
   const handleSaveMiteReports = async () => {
     if (!selectedApiaryId || hives.length === 0) return;
@@ -217,6 +225,7 @@ const Mypage = () => {
     setOverwriteModal(null);
     setShouldResumeSaving(true);
   };
+  */
 
   //funktion för att skapa batchnummer
   const generateBatchId = (year: number, existingBatches: string[]): string => {
@@ -276,7 +285,7 @@ const Mypage = () => {
   return (
     <div className="mypage-container">
       <h1>Mina sidor</h1>
-      <button className="btn add_btn" onClick={() => setShowMiteModal(true)}>+ Rapportera kvalster</button>
+      {/* <button className="btn add_btn" onClick={() => setShowMiteModal(true)}>+ Rapportera kvalster</button> */}
       <button className="btn add_btn" onClick={() => setShowHoneyModal(true)}>+ Honungsskörd</button>
       <button className="btn add_btn" onClick={() => setShowModal(true)}>+ Lägg till bigård</button>
 
@@ -311,7 +320,7 @@ const Mypage = () => {
                 </tr>
               ))}
               <tr>
-                <td colSpan={2}><strong>Totalt {selectedYear}</strong></td>
+                <td colSpan={2}><strong>Totalt {selectedHarvestYear}</strong></td>
                 <td><strong>{totalForYear.toFixed(1)} kg</strong></td>
                 <td></td>
               </tr>
@@ -367,7 +376,9 @@ const Mypage = () => {
         </div>
       )}
 
+
       {/* Modal för att rapportera kvalster från Mina sidor */}
+      {/*
       {showMiteModal && (
         <div className="modal-overlay">
           <div className="modal">
@@ -450,8 +461,10 @@ const Mypage = () => {
           </div>
         </div>
       )}
+      */}
 
       {/* Modal som visas vid rapportering av kvalster om det redan finns kvalster rapporterat den veckan */}
+      {/*
       {overwriteModal && (
         <div className="modal-overlay">
           <div className="modal">
@@ -465,6 +478,7 @@ const Mypage = () => {
           </div>
         </div>
       )}
+      */}
 
       {showHoneyModal && (
         <div className="modal-overlay">

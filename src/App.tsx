@@ -24,21 +24,21 @@ function App() {
 
           {/* Publika routes */}
           <Route index element={<Home />} />
-          <Route path="news"            element={<News />} />
-          <Route path="login"           element={<Login />} />
-          <Route path="register"        element={<Register />} />
-          <Route path="forgot-password"    element={<NewPassword />} />
-          <Route path="reset-password"  element={<ResetPassword />} />
-          <Route path="news/:id"        element={<NewsDetail />} />
-          <Route path="calendar/:date"  element={<EventsToday />} />
-          <Route path="calendar"        element={<CalendarEvents />} />
-          <Route path="dokument"        element={<AllDocumentsPage />} />
+          <Route path="news"              element={<News />} />
+          <Route path="login"             element={<Login />} />
+          <Route path="register"          element={<Register />} />
+          <Route path="forgot-password"   element={<NewPassword />} />
+          <Route path="reset-password"    element={<ResetPassword />} />
+          <Route path="news/:id"          element={<NewsDetail />} />
+          <Route path="calendar/:date"    element={<EventsToday />} />
+          <Route path="calendar"          element={<CalendarEvents />} />
+          <Route path="dokument"          element={<AllDocumentsPage />} />
           
           {/* Skyddade routes */}
-          <Route path="mypage"          element={<ProtectedRoute><Mypage /></ProtectedRoute>} />
-          <Route path="admin"           element={<ProtectedRoute requiredRole="admin"><Admin /></ProtectedRoute>} />
-          <Route path="apiary/:id"      element={<ProtectedRoute><ApiaryDetails /></ProtectedRoute>} />
-          <Route path="hive/:id"        element={<ProtectedRoute><HiveDetails /></ProtectedRoute>} />
+          <Route path="mypage"            element={<ProtectedRoute><Mypage /></ProtectedRoute>} />
+          <Route path="admin"             element={<ProtectedRoute requiredRole="admin"><Admin /></ProtectedRoute>} />
+          <Route path="apiary/:id"        element={<ProtectedRoute><ApiaryDetails /></ProtectedRoute>} />
+          <Route path="hive/:id"          element={<ProtectedRoute><HiveDetails /></ProtectedRoute>} />
 
 
         </Route>
